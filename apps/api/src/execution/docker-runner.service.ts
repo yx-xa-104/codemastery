@@ -21,8 +21,13 @@ export class DockerRunnerService {
   };
 
   constructor() {
-    this.docker = new Docker();
-    this.logger.log('Docker service initialized');
+    // Explicitly configure for Windows - use TCP port 2375
+    // Make sure Docker Desktop has "Expose daemon on tcp://localhost:2375" enabled
+    this.docker = new Docker({
+      host: '127.0.0.1',
+      port: 2375,
+    });
+    this.logger.log(`Docker service initialized on ${process.platform} via TCP:2375`);
   }
 
   async runCode(code: string, language: string): Promise<RunResult> {
