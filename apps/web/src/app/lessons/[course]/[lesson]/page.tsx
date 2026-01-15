@@ -2,7 +2,10 @@ import MainLayout from '@/components/layout/MainLayout';
 import Sidebar from '@/components/layout/Sidebar';
 import LessonContent from '@/components/lesson/LessonContent';
 import CodeEditor from '@/components/editor/CodeEditor';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs';
+import LessonNav from '@/components/navigation/LessonNav';
 import { getLessonContent } from '@/lib/mdx';
+import { getAdjacentLessons, getCourseName } from '@/lib/courses';
 
 export default async function LessonPage({
   params,
@@ -42,6 +45,8 @@ export default async function LessonPage({
   }
 
   const { metadata, content } = lessonData;
+  const courseName = getCourseName(params.course);
+  const { previous, next } = getAdjacentLessons(params.course, params.lesson);
 
   // Determine language from course name or metadata
   const language = (metadata.language || params.course) as 'python' | 'javascript' | 'java' | 'cpp';
@@ -63,6 +68,16 @@ export default async function LessonPage({
         </div>
       }
     >
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { label: 'Courses', href: '/courses' },
+          { label: courseName, href: `/courses/${params.course}` },
+          { label: metadata.title || params.lesson, href: '#' },
+        ]}
+      />
+
+      {/* Lesson Content */}
       <LessonContent content={content} metadata={metadata} />
 
       {/* Interactive Code Editor Section */}
@@ -77,14 +92,9 @@ export default async function LessonPage({
         />
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="mt-12 flex items-center justify-between pt-8 border-t border-gray-200 dark:border-gray-800">
-        <button className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg transition-colors">
-          ← Previous Lesson
-        </button>
-        <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">
-          Next Lesson →
-        </button>
+      {/* Lesson Navigation */}
+      <div className="mt-12">
+        <LessonNav previousLesson={previous} nextLesson={next} />
       </div>
     </MainLayout>
   );

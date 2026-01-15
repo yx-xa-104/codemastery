@@ -1,0 +1,222 @@
+---
+title: "Functions in Python"
+description: "Learn to write reusable code with functions, parameters, and return values"
+difficulty: "beginner"
+estimatedTime: 20
+order: 4
+prerequisites: ["03-control-flow"]
+tags: ["functions", "parameters", "return", "scope"]
+---
+
+# Functions
+
+Functions are reusable blocks of code that perform specific tasks. They help keep your code organized and DRY (Don't Repeat Yourself).
+
+## Creating Functions
+
+Use the `def` keyword:
+
+```python
+def greet():
+    print("Hello, World!")
+
+# Call the function
+greet()  # Output: Hello, World!
+```
+
+## Function Parameters
+
+Pass data to functions:
+
+```python
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Alice")  # Hello, Alice!
+greet("Bob")    # Hello, Bob!
+```
+
+### Multiple Parameters
+
+```python
+def add(a, b):
+    result = a + b
+    print(f"{a} + {b} = {result}")
+
+add(5, 3)  # 5 + 3 = 8
+```
+
+### Default Parameters
+
+```python
+def greet(name="Guest"):
+    print(f"Hello, {name}!")
+
+greet()          # Hello, Guest!
+greet("Alice")   # Hello, Alice!
+```
+
+## Return Values
+
+Functions can send data back:
+
+```python
+def add(a, b):
+    return a + b
+
+result = add(5, 3)
+print(result)  # 8
+```
+
+### Return Multiple Values
+
+```python
+def get_user_info():
+    name = "Alice"
+    age = 25
+    return name, age
+
+user_name, user_age = get_user_info()
+print(user_name)  # Alice
+print(user_age)   # 25
+```
+
+## Variable Scope
+
+Variables defined inside functions are **local**:
+
+```python
+def my_function():
+    x = 10  # Local variable
+    print(x)
+
+my_function()  # 10
+# print(x)  # Error! x doesn't exist outside
+```
+
+**Global variables:**
+
+```python
+x = 10  # Global variable
+
+def my_function():
+    print(x)  # Can access global
+
+my_function()  # 10
+```
+
+## Docstrings
+
+Document your functions:
+
+```python
+def calculate_area(radius):
+    """
+    Calculate the area of a circle.
+
+    Args:
+        radius: The radius of the circle
+
+    Returns:
+        The area of the circle
+    """
+    pi = 3.14159
+    return pi * radius ** 2
+
+print(calculate_area.__doc__)
+```
+
+## Lambda Functions
+
+Short, anonymous functions:
+
+```python
+# Regular function
+def square(x):
+    return x ** 2
+
+# Lambda equivalent
+square = lambda x: x ** 2
+
+print(square(5))  # 25
+```
+
+Useful with `map()`, `filter()`:
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+# Square all numbers
+squared = list(map(lambda x: x**2, numbers))
+print(squared)  # [1, 4, 9, 16, 25]
+
+# Filter even numbers
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+print(evens)  # [2, 4]
+```
+
+## Practice Exercises
+
+### Exercise 1: Calculator
+
+```python
+def calculator(a, b, operation):
+    if operation == "+":
+        return a + b
+    elif operation == "-":
+        return a - b
+    elif operation == "*":
+        return a * b
+    elif operation == "/":
+        return a / b
+    else:
+        return "Invalid operation"
+
+print(calculator(10, 5, "+"))  # 15
+print(calculator(10, 5, "*"))  # 50
+```
+
+### Exercise 2: Temperature Converter
+
+```python
+def celsius_to_fahrenheit(celsius):
+    fahrenheit = (celsius * 9/5) + 32
+    return fahrenheit
+
+def fahrenheit_to_celsius(fahrenheit):
+    celsius = (fahrenheit - 32) * 5/9
+    return celsius
+
+temp_c = 25
+temp_f = celsius_to_fahrenheit(temp_c)
+print(f"{temp_c}°C = {temp_f}°F")
+```
+
+### Exercise 3: Check Prime Number
+
+```python
+def is_prime(num):
+    if num < 2:
+        return False
+
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+
+    return True
+
+print(is_prime(7))   # True
+print(is_prime(10))  # False
+```
+
+## Summary
+
+- Functions organize reusable code
+- Use `def` to create functions
+- Parameters pass data in
+- `return` sends data back
+- Scope: local vs global variables
+- Docstrings document functions
+- Lambda functions for simple operations
+
+**Next lesson:** Lists and Dictionaries

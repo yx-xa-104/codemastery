@@ -1,0 +1,184 @@
+---
+title: "JavaScript Basics"
+description: "Get started with JavaScript - the language of the web"
+difficulty: "beginner"
+estimatedTime: 20
+order: 1
+tags: ["javascript", "basics", "introduction"]
+---
+
+# JavaScript Basics
+
+JavaScript is the programming language of the web. It runs in browsers and lets you create interactive websites!
+
+## Your First JavaScript
+
+```javascript
+console.log("Hello, JavaScript!");
+```
+
+##Variables
+
+JavaScript has three ways to declare variables:
+
+### let (preferred for variables that change)
+
+```javascript
+let name = "Alice";
+let age = 25;
+
+age = 26; // Can reassign
+console.log(age); // 26
+```
+
+### const (preferred for constants)
+
+```javascript
+const PI = 3.14159;
+const MAX_USERS = 100;
+
+// PI = 3.14;  // Error! Cannot reassign
+```
+
+### var (old way, avoid)
+
+```javascript
+var oldStyle = "Don't use this";
+```
+
+## Data Types
+
+### Strings
+
+```javascript
+const greeting = "Hello";
+const message = "Single quotes work too";
+const template = `Template literals use backticks`;
+
+// String concatenation
+const fullName = "Alice" + " " + "Smith";
+
+// Template literals (better!)
+const name = "Alice";
+const intro = `My name is ${name}`;
+```
+
+### Numbers
+
+```javascript
+const age = 25;
+const price = 19.99;
+const negative = -10;
+
+// Math operations
+const sum = 5 + 3; // 8
+const product = 4 * 2; // 8
+const division = 10 / 2; // 5
+const remainder = 7 % 3; // 1
+```
+
+### Booleans
+
+```javascript
+const isActive = true;
+const hasPermission = false;
+
+console.log(5 > 3); // true
+console.log(10 === 5); // false
+```
+
+### Arrays
+
+```javascript
+const fruits = ["apple", "banana", "orange"];
+
+console.log(fruits[0]); // "apple"
+console.log(fruits.length); // 3
+
+// Add item
+fruits.push("grape");
+
+// Loop through array
+fruits.forEach((fruit) => {
+  console.log(fruit);
+});
+```
+
+### Objects
+
+```javascript
+const person = {
+  name: "Alice",
+  age: 25,
+  city: "New York",
+};
+
+console.log(person.name); // "Alice"
+console.log(person["age"]); // 25
+
+// Add property
+person.email = "alice@example.com";
+```
+
+## Functions
+
+```javascript
+// Function declaration
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+console.log(greet("Alice"));
+
+// Arrow function (modern)
+const add = (a, b) => a + b;
+
+console.log(add(5, 3)); // 8
+```
+
+## Conditional Statements
+
+```javascript
+const age = 18;
+
+if (age >= 18) {
+  console.log("Adult");
+} else {
+  console.log("Minor");
+}
+
+// Ternary operator
+const status = age >= 18 ? "Adult" : "Minor";
+```
+
+## Loops
+
+```javascript
+// For loop
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// For...of (arrays)
+const colors = ["red", "green", "blue"];
+for (const color of colors) {
+  console.log(color);
+}
+
+// While loop
+let count = 0;
+while (count < 5) {
+  console.log(count);
+  count++;
+}
+```
+
+## Summary
+
+- Variables: `let` and `const`
+- Data types: String, Number, Boolean, Array, Object
+- Functions: regular and arrow functions
+- Conditionals: if/else, ternary
+- Loops: for, while, for...of
+
+**Next lesson:** Functions & Scope

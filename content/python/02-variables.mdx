@@ -1,0 +1,168 @@
+---
+title: "Variables and Data Types in Python"
+description: "Learn how to store and work with data using variables and explore Python's basic data types"
+difficulty: "beginner"
+estimatedTime: 20
+order: 2
+prerequisites: ["01-introduction"]
+tags: ["variables", "data-types", "basics"]
+---
+
+# Variables and Data Types
+
+In Python, variables are containers for storing data values. Unlike other programming languages, Python has no command for declaring a variable - it is created the moment you first assign a value to it.
+
+## Creating Variables
+
+```python
+# Creating variables
+name = "Alice"
+age = 25
+height = 1.68
+is_student = True
+```
+
+Variables in Python are **dynamically typed**, meaning you don't need to declare their type explicitly.
+
+## Basic Data Types
+
+Python has several built-in data types:
+
+### 1. Strings (str)
+
+Text data enclosed in quotes:
+
+```python
+greeting = "Hello, World!"
+message = 'Single quotes work too'
+multiline = """This is a
+multi-line string"""
+
+print(greeting)  # Output: Hello, World!
+```
+
+### 2. Numbers
+
+#### Integers (int)
+
+Whole numbers without decimals:
+
+```python
+age = 25
+year = 2024
+negative = -10
+```
+
+#### Floats (float)
+
+Numbers with decimal points:
+
+```python
+price = 19.99
+temperature = -5.5
+pi = 3.14159
+```
+
+### 3. Booleans (bool)
+
+True or False values:
+
+```python
+is_active = True
+has_permission = False
+
+print(5 > 3)  # Output: True
+print(10 == 5)  # Output: False
+```
+
+### 4. None Type
+
+Represents the absence of a value:
+
+```python
+result = None
+print(result)  # Output: None
+```
+
+## Type Checking
+
+Use the `type()` function to check a variable's type:
+
+```python
+name = "Alice"
+age = 25
+
+print(type(name))  # <class 'str'>
+print(type(age))   # <class 'int'>
+```
+
+## Variable Naming Rules
+
+✅ **Valid names:**
+
+- `user_name`
+- `firstName`
+- `age2`
+- `_private`
+
+❌ **Invalid names:**
+
+- `2name` (can't start with number)
+- `user-name` (no hyphens)
+- `class` (reserved keyword)
+
+**Best practices:**
+
+- Use descriptive names: `student_count` not `sc`
+- Use snake_case for variables: `user_name`
+- Constants in UPPERCASE: `MAX_SIZE = 100`
+
+## Type Conversion
+
+Convert between types using built-in functions:
+
+```python
+# String to int
+age_str = "25"
+age_int = int(age_str)
+
+# Int to string
+number = 42
+text = str(number)
+
+# String to float
+price = float("19.99")
+
+print(type(age_int))  # <class 'int'>
+```
+
+## Practice Exercise
+
+Try this code yourself:
+
+```python
+# Create variables
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+
+# Calculate birth year (approximately)
+current_year = 2024
+birth_year = current_year - age
+
+# Display results
+print(f"Hello, {name}!")
+print(f"You were born around {birth_year}")
+print(f"Type of name: {type(name)}")
+print(f"Type of age: {type(age)}")
+```
+
+## Summary
+
+- Variables store data values
+- Python is dynamically typed
+- Basic types: str, int, float, bool, None
+- Use `type()` to check types
+- Convert types with `int()`, `str()`, `float()`
+- Follow naming conventions
+
+**Next lesson:** Control Flow (if/else, loops)

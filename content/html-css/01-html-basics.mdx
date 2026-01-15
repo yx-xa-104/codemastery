@@ -1,0 +1,157 @@
+---
+title: "HTML Fundamentals"
+description: "Learn the building blocks of web pages with HTML"
+difficulty: "beginner"
+estimatedTime: 25
+order: 1
+tags: ["html", "web", "basics"]
+---
+
+# HTML Fundamentals
+
+HTML (HyperText Markup Language) is the standard language for creating web pages. It describes the structure and content of a website.
+
+## Basic HTML Structure
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My First Web Page</title>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+    <p>This is my first HTML page.</p>
+  </body>
+</html>
+```
+
+## Common HTML Elements
+
+### Headings
+
+```html
+<h1>Main Heading</h1>
+<h2>Subheading</h2>
+<h3>Sub-subheading</h3>
+<h4>Smaller heading</h4>
+<h5>Even smaller</h5>
+<h6>Smallest heading</h6>
+```
+
+### Paragraphs
+
+```html
+<p>This is a paragraph of text.</p>
+<p>This is another paragraph.</p>
+```
+
+### Links
+
+```html
+<a href="https://google.com">Go to Google</a>
+<a href="https://google.com" target="_blank">Open in new tab</a>
+<a href="about.html">About Page</a>
+```
+
+### Images
+
+```html
+<img src="photo.jpg" alt="Description of image" />
+<img src="logo.png" alt="Company Logo" width="200" />
+```
+
+###Lists
+
+**Unordered List:**
+
+```html
+<ul>
+  <li>Apple</li>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+```
+
+**Ordered List:**
+
+```html
+<ol>
+  <li>First step</li>
+  <li>Second step</li>
+  <li>Third step</li>
+</ol>
+```
+
+### Divs and Spans
+
+```html
+<!-- Block-level container -->
+<div class="container">
+  <h2>Section Title</h2>
+  <p>Content goes here.</p>
+</div>
+
+<!-- Inline container -->
+<p>This is <span class="highlight">highlighted</span> text.</p>
+```
+
+## Forms
+
+```html
+<form action="/submit" method="POST">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" required />
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" />
+
+  <label for="message">Message:</label>
+  <textarea id="message" name="message" rows="4"></textarea>
+
+  <button type="submit">Send</button>
+</form>
+```
+
+## Semantic HTML
+
+Use meaningful tags:
+
+```html
+<header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+
+<main>
+  <article>
+    <h1>Article Title</h1>
+    <p>Article content...</p>
+  </article>
+
+  <aside>
+    <h3>Related Links</h3>
+    <ul>
+      <li><a href="#">Link 1</a></li>
+    </ul>
+  </aside>
+</main>
+
+<footer>
+  <p>&copy; 2024 My Website</p>
+</footer>
+```
+
+## Summary
+
+- HTML structures web pages
+- Elements have opening `<tag>` and closing `</tag>`
+- Common elements: headings, paragraphs, links, images
+- Forms collect user input
+- Semantic HTML improves accessibility and SEO
+
+**Next lesson:** CSS Basics

@@ -1,0 +1,246 @@
+---
+title: "Control Flow in Python"
+description: "Master if/else statements, loops, and control flow to make your programs dynamic"
+difficulty: "beginner"
+estimatedTime: 25
+order: 3
+prerequisites: ["02-variables"]
+tags: ["control-flow", "if-else", "loops", "conditionals"]
+---
+
+# Control Flow
+
+Control flow statements let your program make decisions and repeat actions. This is what makes programs dynamic and intelligent!
+
+## If Statements
+
+Make decisions based on conditions:
+
+```python
+age = 18
+
+if age >= 18:
+    print("You are an adult")
+```
+
+### If-Else
+
+```python
+temperature = 25
+
+if temperature > 30:
+    print("It's hot outside!")
+else:
+    print("The weather is nice")
+```
+
+### If-Elif-Else
+
+Multiple conditions:
+
+```python
+score = 85
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+
+print(f"Your grade is: {grade}")
+```
+
+## Comparison Operators
+
+- `==` Equal to
+- `!=` Not equal to
+- `>` Greater than
+- `<` Less than
+- `>=` Greater than or equal
+- `<=` Less than or equal
+
+```python
+x = 10
+y = 5
+
+print(x > y)   # True
+print(x == y)  # False
+print(x != y)  # True
+```
+
+## Logical Operators
+
+Combine multiple conditions:
+
+### AND operator
+
+Both conditions must be True:
+
+```python
+age = 25
+has_license = True
+
+if age >= 18 and has_license:
+    print("You can drive")
+```
+
+### OR operator
+
+At least one condition must be True:
+
+```python
+is_weekend = True
+is_holiday = False
+
+if is_weekend or is_holiday:
+    print("Time to relax!")
+```
+
+### NOT operator
+
+Inverts the condition:
+
+```python
+is_raining = False
+
+if not is_raining:
+    print("Let's go outside!")
+```
+
+## For Loops
+
+Repeat code a specific number of times:
+
+```python
+# Loop through numbers
+for i in range(5):
+    print(f"Count: {i}")
+
+# Output:
+# Count: 0
+# Count: 1
+# Count: 2
+# Count: 3
+# Count: 4
+```
+
+### Loop through lists
+
+```python
+fruits = ["apple", "banana", "orange"]
+
+for fruit in fruits:
+    print(f"I like {fruit}")
+```
+
+### Range with start and end
+
+```python
+# range(start, end, step)
+for num in range(1, 10, 2):
+    print(num)  # 1, 3, 5, 7, 9
+```
+
+## While Loops
+
+Repeat while a condition is True:
+
+```python
+count = 0
+
+while count < 5:
+    print(f"Count is {count}")
+    count += 1
+
+print("Done!")
+```
+
+⚠️ **Be careful:** Make sure the condition eventually becomes False, or you'll have an infinite loop!
+
+## Break and Continue
+
+### Break
+
+Exit the loop early:
+
+```python
+for i in range(10):
+    if i == 5:
+        break  # Stop when i is 5
+    print(i)
+
+# Output: 0, 1, 2, 3, 4
+```
+
+### Continue
+
+Skip the current iteration:
+
+```python
+for i in range(5):
+    if i == 2:
+        continue  # Skip 2
+    print(i)
+
+# Output: 0, 1, 3, 4
+```
+
+## Nested Loops
+
+Loops inside loops:
+
+```python
+for i in range(3):
+    for j in range(3):
+        print(f"i={i}, j={j}")
+```
+
+## Practice Exercises
+
+### Exercise 1: Number Guessing
+
+```python
+secret_number = 7
+guess = int(input("Guess a number (1-10): "))
+
+if guess == secret_number:
+    print("Correct! 🎉")
+elif guess < secret_number:
+    print("Too low!")
+else:
+    print("Too high!")
+```
+
+### Exercise 2: Even or Odd
+
+```python
+for num in range(1, 11):
+    if num % 2 == 0:
+        print(f"{num} is even")
+    else:
+        print(f"{num} is odd")
+```
+
+### Exercise 3: Sum of Numbers
+
+```python
+total = 0
+for i in range(1, 101):
+    total += i
+
+print(f"Sum of 1 to 100: {total}")
+```
+
+## Summary
+
+- **If/else:** Make decisions
+- **Comparison operators:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+- **Logical operators:** `and`, `or`, `not`
+- **For loops:** Iterate a fixed number of times
+- **While loops:** Repeat while condition is True
+- **Break/Continue:** Control loop flow
+
+**Next lesson:** Functions
