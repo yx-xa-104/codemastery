@@ -4,8 +4,9 @@ import LessonContent from '@/components/lesson/LessonContent';
 import CodeEditor from '@/components/editor/CodeEditor';
 import Breadcrumbs from '@/components/navigation/Breadcrumbs';
 import LessonNav from '@/components/navigation/LessonNav';
+import CompleteButton from '@/components/lesson/CompleteButton';
 import { getLessonContent } from '@/lib/mdx';
-import { getAdjacentLessons, getCourseName } from '@/lib/courses';
+import { getAdjacentLessons, getCourseName, getLesson } from '@/lib/courses';
 
 export default async function LessonPage({
   params,
@@ -91,6 +92,16 @@ export default async function LessonPage({
           height="300px"
         />
       </div>
+
+      {/* Complete Lesson Button */}
+      {lessonData && (
+        <div className="mt-8 flex justify-center">
+          <CompleteButton
+            lessonId={`${params.course}-${params.lesson}`}
+            lessonTitle={metadata.title || params.lesson}
+          />
+        </div>
+      )}
 
       {/* Lesson Navigation */}
       <div className="mt-12">

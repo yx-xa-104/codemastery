@@ -1,6 +1,7 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
+import CodeBlock from '@/components/content/CodeBlock';
 
 interface LessonContentProps {
   content: string;
@@ -24,6 +25,14 @@ export default function LessonContent({ content, metadata }: LessonContentProps)
       
       <ReactMarkdown
         components={{
+          code: ({ node, inline, className, children, ...props }: any) => {
+            const value = String(children).replace(/\n$/, '');
+            return (
+              <CodeBlock inline={inline} className={className}>
+                {value}
+              </CodeBlock>
+            );
+          },
           h1: ({ node, ...props }) => (
             <h1 className="text-3xl font-bold mt-8 mb-4" {...props} />
           ),
@@ -35,15 +44,6 @@ export default function LessonContent({ content, metadata }: LessonContentProps)
           ),
           p: ({ node, ...props }) => (
             <p className="mb-4 leading-relaxed" {...props} />
-          ),
-          code: ({ node, inline, ...props }: any) =>
-            inline ? (
-              <code className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded text-sm" {...props} />
-            ) : (
-              <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto" {...props} />
-            ),
-          pre: ({ node, ...props }) => (
-            <pre className="bg-gray-900 rounded-lg overflow-hidden my-4" {...props} />
           ),
           ul: ({ node, ...props }) => (
             <ul className="list-disc list-inside mb-4 space-y-2" {...props} />
@@ -58,4 +58,5 @@ export default function LessonContent({ content, metadata }: LessonContentProps)
     </article>
   );
 }
+
 

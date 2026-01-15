@@ -1,62 +1,117 @@
+import Link from 'next/link';
+import { Code2, Rocket, BookOpen, Zap, Sparkles } from 'lucide-react';
+
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center">
-          <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Welcome to <span className="text-purple-600">CodeMastery</span>
+    <div className="min-h-screen bg-midnight-900">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-20 relative">
+        {/* Background Glow Effects */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-900/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-900/10 rounded-full blur-3xl"></div>
+
+        <div className="text-center max-w-5xl mx-auto relative z-10">
+          <div className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm font-medium mb-8 border border-amber-800/30">
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            <span className="text-amber-400">AI-Powered Learning Platform</span>
+          </div>
+
+          <h1 className="text-6xl md:text-7xl font-bold mb-8">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600">
+              Master Programming
+            </span>
+            <br />
+            <span className="text-gray-100">with Interactive Lessons</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Learn programming interactively with AI-powered assistance
+
+          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            Write code in your browser, get instant feedback, and learn from AI-powered tutoring.
+            Start your coding journey in the most <span className="text-amber-500 font-semibold">futuristic way</span>!
           </p>
-          <div className="flex gap-4 justify-center">
-            <a
-              href="/lessons/python/introduction"
-              className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link
+              href="/courses"
+              className="btn-primary group"
             >
-              Start Learning
-            </a>
-            <a
-              href="/about"
-              className="px-8 py-3 bg-white hover:bg-gray-50 text-purple-600 font-semibold rounded-lg border-2 border-purple-600 transition-colors"
+              <span>Start Learning</span>
+              <Rocket className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/lessons/python/01-introduction"
+              className="btn-secondary"
             >
-              Learn More
-            </a>
+              Try Demo Lesson
+            </Link>
           </div>
         </div>
+      </section>
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">💻</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              Interactive Code Editor
+      {/* Features */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Feature 1 */}
+          <div className="glass-strong rounded-2xl p-8 hover:shadow-glow-amber-lg transition-all duration-500 group">
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <Code2 className="w-8 h-8 text-amber-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-amber-400 mb-4 text-center">
+              Monaco Editor
             </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Write and execute code directly in your browser with our powerful Monaco editor
+            <p className="text-gray-400 text-center leading-relaxed">
+              Professional code editor with syntax highlighting and IntelliSense
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">🤖</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              AI Tutor
+          {/* Feature 2 */}
+          <div className="glass-strong rounded-2xl p-8 hover:shadow-glow-amber-lg transition-all duration-500 group">
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <Rocket className="w-8 h-8 text-amber-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-amber-400 mb-4 text-center">
+              Instant Execution
             </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Get instant help and explanations from our context-aware AI assistant
+            <p className="text-gray-400 text-center leading-relaxed">
+              Run code in secure Docker containers with real-time output
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-4xl mb-4">📚</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              Comprehensive Lessons
+          {/* Feature 3 */}
+          <div className="glass-strong rounded-2xl p-8 hover:shadow-glow-amber-lg transition-all duration-500 group">
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <BookOpen className="w-8 h-8 text-amber-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-amber-400 mb-4 text-center">
+              Structured Path
             </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Learn Python, JavaScript, Java, C++ and more with structured lessons
+            <p className="text-gray-400 text-center leading-relaxed">
+              Follow curated lessons with progress tracking and achievements
             </p>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="animated-border max-w-5xl mx-auto">
+          <div className="glass-strong rounded-2xl p-16 text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
+                Ready to Code?
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+              Join thousands of developers mastering programming skills with our AI-powered platform
+            </p>
+            <Link
+              href="/courses"
+              className="btn-primary text-lg px-10 py-4 inline-block"
+            >
+              Get Started Free
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
