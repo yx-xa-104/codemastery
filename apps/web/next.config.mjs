@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  // MDX support via react-markdown, no need for @next/mdx
 };
 
 export default nextConfig;
