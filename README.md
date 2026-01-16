@@ -252,16 +252,7 @@ print(name, age)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
 
-## 📜 License
-
-MIT License - see LICENSE file for details
-
 ## 🙏 Acknowledgments
 
 - Inspired by [W3Schools](https://www.w3schools.com)
 - Built with [Next.js](https://nextjs.org)
-- Powered by [Gemini AI](https://ai.google.dev)
-
----
-
-**Built with ❤️ by the CodeMastery Team**
