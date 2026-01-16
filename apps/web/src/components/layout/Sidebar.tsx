@@ -29,8 +29,8 @@ export default function Sidebar() {
     <div className="h-full overflow-y-auto p-6">
       {/* Logo */}
       <div className="mb-8">
-        <Link href="/" className="block">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent">
+        <Link href="/" className="block group">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
             CodeMastery
           </h1>
         </Link>
@@ -43,7 +43,7 @@ export default function Sidebar() {
         {/* All Courses Link */}
         <Link
           href="/courses"
-          className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-indigo-900/30 rounded-lg transition-all duration-300 border border-transparent hover:border-amber-800/30"
+          className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-indigo-900/40 rounded-lg transition-all duration-300 border border-transparent hover:border-amber-600/30 hover:shadow-glow-amber"
         >
           📚 All Courses
         </Link>
@@ -70,7 +70,7 @@ export default function Sidebar() {
                 {/* Course Header */}
                 <button
                   onClick={() => toggleCourse(course.id)}
-                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-200 hover:text-amber-500 hover:bg-indigo-900/20 rounded-lg transition-all duration-300 border border-transparent hover:border-indigo-700/50"
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-200 hover:text-amber-400 hover:bg-indigo-900/30 rounded-lg transition-all duration-300 border border-transparent hover:border-amber-600/30 hover:shadow-glow-amber"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{course.icon}</span>
@@ -92,7 +92,7 @@ export default function Sidebar() {
 
                 {/* Lessons List */}
                 {isExpanded && (
-                  <div className="mt-2 ml-6 space-y-1 border-l-2 border-indigo-800/30 pl-4">
+                  <div className="mt-2 ml-6 space-y-1 border-l-2 border-amber-700/40 pl-4">
                     {course.lessons.map((lesson) => {
                       const href = `/lessons/${course.id}/${lesson.slug}`;
                       const isActive = pathname === href;
@@ -104,8 +104,8 @@ export default function Sidebar() {
                           href={href}
                           className={`flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-300 ${
                             isActive
-                              ? 'bg-gradient-to-r from-amber-900/30 to-indigo-900/30 text-amber-400 font-semibold border border-amber-700/50 shadow-glow-amber'
-                              : 'text-gray-400 hover:text-gray-200 hover:bg-indigo-900/20 border border-transparent hover:border-indigo-700/30'
+                              ? 'bg-gradient-to-r from-amber-900/40 to-indigo-900/40 text-amber-400 font-semibold border border-amber-600/60 shadow-glow-amber-lg'
+                              : 'text-gray-400 hover:text-gray-200 hover:bg-indigo-900/30 border border-transparent hover:border-indigo-600/40'
                           }`}
                         >
                           {completed ? (

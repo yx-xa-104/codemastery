@@ -101,15 +101,15 @@ export default function CodeEditor({
   };
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-900">
+    <div className="border border-indigo-700/30 rounded-lg overflow-hidden bg-midnight-950 shadow-glow-indigo">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between px-4 py-2 glass-indigo border-b border-indigo-700/30">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
+          <span className="text-sm font-semibold text-amber-500 uppercase">
             {language}
           </span>
           {executionTime !== null && (
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-amber-600">
               ⏱ {executionTime}ms
             </span>
           )}
@@ -119,7 +119,7 @@ export default function CodeEditor({
           <div className="flex items-center gap-2">
             <button
               onClick={handleAiExplain}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-300 dark:hover:bg-purple-900/30 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-300 bg-indigo-900/40 hover:bg-indigo-900/60 border border-indigo-600/40 hover:border-indigo-500/60 rounded-md transition-colors"
               title="AI Explain Code"
             >
               <Sparkles className="w-4 h-4" />
@@ -128,7 +128,7 @@ export default function CodeEditor({
 
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-300 bg-midnight-700 hover:bg-midnight-600 border border-indigo-700/40 hover:border-indigo-600/60 rounded-md transition-colors"
               title="Reset Code"
             >
               <RotateCcw className="w-4 h-4" />
@@ -138,7 +138,7 @@ export default function CodeEditor({
             <button
               onClick={handleRun}
               disabled={isRunning}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed rounded-md transition-colors"
+              className="btn-golden disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRunning ? (
                 <>
@@ -178,13 +178,13 @@ export default function CodeEditor({
 
       {/* Output Panel */}
       {(output || error) && (
-        <div className="border-t border-gray-200 dark:border-gray-700">
-          <div className="px-4 py-2 bg-gray-800">
-            <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide">
+        <div className="border-t border-indigo-700/30">
+          <div className="px-4 py-2 bg-midnight-800">
+            <p className="text-xs font-semibold text-amber-500 uppercase tracking-wide">
               Output
             </p>
           </div>
-          <div className="px-4 py-3 bg-gray-900 font-mono text-sm max-h-64 overflow-y-auto">
+          <div className="px-4 py-3 bg-black font-mono text-sm max-h-64 overflow-y-auto">
             {error ? (
               <pre className="text-red-400 whitespace-pre-wrap">{error}</pre>
             ) : (

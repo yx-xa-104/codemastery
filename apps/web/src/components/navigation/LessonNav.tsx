@@ -16,17 +16,17 @@ interface LessonNavProps {
 
 export default function LessonNav({ previousLesson, nextLesson }: LessonNavProps) {
   return (
-    <nav className="flex items-center justify-between pt-8 border-t border-gray-200 dark:border-gray-800">
+    <nav className="flex items-center justify-between pt-8 border-t border-indigo-700/30">
       {/* Previous Lesson */}
       <div className="flex-1">
         {previousLesson ? (
           <Link
             href={previousLesson.href}
-            className="group flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg transition-colors"
+            className="group flex items-center gap-2 px-6 py-3 bg-midnight-800 hover:bg-midnight-700 border border-indigo-700/40 hover:border-indigo-600/60 text-gray-200 font-semibold rounded-lg transition-all duration-300"
           >
             <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <div className="text-left">
-              <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              <div className="text-xs text-gray-500 uppercase tracking-wide">
                 Previous
               </div>
               <div className="text-sm">{previousLesson.title}</div>
@@ -42,10 +42,10 @@ export default function LessonNav({ previousLesson, nextLesson }: LessonNavProps
         {nextLesson ? (
           <Link
             href={nextLesson.href}
-            className="group flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+            className="group flex items-center gap-2 px-6 py-3 btn-primary"
           >
             <div className="text-right">
-              <div className="text-xs text-purple-200 uppercase tracking-wide">
+              <div className="text-xs text-amber-900 uppercase tracking-wide">
                 Next
               </div>
               <div className="text-sm">{nextLesson.title}</div>

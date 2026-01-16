@@ -33,10 +33,10 @@ export default function CompleteButton({ lessonId, lessonTitle }: CompleteButton
   return (
     <button
       onClick={handleToggle}
-      className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+      className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
         completed
-          ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+          ? 'bg-indigo-900/40 text-amber-400 border-2 border-amber-600/60 shadow-glow-amber hover:bg-indigo-900/60'
+          : 'btn-primary'
       }`}
     >
       {completed ? (

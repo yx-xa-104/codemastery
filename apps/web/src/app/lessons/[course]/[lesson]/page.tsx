@@ -5,6 +5,7 @@ import CodeEditor from '@/components/editor/CodeEditor';
 import Breadcrumbs from '@/components/navigation/Breadcrumbs';
 import LessonNav from '@/components/navigation/LessonNav';
 import CompleteButton from '@/components/lesson/CompleteButton';
+import AiChat from '@/components/ai/AiChat';
 import { getLessonContent } from '@/lib/mdx';
 import { getAdjacentLessons, getCourseName, getLesson } from '@/lib/courses';
 
@@ -19,25 +20,13 @@ export default async function LessonPage({
     return (
       <MainLayout
         sidebar={<Sidebar />}
-        aiPanel={
-          <div className="flex items-center justify-center h-full p-8 text-center">
-            <div>
-              <div className="text-6xl mb-4">🤖</div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                AI Tutor
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Coming soon! Ask me anything about this lesson.
-              </p>
-            </div>
-          </div>
-        }
+        aiPanel={<AiChat lessonTitle="Not Found" />}
       >
         <div className="text-center py-16">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-3xl font-bold text-white mb-4">
             Lesson Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-400">
             The lesson "{params.lesson}" does not exist in the "{params.course}" course.
           </p>
         </div>
@@ -55,19 +44,7 @@ export default async function LessonPage({
   return (
     <MainLayout
       sidebar={<Sidebar />}
-      aiPanel={
-        <div className="flex items-center justify-center h-full p-8 text-center">
-          <div>
-            <div className="text-6xl mb-4">🤖</div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              AI Tutor
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Ask me anything about: {metadata.title || params.lesson}
-            </p>
-          </div>
-        </div>
-      }
+      aiPanel={<AiChat lessonTitle={metadata.title || params.lesson} />}
     >
       {/* Breadcrumbs */}
       <Breadcrumbs
