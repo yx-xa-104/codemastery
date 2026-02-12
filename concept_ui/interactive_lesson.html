@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery Free Lesson Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // Deep Navy Theme Palette
+                        navy: {
+                            950: "#020c1b", // Darkest (Header, inputs)
+                            900: "#0a192f", // Main background
+                            800: "#112240", // Panels, Sidebar, Code BG
+                            700: "#233554", // Borders, lighter elements
+                        },
+                        indigo: {
+                            DEFAULT: "#6366f1", // Primary brand color
+                            dark: "#4f46e5",
+                            dim: "rgba(99, 102, 241, 0.1)", // Tint for backgrounds
+                            soft: "#818cf8",
+                        },
+                        amber: {
+                            DEFAULT: "#fbbf24", // Accent color
+                            glow: "#f59e0b",
+                            dim: "rgba(251, 191, 36, 0.1)",
+                        },
+                        // Syntax Highlighting Colors
+                        code: {
+                            keyword: "#c792ea", // Purple
+                            string: "#a5d6a7",  // Soft Green
+                            func: "#82aaff",    // Soft Blue
+                            number: "#f78c6c",  // Orange/Peach
+                            comment: "#5c6773", // Grey
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Source Code Pro', 'monospace'],
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #0a192f;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #233554;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-navy-900 text-slate-300 font-sans h-screen flex flex-col overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
+<header class="h-16 bg-navy-950 border-b border-navy-700 flex items-center px-6 justify-between flex-shrink-0 z-20 shadow-md">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-1 font-bold text-2xl tracking-tighter">
+<span class="text-indigo-DEFAULT material-icons-round text-3xl">code</span>
+<span class="text-white">Code<span class="text-indigo-400">Mastery</span></span>
+</div>
+<nav class="hidden md:flex gap-1 text-sm font-medium">
+<a class="px-4 py-2 hover:bg-indigo-dim hover:text-indigo-300 rounded transition-colors text-slate-400" href="#">Danh sách khóa học</a>
+<a class="px-4 py-2 bg-indigo-dim text-indigo-300 rounded transition-colors border border-indigo-500/20" href="#">Bài học</a>
+<a class="px-4 py-2 hover:bg-indigo-dim hover:text-indigo-300 rounded transition-colors text-slate-400" href="#">Bài tập</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all shadow-lg">
+                VN
+            </div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-72 bg-navy-800 border-r border-navy-700 flex flex-col flex-shrink-0 hidden md:flex">
+<div class="p-5 border-b border-navy-700 bg-navy-800/50">
+<h2 class="font-bold text-lg text-white flex items-center gap-2">
+<span class="material-icons-round text-amber-DEFAULT">school</span>
+                    Khóa học Python
+                </h2>
+</div>
+<div class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1">
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Trang chủ Python</a>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Giới thiệu</a>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Cài đặt môi trường</a>
+<div class="py-3">
+<span class="px-3 text-xs font-bold text-indigo-400 uppercase tracking-wider block mb-2">Căn bản</span>
+<div class="space-y-1">
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Cú pháp (Syntax)</a>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Ghi chú (Comments)</a>
+<div class="relative group">
+<a class="block px-3 py-2.5 text-sm bg-indigo-600 text-white font-medium rounded shadow-lg shadow-indigo-900/50 flex justify-between items-center" href="#">
+                                Biến (Variables)
+                                <span class="material-icons-round text-base">chevron_right</span>
+</a>
+<div class="ml-3 mt-1 pl-3 border-l border-indigo-500/30 space-y-1">
+<a class="block px-3 py-2 text-xs text-indigo-200 hover:text-white transition-colors" href="#">Tên biến</a>
+<a class="block px-3 py-2 text-xs text-slate-400 hover:text-indigo-300 transition-colors" href="#">Gán giá trị</a>
+<a class="block px-3 py-2 text-xs text-slate-400 hover:text-indigo-300 transition-colors" href="#">Biến toàn cục</a>
+</div>
+</div>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Kiểu dữ liệu</a>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Số học (Numbers)</a>
+<a class="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors" href="#">Ép kiểu (Casting)</a>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 bg-navy-900 relative overflow-hidden">
+<div class="px-8 py-5 flex items-center justify-between border-b border-navy-700 bg-navy-900/95 backdrop-blur z-10 sticky top-0">
+<div class="text-sm text-slate-400">
+<span class="hover:text-indigo-400 cursor-pointer transition-colors">Python</span>
+<span class="mx-2 text-navy-600">/</span>
+<span class="hover:text-indigo-400 cursor-pointer transition-colors">Căn bản</span>
+<span class="mx-2 text-navy-600">/</span>
+<span class="text-white font-semibold">Biến (Variables)</span>
+</div>
+<div class="flex gap-3">
+<button class="bg-navy-800 hover:bg-navy-700 text-slate-300 px-4 py-2 rounded shadow-sm border border-navy-600 text-sm font-medium transition-colors flex items-center gap-1">
+<span class="material-icons-round text-base">arrow_back</span> Trước
+                    </button>
+<button class="bg-amber-DEFAULT hover:bg-amber-glow text-navy-950 px-5 py-2 rounded shadow-lg shadow-amber-900/20 text-sm font-bold transition-all flex items-center gap-1 transform hover:scale-105">
+                        Bài tiếp theo <span class="material-icons-round text-base">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-8 pb-20 custom-scroll">
+<div class="max-w-4xl mx-auto pt-8">
+<h1 class="text-4xl font-bold mb-6 text-white tracking-tight">Biến trong Python</h1>
+<p class="text-lg leading-relaxed text-slate-300 mb-6">
+                        Biến là các thùng chứa để lưu trữ giá trị dữ liệu. Trong Python, biến được tạo ngay khi bạn gán giá trị cho nó lần đầu tiên.
+                    </p>
+<div class="bg-amber-dim border-l-4 border-amber-DEFAULT p-5 mb-8 rounded-r-lg">
+<p class="text-amber-100 flex items-start gap-3">
+<span class="material-icons-round text-amber-DEFAULT mt-0.5">lightbulb</span>
+<span><strong>Lưu ý:</strong> Python không có lệnh riêng để khai báo biến. Biến tự động nhận kiểu dữ liệu dựa trên giá trị được gán.</span>
+</p>
+</div>
+<h3 class="text-2xl font-bold mb-4 text-white">Tạo biến</h3>
+<p class="text-slate-300 mb-6">
+                        Dưới đây là ví dụ về cách tạo và sử dụng biến trong Python:
+                    </p>
+<div class="bg-navy-800 rounded-xl shadow-2xl border border-navy-700 overflow-hidden mb-10 group">
+<div class="bg-navy-950 px-4 py-2.5 border-b border-navy-700 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+<div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+<div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+</div>
+<span class="text-xs font-mono text-slate-500 ml-2">main.py</span>
+</div>
+<button class="bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs px-3 py-1.5 rounded transition-all flex items-center gap-1">
+<span class="material-icons-round text-sm">play_arrow</span> Chạy thử
+                            </button>
+</div>
+<div class="p-6 font-mono text-sm relative bg-navy-800/50">
+<div class="text-slate-300 leading-7">
+<span class="text-slate-500 select-none mr-4 border-r border-navy-700 pr-2">1</span><span class="text-code-func">x</span> <span class="text-indigo-400">=</span> <span class="text-code-number">5</span><br/>
+<span class="text-slate-500 select-none mr-4 border-r border-navy-700 pr-2">2</span><span class="text-code-func">y</span> <span class="text-indigo-400">=</span> <span class="text-code-string">"Nguyễn Văn A"</span><br/>
+<span class="text-slate-500 select-none mr-4 border-r border-navy-700 pr-2">3</span><br/>
+<span class="text-slate-500 select-none mr-4 border-r border-navy-700 pr-2">4</span><span class="text-code-keyword">print</span>(<span class="text-code-func">x</span>)<br/>
+<span class="text-slate-500 select-none mr-4 border-r border-navy-700 pr-2">5</span><span class="text-code-keyword">print</span>(<span class="text-code-func">y</span>)
+                            </div>
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-indigo-900/80 text-indigo-200 border border-indigo-500/30 backdrop-blur">
+<span class="material-icons-round text-[14px] mr-1">auto_awesome</span> Giải thích bằng AI
+                                </span>
+</div>
+</div>
+</div>
+<h3 class="text-2xl font-bold mb-4 text-white">Ép kiểu (Casting)</h3>
+<p class="text-slate-300 mb-4">
+                        Nếu bạn muốn chỉ định kiểu dữ liệu của một biến, bạn có thể thực hiện bằng cách ép kiểu (casting).
+                    </p>
+<div class="bg-navy-800 rounded-xl shadow-md border border-navy-700 overflow-hidden mb-8">
+<div class="p-6 font-mono text-sm bg-navy-800/50">
+<div class="text-slate-300 leading-7">
+<span class="text-code-func">x</span> <span class="text-indigo-400">=</span> <span class="text-code-keyword">str</span>(<span class="text-code-number">3</span>)    <span class="text-code-comment italic"># x sẽ là '3'</span><br/>
+<span class="text-code-func">y</span> <span class="text-indigo-400">=</span> <span class="text-code-keyword">int</span>(<span class="text-code-number">3</span>)    <span class="text-code-comment italic"># y sẽ là 3</span><br/>
+<span class="text-code-func">z</span> <span class="text-indigo-400">=</span> <span class="text-code-keyword">float</span>(<span class="text-code-number">3</span>)  <span class="text-code-comment italic"># z sẽ là 3.0</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<aside class="w-80 bg-navy-800 border-l border-navy-700 flex flex-col flex-shrink-0 z-10 shadow-2xl relative">
+<div class="p-4 border-b border-navy-700 bg-navy-800 flex items-center justify-between shadow-sm z-10">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-900/50">
+<span class="material-icons-round text-white text-xl">psychology</span>
+</div>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-navy-800 rounded-full"></div>
+</div>
+<div>
+<h2 class="font-bold text-white text-sm">Gia sư AI</h2>
+<div class="text-xs text-indigo-300">Đang trực tuyến</div>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white transition-colors">
+<span class="material-icons-round">more_vert</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-5 bg-navy-900 custom-scroll">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+<span class="material-icons-round text-white text-sm">smart_toy</span>
+</div>
+<div class="bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tl-none shadow-lg max-w-[90%] border border-indigo-500">
+<p class="text-sm">
+                            Xin chào! Tôi là trợ lý lập trình CodeMastery. <br/>Hôm nay chúng ta tìm hiểu về <strong>Biến trong Python</strong> nhé.
+                        </p>
+<p class="text-sm mt-2 opacity-90">
+                            Bạn có thể bôi đen đoạn mã bên trái để tôi giải thích chi tiết!
+                        </p>
+</div>
+</div>
+<div class="flex gap-3 flex-row-reverse">
+<div class="w-8 h-8 rounded-full bg-navy-700 border border-amber-500/50 flex items-center justify-center flex-shrink-0 mt-1">
+<span class="text-amber-DEFAULT text-xs font-bold">VN</span>
+</div>
+<div class="bg-navy-950 p-3.5 rounded-2xl rounded-tr-none shadow-md border border-amber-500/30 text-slate-200 max-w-[90%] relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<p class="text-sm relative z-10">Tại sao Python không cần lệnh khai báo biến như C++?</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+<span class="material-icons-round text-white text-sm">smart_toy</span>
+</div>
+<div class="bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tl-none shadow-lg max-w-[90%] border border-indigo-500">
+<p class="text-sm">
+                            Câu hỏi rất hay! Python là ngôn ngữ <strong>kiểu động</strong> (dynamically typed).
+                        </p>
+<div class="mt-3 bg-navy-950 rounded p-2.5 border-l-2 border-amber-DEFAULT shadow-inner">
+<code class="text-xs font-mono text-indigo-300">x = 5  <span class="text-slate-500"># Tự hiểu là int</span></code>
+</div>
+<p class="text-sm mt-3">
+                            Trình thông dịch sẽ tự xác định kiểu dữ liệu tại thời điểm chạy (runtime) dựa trên giá trị bạn gán.
+                        </p>
+<button class="mt-3 w-full text-xs bg-indigo-800 hover:bg-indigo-700 text-indigo-100 font-medium py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1 border border-indigo-500/30">
+<span class="material-icons-round text-sm text-amber-DEFAULT">play_circle</span> Xem minh họa
+                        </button>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+<span class="material-icons-round text-white text-sm">smart_toy</span>
+</div>
+<div class="bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tl-none shadow-lg max-w-[90%] border border-indigo-500">
+<p class="text-sm">
+                            Bạn có muốn làm thử bài trắc nghiệm nhanh về tên biến không?
+                        </p>
+<div class="mt-3 flex gap-2">
+<button class="text-xs bg-white text-indigo-700 hover:bg-slate-100 font-semibold py-1.5 px-3 rounded-full transition-colors shadow-sm">Có, thử ngay</button>
+<button class="text-xs bg-indigo-700 text-indigo-200 hover:bg-indigo-800 py-1.5 px-3 rounded-full transition-colors border border-indigo-500">Để sau</button>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 bg-navy-800 border-t border-navy-700">
+<div class="relative group">
+<input class="w-full bg-navy-950 text-white border border-navy-600 rounded-xl pl-4 pr-12 py-3.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all shadow-inner" placeholder="Hỏi về đoạn mã..." type="text"/>
+<button class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-all shadow-lg group-focus-within:bg-amber-DEFAULT group-focus-within:text-navy-900">
+<span class="material-icons-round text-sm font-bold">send</span>
+</button>
+</div>
+<div class="mt-3 flex justify-center items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-icons-round text-[10px] text-amber-DEFAULT">bolt</span>
+<span class="text-[10px] text-slate-400">Được hỗ trợ bởi CodeMastery AI v2.0</span>
+</div>
+</div>
+</aside>
+</div>
+
+</body></html>

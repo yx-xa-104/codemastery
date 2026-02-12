@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery - Danh sách khóa học</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4F46E5", // Indigo-600
+                        "primary-dark": "#4338CA", // Indigo-700
+                        "primary-light": "#818CF8", // Indigo-400
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#010816", // Deep Navy requested
+                        "section-dark": "#0B1120", // Slightly lighter navy for sections
+                        "code-bg": "#E7E9EB",
+                        "code-dark": "#111827", // Gray-900
+                        "accent-gold": "#F59E0B", // Amber-500
+                        "accent-gold-hover": "#D97706", // Amber-600
+                        "accent-gold-light": "#FEF3C7", // Amber-100
+                        "card-border": "#312E81", // Dark indigo for borders
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.375rem",
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(245, 158, 11, 0.4)',
+                        'glow-indigo': '0 0 15px rgba(79, 70, 229, 0.3)',
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #F59E0B;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .active-link::after {
+            width: 100%;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #010816;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #312e81;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+<nav class="sticky top-0 z-40 w-full bg-[#010816]/95 backdrop-blur-md border-b border-indigo-900/30">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16">
+<div class="flex items-center">
+<a class="flex-shrink-0 flex items-center group" href="#">
+<span class="text-2xl font-bold tracking-tighter text-white group-hover:text-primary-light transition-colors">
+                            Code<span class="text-primary">Mastery</span>
+</span>
+</a>
+<div class="hidden sm:ml-10 sm:flex sm:space-x-8">
+<a class="border-transparent text-gray-300 hover:text-primary-light inline-flex items-center px-1 pt-1 text-sm font-medium nav-link transition-colors" href="#">Hướng dẫn</a>
+<a class="border-transparent text-gray-300 hover:text-primary-light inline-flex items-center px-1 pt-1 text-sm font-medium nav-link transition-colors" href="#">Bài tập</a>
+<a class="border-transparent text-gray-300 hover:text-primary-light inline-flex items-center px-1 pt-1 text-sm font-medium nav-link transition-colors" href="#">Lộ trình</a>
+<a class="border-transparent text-white font-semibold inline-flex items-center px-1 pt-1 text-sm active-link transition-colors" href="#">Danh sách khóa học</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<a class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-indigo-700 flex items-center justify-center text-white font-bold ring-2 ring-indigo-400/30 shadow-lg" href="#">
+                        H
+                    </a>
+</div>
+</div>
+</div>
+</nav>
+<main class="flex-grow">
+<div class="bg-gradient-to-b from-[#010816] to-[#0B1120] pb-10 pt-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-10">
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">Khám Phá Tri Thức <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-accent-gold">Lập Trình</span></h1>
+<p class="text-lg text-indigo-200 max-w-2xl mx-auto">Hơn 50+ khóa học miễn phí từ cơ bản đến nâng cao dành cho cộng đồng.</p>
+</div>
+<div class="max-w-4xl mx-auto space-y-6">
+<div class="relative group">
+<div class="flex items-center bg-[#111827] rounded-full overflow-hidden p-1 pr-1 border border-indigo-500/30 focus-within:border-accent-gold/70 focus-within:ring-2 focus-within:ring-accent-gold/20 transition-all shadow-lg shadow-black/50">
+<span class="material-symbols-outlined text-gray-400 ml-4">search</span>
+<input class="flex-grow px-4 py-3 bg-transparent text-gray-200 focus:outline-none border-none focus:ring-0 placeholder-gray-500" placeholder="Tìm kiếm khóa học (Python, React, AI...)" type="text"/>
+<button class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-full transition-colors font-medium">
+                                Tìm kiếm
+                            </button>
+</div>
+</div>
+<div class="flex flex-wrap justify-center gap-3">
+<button class="px-5 py-2 rounded-full bg-accent-gold text-white font-semibold text-sm shadow-glow shadow-accent-gold/20 border border-transparent">Tất cả</button>
+<button class="px-5 py-2 rounded-full bg-[#1e293b] text-gray-300 hover:text-white hover:bg-indigo-900/50 border border-indigo-500/20 transition-all text-sm font-medium">Lập trình Web</button>
+<button class="px-5 py-2 rounded-full bg-[#1e293b] text-gray-300 hover:text-white hover:bg-indigo-900/50 border border-indigo-500/20 transition-all text-sm font-medium">Data Science</button>
+<button class="px-5 py-2 rounded-full bg-[#1e293b] text-gray-300 hover:text-white hover:bg-indigo-900/50 border border-indigo-500/20 transition-all text-sm font-medium">AI &amp; Machine Learning</button>
+<button class="px-5 py-2 rounded-full bg-[#1e293b] text-gray-300 hover:text-white hover:bg-indigo-900/50 border border-indigo-500/20 transition-all text-sm font-medium">Mobile App</button>
+<button class="px-5 py-2 rounded-full bg-[#1e293b] text-gray-300 hover:text-white hover:bg-indigo-900/50 border border-indigo-500/20 transition-all text-sm font-medium">DevOps</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-[#0B1120] py-12 border-t border-indigo-900/20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
+<h2 class="text-2xl font-bold text-white flex items-center">
+<span class="w-2 h-8 bg-accent-gold rounded-full mr-3"></span>
+                        Khóa học nổi bật
+                    </h2>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg bg-[#1e293b] hover:bg-[#2d3b55] text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-2 rounded-lg bg-transparent hover:bg-[#2d3b55] text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="HTML5 Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjV5y1FKmH0_o_nvDgnzQZPVxswKS0mXOQqlU011V1SAtPUdpOisV9C8yE2JjZmm5v9G_YGBRV-0C2_6fBthbPugY69SohaaqxhZo6RinbZs2HR0CXE001hl7h5yNeFlID3Dy3fM1pN5RbBtymCFAj72gIMpO9mSLzWF8BwUBd6foegkiabSMKiqaVG8FvpYIZ9v0Tlp6bM-OJod_YJJ21V3HMYRq9Tj-tjKIv4vyrfK-eM7Dy8LoPmvldT2x__addM3GzQm816Bo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Frontend</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Cơ bản</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">Thành thạo xây dựng giao diện Website chuẩn Responsive</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 42h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 56 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<div class="mb-3">
+<div class="flex justify-between text-xs text-gray-400 mb-1.5 font-medium">
+<span>Đã học</span>
+<span class="text-indigo-400">25%</span>
+</div>
+<div class="w-full bg-gray-800 rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full relative shadow-[0_0_8px_rgba(79,70,229,0.5)]" style="width: 25%"></div>
+</div>
+</div>
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow flex items-center justify-center gap-2" href="#">
+                                    Tiếp tục học
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="JavaScript Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKYuUzafF4TtOgsCTfNJwRXkTQv4RJGq6V0mJmSsiw4_E0aGWXd3HWDE5M32LUf4t_EcvfGvX6KlOUn1HmG499VONssQTAFxTAA0dmCWIBlcNGL6BCfV-Yp4dysmRmG5xLqoQBoa9bgS_kdTNY-2a2RbJwf4sgfLYItRLRydCqy_w4ifETMmuCWUSgpKewI76Q67XmEOcQMxdfnyQIHmyt0xfgbyVentpn9r4gvvv051IB4Gv0hW4AVW10cFD57t8D1tsx5fWUcVg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Web</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Nâng cao</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">JavaScript Nâng cao - ES6+ và Tư duy Lập trình</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 56h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 88 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow hover:shadow-lg hover:-translate-y-0.5" href="#">
+                                    Học ngay
+                                </a>
+</div>
+</div>
+</div>
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="absolute top-3 right-3 z-10 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold shadow-lg">HOT</div>
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="ReactJS Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI6_CpAZLR2tmHg7Svgh3zsi62Nj_c_OaDIRj97Y6bfYoscKm69n_4DSvu96OBQb6lvzLiUuoXDrURBrv_8U1fIVPmnNkfEfRyppX2xg3JW16lCPiYqKb1z1tHrcnafNplQTy2Hckce_ejFX3Ps8cJlConogHsInRb6_syHjF1mi1TkHWMOzR6ERD25cgg9BLthBc7i8Vb-hKJPtr92SusG4XcvQRXNjNVFv5rF7nfVnJMlYwYyYHmPhx_36jEPk5WnZn_xEgByTM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Frontend</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Trung bình</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">Xây dựng Single Page Apps với ReactJS Hooks &amp; Redux</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 38h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 52 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow hover:shadow-lg hover:-translate-y-0.5" href="#">
+                                    Học ngay
+                                </a>
+</div>
+</div>
+</div>
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="NodeJS Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH7LT_-dKZvsD1BMTsIzPvtS56-9__oFrQNnVey9hqHgxjL40z8mWVufGrdzM_-IdoZQr92fTfzG_qqR6_g-K5sgYoY2kZ8sRld7x80JAtm4im_rh69XxcT-8p9W-ZYFON-4oNtS9nTEyAxQh71HlgmbSUtczJIi1Bu9OI-2r0Lg9QLRK9EbprdrKUqhh17vXzONK1HuV40frJVM5C3qtKqbkKOBqNd-GZAhfkfsfDo_mVXk4v9oiLpZq3pA14skUQKgkhx-piIBs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Backend</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Nâng cao</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">Lập trình Backend chuyên nghiệp với Node.js và Express</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 45h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 62 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<div class="mb-3">
+<div class="flex justify-between text-xs text-gray-400 mb-1.5 font-medium">
+<span>Đã học</span>
+<span class="text-indigo-400">60%</span>
+</div>
+<div class="w-full bg-gray-800 rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full relative shadow-[0_0_8px_rgba(79,70,229,0.5)]" style="width: 60%"></div>
+</div>
+</div>
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow flex items-center justify-center gap-2" href="#">
+                                    Tiếp tục học
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="Python AI Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4vCnP5sEPFFqD8VYfZ-zVP_o_uGMUT0owfIRovn62Gm9pphFiLCAZWJOZuVoPfZJEsAK17gl-lmwyfNOKBk26YNNvVYfh9Py63JK9NawEHPPksscOB6ffby5jA3ZIKjpyGdnsO1gDTjUf02ZrEQnyY4WZxh6I6CV9iYGm5mkvg9vezu5j9kVIbEBx2zOvpYCOz-oEEUk4NbKe_oLeEpkpAZ-SWtql7-PfxYOTu6VH62elNkqu6P6IwXbTFcB_j-rZvpDLSyZG9qM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Data Science</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Cơ bản</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">Python cho Khoa học Dữ liệu và Học Máy cơ bản</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 60h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 90 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow hover:shadow-lg hover:-translate-y-0.5" href="#">
+                                    Học ngay
+                                </a>
+</div>
+</div>
+</div>
+<div class="group bg-[#111827] rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+<div class="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
+<img alt="SQL Course" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJFsHv5Nbla09xvJXVZQ1PRsKI-Q0Sv3D4HOh7UovdgZE6ZwNspXPFdICJMAFZwmURoyQQHXCtAQ0VFJDj_XUqSV_9uAsg2HpN73Kj7f6Qb5RC5HxGzhIKWl9VhVFD3Y5UpMVtjNM9T4ftgto1gSImQYjCQVez5PsoBG-2bUIS27bdWlksKYJAh58ogwgIWqLYG0m_yjExYgNfmUCbI7ixim7zzwn0vimcjvihW9LM4exscTa9CjbxmF52UdIv5nbhzYAK3-rj2QM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Database</span>
+<span class="px-2.5 py-1 rounded text-xs font-medium bg-indigo-900/50 text-indigo-200 border border-indigo-700/50">Trung bình</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-light transition-colors">Làm chủ SQL và Thiết kế Cơ sở dữ liệu quan hệ</h3>
+<div class="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 32h</div>
+<div class="flex items-center"><span class="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span> 40 bài học</div>
+</div>
+<div class="mt-auto pt-4 border-t border-gray-800">
+<a class="block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow hover:shadow-lg hover:-translate-y-0.5" href="#">
+                                    Học ngay
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 flex justify-center">
+<nav aria-label="Pagination" class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+<a class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-700 bg-[#111827] text-sm font-medium text-gray-400 hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</a>
+<a aria-current="page" class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium" href="#">
+                            1
+                        </a>
+<a class="bg-[#111827] border-gray-700 text-gray-400 hover:bg-gray-800 relative inline-flex items-center px-4 py-2 border text-sm font-medium" href="#">
+                            2
+                        </a>
+<a class="bg-[#111827] border-gray-700 text-gray-400 hover:bg-gray-800 relative inline-flex items-center px-4 py-2 border text-sm font-medium" href="#">
+                            3
+                        </a>
+<a class="relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-700 bg-[#111827] text-sm font-medium text-gray-400 hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-[#010816] border-t border-indigo-900/30 py-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<div class="mb-6 md:mb-0">
+<span class="text-2xl font-bold tracking-tighter text-white">
+                        Code<span class="text-primary">Mastery</span>
+</span>
+<p class="text-gray-400 text-sm mt-2">© 2024 CodeMastery Inc. Nền tảng học lập trình hàng đầu Việt Nam.</p>
+</div>
+<div class="flex space-x-6">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#">Điều khoản</a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#">Bảo mật</a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#">Liên hệ</a>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

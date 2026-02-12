@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery Dashboard - Synchronized Theme</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f46e5", // Indigo
+                        "accent": "#f59e0b", // Amber
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0f172a", // Deep Navy
+                        "card-dark": "#1e293b", // Dark Navy
+                        "card-border": "#4f46e5", // Indigo border
+                        "text-secondary": "#94a3b8"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col overflow-x-hidden text-white">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-card-border/30 px-6 py-4 sticky top-0 bg-background-dark/95 backdrop-blur-md z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white cursor-pointer">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl text-indigo-500">terminal</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">CodeMastery</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-card-dark border border-indigo-500/30 focus-within:border-primary transition-colors">
+<div class="text-text-secondary flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-text-secondary px-3 text-sm font-normal" placeholder="Tìm kiếm khóa học..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden lg:flex gap-6 text-sm font-medium text-text-secondary">
+<a class="text-white hover:text-primary transition-colors" href="#">Trang chủ</a>
+<a class="hover:text-primary transition-colors" href="#">Danh sách khóa học</a>
+<a class="hover:text-primary transition-colors" href="#">Lộ trình</a>
+</nav>
+<button class="relative flex items-center justify-center text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-accent rounded-full border-2 border-background-dark"></span>
+</button>
+<div class="flex items-center gap-3 cursor-pointer">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-indigo-500/50" data-alt="User profile picture of a student smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPvGuTxeVx2zdebel79L6Ax2rM6cRRf1P_rJGuPE81Iss2EDpbDVjsh0Qd1y6ZQcjPNMtzchpIgHaQsqfolSHKPePHJUqMQTiL1W8y7mj31H1-F9TFc1MCCnoFtd1I2I8uIoGiZjhKSqdsNyZhVhyXs1n4Vzqla2O-XlYFukkigDQzDlJCpwl4prPiMtySaB7uWRn4yAkdsDJ9HtMbsw8JYasMv4caeKtk4pJjEUj1sTE3r9fLxhCHB-QK-gqrrmBG3SoKMc90NX4");'></div>
+<span class="hidden sm:block text-sm font-medium">Minh Nguyễn</span>
+<span class="material-symbols-outlined text-sm text-text-secondary">expand_more</span>
+</div>
+</div>
+</header>
+<div class="flex-1 flex justify-center py-6 px-4 md:px-8">
+<div class="w-full max-w-[1280px] flex flex-col gap-6">
+<div class="w-full bg-gradient-to-r from-primary to-indigo-900 rounded-xl p-6 md:p-10 relative overflow-hidden shadow-lg shadow-indigo-900/50 border border-indigo-500/30">
+<div class="absolute right-0 top-0 h-full w-1/3 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent transform scale-150 translate-x-10"></div>
+<div class="absolute -bottom-10 -left-10 size-40 bg-white/10 rounded-full blur-2xl"></div>
+<div class="relative z-10 flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-bold leading-tight tracking-tight">Chào mừng trở lại, Minh!</h1>
+<div class="flex items-center gap-2 text-white/90">
+<span class="material-symbols-outlined text-accent text-xl">format_quote</span>
+<p class="text-base md:text-lg font-normal italic">Code là nghệ thuật, bạn là nghệ sĩ.</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-6">
+<div class="flex flex-col flex-1 gap-6">
+<div class="flex flex-col gap-4">
+<h3 class="text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">push_pin</span>
+                        Khóa học đã ghim
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-card-dark rounded-xl p-4 border border-indigo-500/30 hover:border-accent/50 transition-all hover:-translate-y-1 cursor-pointer group relative flex flex-col gap-3 shadow-lg shadow-indigo-500/10">
+<div class="flex justify-between items-start">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg size-10 shrink-0 shadow-sm" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAADQlH9fj-I7_PL8kF0w4K8DWTuv_h99WdF2pCjHgNBO5dOjgkXKLrqS8YNVJNDepwWo65uOsTWgJjiDKLBT22jaquMchi1mzmWAwJyefYzCGAYXLjRA4dTX-17kjQg4ihwTPcwO5wv6pzGJKvrahl008y_fp9qUcn6iwyVoIcxZGcmHuB8nUspTHWmY3NZs-G1r57s7M4xmDWTLTvAG_-vjBUYCbkat1_hFPzqSbNayehc1ZEjlq9ptyaxzVV1znwlBKsqpwMHxY");'></div>
+<span class="material-symbols-outlined text-accent text-lg">push_pin</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm truncate group-hover:text-primary transition-colors">ReactJS Nâng cao</h4>
+<p class="text-[11px] text-text-secondary line-clamp-1 mt-0.5">Bài 5: Custom Hooks</p>
+</div>
+<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
+<div class="h-full bg-accent rounded-full" style="width: 20%;"></div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-4 border border-indigo-500/30 hover:border-accent/50 transition-all hover:-translate-y-1 cursor-pointer group relative flex flex-col gap-3 shadow-lg shadow-indigo-500/10">
+<div class="flex justify-between items-start">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg size-10 shrink-0 shadow-sm" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAovrOLflODx_ZIYtWsYzpVmgy0r5v5ScddR596w8uYLfiyMv2hFQMg6VkgIRJHoi7AsxSl8iPHizNlSHv64vmRrn01DS7o2XauV5ccWren93Ky7IVyPR1uG6w8maVn6VxKKOZXEEClZwEFNEZnEIKB30RS1H3krhAI5k-XM61s_ItokWp7NCZ_lsP0GJ1KL4PjlI3IiAbU0FyKVL-HqFzIPO7RosfucDPvNnhLXeYC1HTXrMzex8Da0i6z-Yzr5hPY4xOW7beuRK8");'></div>
+<span class="material-symbols-outlined text-accent text-lg">push_pin</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm truncate group-hover:text-primary transition-colors">Python Master</h4>
+<p class="text-[11px] text-text-secondary line-clamp-1 mt-0.5">Bài 12: Vòng lặp</p>
+</div>
+<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
+<div class="h-full bg-accent rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-4 border border-indigo-500/30 hover:border-accent/50 transition-all hover:-translate-y-1 cursor-pointer group relative flex flex-col gap-3 shadow-lg shadow-indigo-500/10">
+<div class="flex justify-between items-start">
+<div class="size-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 shadow-sm">
+<span class="material-symbols-outlined text-primary text-2xl">terminal</span>
+</div>
+<span class="material-symbols-outlined text-accent text-lg">push_pin</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm truncate group-hover:text-primary transition-colors">Command Line</h4>
+<p class="text-[11px] text-text-secondary line-clamp-1 mt-0.5">Bài 3: Shell Script</p>
+</div>
+<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
+<div class="h-full bg-accent rounded-full" style="width: 60%;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-card-dark rounded-xl p-6 border border-indigo-500/30 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
+<h3 class="text-white text-lg font-bold mb-6 w-full text-left flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">timelapse</span>
+                            Tiến độ tổng thể
+                        </h3>
+<div class="relative size-40">
+<div class="size-full rounded-full flex items-center justify-center" style="background: conic-gradient(#f59e0b 68%, #1e293b 0);">
+<div class="bg-card-dark rounded-full size-32 flex flex-col items-center justify-center">
+<span class="text-4xl font-bold text-white">68%</span>
+<span class="text-xs text-text-secondary uppercase tracking-widest mt-1">Hoàn thành</span>
+</div>
+</div>
+</div>
+<p class="text-text-secondary text-sm mt-6 text-center">Bạn đã vượt qua 85% học viên khác tuần này!</p>
+</div>
+<div class="bg-card-dark rounded-xl p-6 border border-indigo-500/30 shadow-sm flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<h3 class="text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">bar_chart</span>
+                                Thống kê học tập
+                            </h3>
+<select class="bg-background-dark border-none text-xs text-text-secondary rounded py-1 px-2 focus:ring-0">
+<option>Tuần này</option>
+<option>Tháng này</option>
+</select>
+</div>
+<div class="flex-1 flex items-end justify-between gap-2 h-40 px-2">
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[30%]"></div>
+<span class="text-xs text-text-secondary">T2</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[45%]"></div>
+<span class="text-xs text-text-secondary">T3</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-primary rounded-t-sm h-[70%] shadow-[0_0_10px_rgba(79,70,229,0.5)]"></div>
+<span class="text-xs text-white font-bold">T4</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[50%]"></div>
+<span class="text-xs text-text-secondary">T5</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[60%]"></div>
+<span class="text-xs text-text-secondary">T6</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[20%]"></div>
+<span class="text-xs text-text-secondary">T7</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full group">
+<div class="w-full max-w-[24px] bg-slate-700 group-hover:bg-primary/50 transition-all rounded-t-sm h-[10%]"></div>
+<span class="text-xs text-text-secondary">CN</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-700 flex justify-between text-xs text-text-secondary">
+<span>Tổng giờ: <strong class="text-white">12.5h</strong></span>
+<span>Mục tiêu: <strong class="text-white">15h</strong></span>
+</div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-6 border border-indigo-500/30 shadow-sm">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">military_tech</span>
+                            Huy hiệu đạt được
+                        </h3>
+<button class="text-sm text-primary font-medium hover:text-accent transition-colors">Xem tất cả</button>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+<div class="min-w-[100px] bg-background-dark border border-indigo-500/20 rounded-lg p-3 flex flex-col items-center gap-2 hover:border-accent/50 transition-colors cursor-pointer group">
+<div class="p-2 rounded-full bg-accent/10 text-accent group-hover:bg-accent group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-3xl">local_fire_department</span>
+</div>
+<span class="text-xs font-medium text-center line-clamp-1">7 Ngày Streak</span>
+</div>
+<div class="min-w-[100px] bg-background-dark border border-indigo-500/20 rounded-lg p-3 flex flex-col items-center gap-2 hover:border-accent/50 transition-colors cursor-pointer group">
+<div class="p-2 rounded-full bg-accent/10 text-accent group-hover:bg-accent group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-3xl">bug_report</span>
+</div>
+<span class="text-xs font-medium text-center line-clamp-1">Bug Hunter</span>
+</div>
+<div class="min-w-[100px] bg-background-dark border border-indigo-500/20 rounded-lg p-3 flex flex-col items-center gap-2 hover:border-accent/50 transition-colors cursor-pointer group">
+<div class="p-2 rounded-full bg-accent/10 text-accent group-hover:bg-accent group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-3xl">code</span>
+</div>
+<span class="text-xs font-medium text-center line-clamp-1">Code Warrior</span>
+</div>
+<div class="min-w-[100px] bg-background-dark border border-indigo-500/20 rounded-lg p-3 flex flex-col items-center gap-2 hover:border-accent/50 transition-colors cursor-pointer group">
+<div class="p-2 rounded-full bg-accent/10 text-accent group-hover:bg-accent group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-3xl">school</span>
+</div>
+<span class="text-xs font-medium text-center line-clamp-1">Học bá</span>
+</div>
+<div class="min-w-[100px] bg-background-dark border border-indigo-500/20 rounded-lg p-3 flex flex-col items-center gap-2 opacity-50 grayscale">
+<div class="p-2 rounded-full bg-slate-700 text-text-secondary">
+<span class="material-symbols-outlined text-3xl">lock</span>
+</div>
+<span class="text-xs font-medium text-center line-clamp-1">React Master</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-end px-1">
+<h3 class="text-white text-xl font-bold">Khóa học đang học</h3>
+<button class="text-sm text-primary font-medium hover:underline">Thư viện khóa học</button>
+</div>
+<div class="bg-card-dark rounded-xl p-4 flex items-center gap-4 border border-indigo-500/30 hover:border-primary/80 transition-all hover:translate-x-1 cursor-pointer group shadow-sm">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg size-16 shrink-0" data-alt="Python programming language logo on dark background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAovrOLflODx_ZIYtWsYzpVmgy0r5v5ScddR596w8uYLfiyMv2hFQMg6VkgIRJHoi7AsxSl8iPHizNlSHv64vmRrn01DS7o2XauV5ccWren93Ky7IVyPR1uG6w8maVn6VxKKOZXEEClZwEFNEZnEIKB30RS1H3krhAI5k-XM61s_ItokWp7NCZ_lsP0GJ1KL4PjlI3IiAbU0FyKVL-HqFzIPO7RosfucDPvNnhLXeYC1HTXrMzex8Da0i6z-Yzr5hPY4xOW7beuRK8");'></div>
+<div class="flex flex-col flex-1 min-w-0 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold line-clamp-1 group-hover:text-primary transition-colors">Python Cơ bản</p>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-0.5 rounded">Tiếp tục</span>
+</div>
+<p class="text-text-secondary text-sm font-normal line-clamp-1">Bài 12: Vòng lặp &amp; Cấu trúc điều kiện</p>
+<div class="flex items-center gap-3 mt-1">
+<div class="w-full max-w-[200px] h-1.5 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-accent rounded-full" style="width: 45%;"></div>
+</div>
+<p class="text-text-secondary text-xs">45%</p>
+</div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-4 flex items-center gap-4 border border-indigo-500/30 hover:border-primary/80 transition-all hover:translate-x-1 cursor-pointer group shadow-sm">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg size-16 shrink-0" data-alt="React JS atom logo abstract illustration" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAADQlH9fj-I7_PL8kF0w4K8DWTuv_h99WdF2pCjHgNBO5dOjgkXKLrqS8YNVJNDepwWo65uOsTWgJjiDKLBT22jaquMchi1mzmWAwJyefYzCGAYXLjRA4dTX-17kjQg4ihwTPcwO5wv6pzGJKvrahl008y_fp9qUcn6iwyVoIcxZGcmHuB8nUspTHWmY3NZs-G1r57s7M4xmDWTLTvAG_-vjBUYCbkat1_hFPzqSbNayehc1ZEjlq9ptyaxzVV1znwlBKsqpwMHxY");'></div>
+<div class="flex flex-col flex-1 min-w-0 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold line-clamp-1 group-hover:text-primary transition-colors">ReactJS Nâng cao</p>
+</div>
+<p class="text-text-secondary text-sm font-normal line-clamp-1">Bài 5: Custom Hooks &amp; Performance</p>
+<div class="flex items-center gap-3 mt-1">
+<div class="w-full max-w-[200px] h-1.5 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-accent rounded-full" style="width: 20%;"></div>
+</div>
+<p class="text-text-secondary text-xs">20%</p>
+</div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-4 flex items-center gap-4 border border-indigo-500/30 hover:border-primary/80 transition-all hover:translate-x-1 cursor-pointer group shadow-sm">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg size-16 shrink-0" data-alt="Data structures visualization grid" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQvuKcPTeHFRF9pW_7biNNbzOi47QqGdZhqJZCeDsubrLCrTzcNNn7xiFEXnceu9Y3CvfDJrvufLmuhC7HKvMtOa7Xew9Fsegc5PiOYHU5YaafvA-TGiPUK3-px1SdjnRDuujUT0TTHKENhvE3NDdghvE4isRV1o-JcVLsbPCJlL7D86pgzdlPz1l-uKGjvtXGB7f2T5Fr0UAm07uvvW9Me_YtaSqsuHWNNmhfPeVihwhWG-CIoz2Q7uNwgZqDAsESRauzbaGtw_M");'></div>
+<div class="flex flex-col flex-1 min-w-0 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold line-clamp-1 group-hover:text-primary transition-colors">Cấu trúc dữ liệu &amp; Giải thuật</p>
+</div>
+<p class="text-text-secondary text-sm font-normal line-clamp-1">Bài 8: Binary Search Tree</p>
+<div class="flex items-center gap-3 mt-1">
+<div class="w-full max-w-[200px] h-1.5 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-accent rounded-full" style="width: 78%;"></div>
+</div>
+<p class="text-text-secondary text-xs">78%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-6">
+<div class="bg-gradient-to-br from-card-dark to-[#0f172a] rounded-xl p-6 border border-indigo-500 shadow-lg relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 size-24 bg-indigo-500/20 blur-2xl rounded-full"></div>
+<div class="absolute -left-4 -bottom-4 size-20 bg-accent/20 blur-xl rounded-full"></div>
+<div class="relative z-10 flex flex-col gap-4 items-start">
+<div class="size-10 rounded-full bg-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(79,70,229,0.6)]">
+<span class="material-symbols-outlined text-white">smart_toy</span>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold">Trợ lý AI</h3>
+<p class="text-text-secondary text-sm mt-1">Gặp khó khăn với code? Hỏi AI ngay để được giải đáp tức thì.</p>
+</div>
+<button class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_20px_rgba(245,158,11,0.6)]">
+<span>Chat ngay</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-5 border border-indigo-500/30 shadow-sm flex flex-col gap-4">
+<div class="flex items-center justify-between border-b border-indigo-500/10 pb-3">
+<h3 class="text-white text-base font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">history</span>
+                            Lịch sử Chat với AI
+                        </h3>
+<button class="text-xs text-primary hover:text-accent transition-colors">Xem tất cả</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-2 group cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="text-white text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">Lỗi SyntaxError Python</span>
+<span class="text-[10px] text-text-secondary whitespace-nowrap pt-1">10:30 AM</span>
+</div>
+<div class="bg-background-dark rounded-lg p-2.5 border border-indigo-500/20 group-hover:border-primary/40 transition-colors relative overflow-hidden">
+<div class="absolute top-0 left-0 w-0.5 h-full bg-accent/50"></div>
+<code class="text-[11px] text-text-secondary font-mono line-clamp-2 leading-relaxed block">
+def calculate_sum(a, b):
+    return a + b
+                                    </code>
+</div>
+</div>
+<div class="flex flex-col gap-2 group cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="text-white text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">Căn giữa div CSS</span>
+<span class="text-[10px] text-text-secondary whitespace-nowrap pt-1">Hôm qua</span>
+</div>
+<div class="bg-background-dark rounded-lg p-2.5 border border-indigo-500/20 group-hover:border-primary/40 transition-colors relative overflow-hidden">
+<div class="absolute top-0 left-0 w-0.5 h-full bg-primary/50"></div>
+<code class="text-[11px] text-text-secondary font-mono line-clamp-2 leading-relaxed block">
+display: flex; 
+justify-content: center;
+                                    </code>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-accent/10 rounded-xl p-4 border border-accent/20 flex gap-3 items-start">
+<span class="material-symbols-outlined text-accent shrink-0">campaign</span>
+<div class="flex flex-col gap-1">
+<h4 class="text-white text-sm font-bold">Sự kiện Codeathon</h4>
+<p class="text-text-secondary text-xs">Tham gia cuộc thi code cuối tuần này để nhận quà hấp dẫn!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

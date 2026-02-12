@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery AI Debugging Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#4f46e5", // Indigo
+                    "accent": "#f59e0b", // Amber
+                    "background-light": "#f6f6f8",
+                    "background-dark": "#0f172a", // Deep Navy
+                    "card-dark": "#1e293b", // Dark Navy
+                    "card-border": "#4f46e5", // Indigo border
+                    "text-secondary": "#94a3b8",
+                    "editor-bg": "#0d1117", // Slightly darker for editor
+                },
+                fontFamily: {
+                    "display": ["Space Grotesk", "Noto Sans", "sans-serif"],
+                    "mono": ["Fira Code", "Consolas", "Monaco", "monospace"] // For code
+                },
+                borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+        },
+    }
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
+    }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0f172a; 
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #1e293b; 
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #334155; 
+    }
+    .code-font {
+        font-family: 'Fira Code', 'Consolas', monospace;
+    }
+    .wavy-underline {
+        text-decoration: underline;
+        text-decoration-style: wavy;
+        text-decoration-color: #ef4444;
+        text-underline-offset: 4px;
+    }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col overflow-hidden text-white">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-card-border/30 px-6 py-4 sticky top-0 bg-background-dark/95 backdrop-blur-md z-50 h-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white cursor-pointer">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl text-indigo-500">terminal</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">CodeMastery</h2>
+</div>
+<div class="hidden md:flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+<span class="text-white font-medium">Giải đáp lỗi Code với AI</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden lg:flex gap-6 text-sm font-medium text-text-secondary">
+<a class="hover:text-primary transition-colors" href="#">Trang chủ</a>
+<a class="hover:text-primary transition-colors" href="#">Danh sách khóa học</a>
+<a class="hover:text-primary transition-colors" href="#">Lộ trình</a>
+</nav>
+<button class="relative flex items-center justify-center text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-accent rounded-full border-2 border-background-dark"></span>
+</button>
+<div class="flex items-center gap-3 cursor-pointer">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-indigo-500/50" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPvGuTxeVx2zdebel79L6Ax2rM6cRRf1P_rJGuPE81Iss2EDpbDVjsh0Qd1y6ZQcjPNMtzchpIgHaQsqfolSHKPePHJUqMQTiL1W8y7mj31H1-F9TFc1MCCnoFtd1I2I8uIoGiZjhKSqdsNyZhVhyXs1n4Vzqla2O-XlYFukkigDQzDlJCpwl4prPiMtySaB7uWRn4yAkdsDJ9HtMbsw8JYasMv4caeKtk4pJjEUj1sTE3r9fLxhCHB-QK-gqrrmBG3SoKMc90NX4");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<section class="flex-1 flex flex-col border-r border-card-border/30 min-w-0">
+<div class="flex items-center bg-card-dark border-b border-card-border/30 px-4 pt-2">
+<div class="flex items-center gap-2 bg-editor-bg text-white px-4 py-2 rounded-t-lg border-t border-l border-r border-indigo-500/30 relative">
+<span class="material-symbols-outlined text-accent text-sm">code</span>
+<span class="text-sm font-mono">bai_tap_1.py</span>
+<div class="absolute bottom-[-1px] left-0 right-0 h-1 bg-editor-bg z-10"></div>
+</div>
+<div class="flex items-center gap-2 text-text-secondary px-4 py-2 hover:bg-white/5 rounded-t-lg cursor-pointer transition-colors">
+<span class="text-sm font-mono">utils.py</span>
+</div>
+<div class="flex-1"></div>
+<div class="flex items-center gap-2 mb-1">
+<button class="flex items-center gap-1 px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    Chạy thử
+                </button>
+</div>
+</div>
+<div class="flex-1 bg-editor-bg relative overflow-auto code-font text-sm leading-6">
+<div class="flex min-h-full">
+<div class="flex flex-col text-right text-text-secondary/50 select-none bg-card-dark/30 px-3 py-4 border-r border-white/5 min-w-[3rem]">
+<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+</div>
+<div class="flex-1 px-4 py-4 text-gray-300 whitespace-pre">
+<span class="text-pink-400">def</span> <span class="text-yellow-300">calculate_factorial</span>(n)<span class="wavy-underline relative group cursor-help"><span class="invisible">_</span><span class="absolute -bottom-8 left-0 bg-red-900/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap hidden group-hover:block z-50 border border-red-500 shadow-xl">SyntaxError: invalid syntax</span></span>
+<span class="text-text-secondary italic"># Tính giai thừa của n</span>
+<span class="text-pink-400">if</span> n <span class="text-pink-400">==</span> <span class="text-orange-400">0</span>:
+        <span class="text-pink-400">return</span> <span class="text-orange-400">1</span>
+<span class="text-pink-400">else</span>:
+        <span class="text-pink-400">return</span> n * <span class="text-yellow-300">calculate_factorial</span>(n - <span class="text-orange-400">1</span>)
+<span class="text-pink-400">def</span> <span class="text-yellow-300">main</span>():
+    number = <span class="text-orange-400">5</span>
+    result = <span class="text-yellow-300">calculate_factorial</span>(number)
+    <span class="text-blue-400">print</span>(<span class="text-green-400">f"Giai thừa của {number} là: {result}"</span>)
+<span class="text-pink-400">if</span> __name__ == <span class="text-green-400">"__main__"</span>:
+    <span class="text-yellow-300">main</span>()
+                </div>
+</div>
+</div>
+<div class="bg-card-dark border-t border-card-border/30 px-4 py-1 flex justify-between items-center text-xs text-text-secondary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1 text-red-400 font-medium"><span class="material-symbols-outlined text-sm">error</span> 1 Lỗi</span>
+<span>Ln 1, Col 26</span>
+<span>UTF-8</span>
+</div>
+<div>Python 3.10</div>
+</div>
+</section>
+<section class="w-[400px] lg:w-[480px] shrink-0 bg-background-dark flex flex-col border-l border-card-border/30 shadow-2xl">
+<div class="p-4 border-b border-card-border/30 flex items-center justify-between shadow-sm bg-card-dark/50 backdrop-blur-sm z-10">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative shadow-lg shadow-indigo-500/20">
+<span class="material-symbols-outlined text-white">smart_toy</span>
+<span class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-background-dark rounded-full"></span>
+</div>
+<div>
+<h3 class="text-white font-bold text-base">Gia sư AI</h3>
+<p class="text-accent text-xs font-medium flex items-center gap-1">
+<span class="animate-pulse w-1.5 h-1.5 rounded-full bg-accent"></span>
+                        Đang trực tuyến
+                    </p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="text-text-secondary hover:text-white transition-colors p-1"><span class="material-symbols-outlined">refresh</span></button>
+<button class="text-text-secondary hover:text-white transition-colors p-1"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6 bg-[#0f172a] relative">
+<div class="absolute bottom-6 left-0 right-0 text-center pointer-events-none opacity-20 z-0">
+<span class="text-xs font-mono font-bold tracking-widest uppercase">CodeMastery AI v2.0</span>
+</div>
+<div class="flex justify-center z-10 mt-2">
+<span class="bg-card-dark/50 text-text-secondary text-[10px] px-3 py-1 rounded-full border border-white/5">Hôm nay, 14:30</span>
+</div>
+<div class="flex gap-3 justify-end z-10">
+<div class="flex flex-col items-end max-w-[85%]">
+<div class="bg-card-dark border border-indigo-500/30 text-white p-3.5 rounded-2xl rounded-tr-sm shadow-sm">
+<p class="text-sm">Code mình báo lỗi SyntaxError, mình không tìm thấy lỗi ở đâu cả. Giúp mình với!</p>
+</div>
+</div>
+<div class="bg-cover bg-center rounded-full size-8 shrink-0 border border-white/10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPvGuTxeVx2zdebel79L6Ax2rM6cRRf1P_rJGuPE81Iss2EDpbDVjsh0Qd1y6ZQcjPNMtzchpIgHaQsqfolSHKPePHJUqMQTiL1W8y7mj31H1-F9TFc1MCCnoFtd1I2I8uIoGiZjhKSqdsNyZhVhyXs1n4Vzqla2O-XlYFukkigDQzDlJCpwl4prPiMtySaB7uWRn4yAkdsDJ9HtMbsw8JYasMv4caeKtk4pJjEUj1sTE3r9fLxhCHB-QK-gqrrmBG3SoKMc90NX4");'></div>
+</div>
+<div class="flex gap-3 justify-start z-10">
+<div class="size-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20 mt-1">
+<span class="material-symbols-outlined text-white text-sm">smart_toy</span>
+</div>
+<div class="flex flex-col items-start max-w-[90%] gap-1">
+<span class="text-xs text-indigo-400 font-medium ml-1">Gia sư AI</span>
+<div class="bg-indigo-600/10 border border-indigo-500/30 text-white p-4 rounded-2xl rounded-tl-sm shadow-sm backdrop-blur-sm">
+<p class="text-sm leading-relaxed mb-3">Chào bạn! Mình đã phân tích đoạn code. Lỗi nằm ở dòng đầu tiên:</p>
+<div class="bg-background-dark/80 rounded p-3 mb-3 border-l-2 border-red-500 font-mono text-xs overflow-x-auto">
+                            def calculate_factorial(n)<span class="text-red-400 font-bold underline decoration-wavy"> </span>
+</div>
+<p class="text-sm leading-relaxed mb-4">Trong Python, khi định nghĩa một hàm với từ khóa <code class="bg-indigo-900/50 px-1 rounded text-pink-300 font-mono text-xs">def</code>, câu lệnh phải kết thúc bằng dấu hai chấm <code class="bg-indigo-900/50 px-1 rounded text-accent font-bold font-mono text-xs">:</code> để bắt đầu khối lệnh bên trong.</p>
+<div class="flex flex-col gap-2.5 w-full">
+<button class="flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-background-dark font-bold text-sm py-2.5 px-4 rounded-lg transition-all shadow-lg shadow-accent/20">
+<span class="material-symbols-outlined text-[20px]">build</span>
+                                Sửa lỗi ngay
+                            </button>
+<button class="flex items-center justify-center gap-2 bg-transparent border border-indigo-400/30 hover:bg-indigo-500/10 text-indigo-100 text-sm py-2.5 px-4 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">manage_search</span>
+                                Giải thích chi tiết
+                            </button>
+</div>
+</div>
+<span class="text-[10px] text-text-secondary ml-1">Vừa xong</span>
+</div>
+</div>
+</div>
+<div class="p-4 bg-card-dark border-t border-card-border/30">
+<div class="relative flex items-end gap-2 bg-background-dark p-2 rounded-xl border border-indigo-500/30 focus-within:border-primary transition-colors">
+<button class="p-2 text-text-secondary hover:text-white transition-colors rounded-lg hover:bg-white/5" title="Thêm đính kèm">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<textarea class="w-full bg-transparent border-none text-sm text-white focus:ring-0 placeholder:text-text-secondary/50 resize-none py-2 max-h-32 leading-5" placeholder="Hỏi thêm về lỗi này..." rows="1"></textarea>
+<button class="p-2 bg-primary hover:bg-indigo-600 text-white rounded-lg transition-all shadow-lg shadow-indigo-500/30 group">
+<span class="material-symbols-outlined group-hover:translate-x-0.5 transition-transform">send</span>
+</button>
+</div>
+<div class="flex justify-center mt-2">
+<p class="text-[10px] text-text-secondary opacity-70">AI có thể mắc sai sót. Hãy kiểm tra thông tin quan trọng.</p>
+</div>
+</div>
+</section>
+</main>
+
+</body></html>

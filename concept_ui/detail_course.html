@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery - Chi tiết khóa học</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9bc06",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#0f172a", // Deep Navy
+                        "surface-dark": "#1e293b", // Slate/Indigo-ish for cards
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="flex flex-col min-h-screen">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-border-dark px-6 lg:px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-slate-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-background-dark">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">CodeMastery</h2>
+</div>
+<div class="hidden lg:flex items-center gap-8">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Danh sách khóa học</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Lộ trình</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Blog</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Cộng đồng</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-4 sm:gap-8">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-surface-dark overflow-hidden">
+<div class="text-slate-400 flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden border-none bg-transparent px-3 text-sm font-normal focus:ring-0 placeholder:text-slate-400" placeholder="Tìm kiếm khóa học..."/>
+</div>
+</label>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal hover:brightness-110 transition-all">
+<span class="truncate">Đăng ký</span>
+</button>
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-100 dark:bg-surface-dark text-slate-900 dark:text-white border border-transparent dark:border-border-dark text-sm font-bold leading-normal hover:bg-gray-200 dark:hover:bg-gray-800 transition-all">
+<span class="truncate">Đăng nhập</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow px-4 md:px-10 py-8 max-w-[1280px] mx-auto w-full">
+<div class="@container mb-12">
+<div class="flex flex-col gap-8 md:gap-10 lg:flex-row items-center lg:items-start">
+<div class="w-full lg:w-1/2 aspect-video rounded-xl overflow-hidden shadow-2xl border border-border-dark relative group">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Code python hiển thị trên màn hình máy tính với nền tối" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCKNw7slBvtCs4BQ02iYYU78FVrcJ795qTCwnlFT7nifbOnYjrMSmG5Ut3q9q45I64ABDIkzYVFfq45IgOU4V35ndngzafx3i4CDXPaBVLnnDsMxVMLLlghMGsE1zvFGs-GuDQXbotvXsYOhUUaXG5Kblael9GQyguV2grlo2-lYdFf-rD3jop1iou6BvUp39s9rsuQA8ggZdptqz3OWq9RE-yRXaWqjOsd2VsNF-obVchwMdWix3OY0PDk4Ht3pIep64sUFtT8Gp4');">
+</div>
+<div class="absolute bottom-4 left-4 z-20 flex items-center gap-2">
+<span class="px-3 py-1 bg-primary text-background-dark text-xs font-bold rounded-full uppercase tracking-wider">Mới</span>
+<span class="px-3 py-1 bg-surface-dark/90 backdrop-blur-sm text-white text-xs font-bold rounded-full border border-border-dark flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">star</span>
+                                4.9 (1,240 đánh giá)
+                            </span>
+</div>
+</div>
+<div class="flex flex-col gap-6 lg:w-1/2 lg:pt-4">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-medium text-sm">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span>Lập trình Backend</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
+                                Lập trình Python Cơ bản
+                            </h1>
+<p class="text-slate-600 dark:text-slate-300 text-base md:text-lg leading-relaxed">
+                                Khóa học Python toàn diện nhất dành cho người mới bắt đầu. Xây dựng nền tảng vững chắc cho sự nghiệp lập trình của bạn với 10+ dự án thực tế và sự hỗ trợ từ chuyên gia.
+                            </p>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<button class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-background-dark text-base font-bold shadow-[0_0_20px_rgba(249,188,6,0.3)] hover:shadow-[0_0_30px_rgba(249,188,6,0.5)] hover:-translate-y-0.5 transition-all">
+<span>Bắt đầu học ngay</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-transparent border border-slate-300 dark:border-border-dark text-slate-700 dark:text-slate-300 text-base font-bold hover:bg-slate-100 dark:hover:bg-surface-dark transition-all">
+<span class="material-symbols-outlined">play_circle</span>
+<span>Xem trailer</span>
+</button>
+</div>
+<div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mt-2">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">update</span>
+<span>Cập nhật lần cuối: T10/2023</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">language</span>
+<span>Tiếng Việt</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<div class="lg:col-span-2 flex flex-col gap-8">
+<div class="lg:hidden rounded-xl bg-surface-dark border border-border-dark p-6">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-primary">verified</span>
+                            Bạn sẽ học được gì?
+                        </h3>
+<ul class="grid grid-cols-1 gap-3">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300">Hiểu rõ tư duy lập trình và cách máy tính hoạt động</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300">Nắm vững cú pháp Python, biến, hàm, và hướng đối tượng</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300">Tự tin xây dựng các ứng dụng CLI và xử lý dữ liệu tự động</span>
+</li>
+</ul>
+</div>
+<div>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Nội dung khóa học</h2>
+<span class="text-sm font-medium text-primary cursor-pointer hover:underline">Mở rộng tất cả</span>
+</div>
+<div class="flex flex-col gap-4">
+<details class="group flex flex-col rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark overflow-hidden transition-all duration-300" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors select-none">
+<div class="flex items-center gap-4">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">01</div>
+<p class="text-base font-bold text-slate-900 dark:text-white">Giới thiệu về Python &amp; Cài đặt môi trường</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-500 hidden sm:block">3 bài học • 45 phút</span>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</div>
+</summary>
+<div class="px-6 py-2 pb-5 border-t border-gray-100 dark:border-border-dark/50">
+<div class="flex flex-col gap-2 mt-2">
+<a class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-background-dark/50 group/item transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary">play_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300 group-hover/item:text-primary transition-colors">1.1 Tổng quan về Python và ứng dụng</span>
+</div>
+<span class="text-xs text-slate-500">12:30</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-background-dark/50 group/item transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary">play_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300 group-hover/item:text-primary transition-colors">1.2 Cài đặt Python &amp; VS Code trên Windows/Mac</span>
+</div>
+<span class="text-xs text-slate-500">15:45</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-background-dark/50 group/item transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary">code</span>
+<span class="text-sm text-slate-600 dark:text-slate-300 group-hover/item:text-primary transition-colors">1.3 Viết chương trình Hello World đầu tiên</span>
+</div>
+<span class="text-xs text-slate-500">10:00</span>
+</a>
+</div>
+</div>
+</details>
+<details class="group flex flex-col rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark overflow-hidden transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors select-none">
+<div class="flex items-center gap-4">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">02</div>
+<p class="text-base font-bold text-slate-900 dark:text-white">Biến, Kiểu dữ liệu và Toán tử</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-500 hidden sm:block">5 bài học • 1 giờ 20 phút</span>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</div>
+</summary>
+<div class="px-6 py-2 pb-5 border-t border-gray-100 dark:border-border-dark/50">
+<p class="text-sm text-slate-400 italic">Nội dung chi tiết chỉ dành cho học viên đã đăng ký.</p>
+</div>
+</details>
+<details class="group flex flex-col rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark overflow-hidden transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors select-none">
+<div class="flex items-center gap-4">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">03</div>
+<p class="text-base font-bold text-slate-900 dark:text-white">Cấu trúc điều khiển &amp; Vòng lặp</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-500 hidden sm:block">4 bài học • 55 phút</span>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</div>
+</summary>
+<div class="px-6 py-2 pb-5 border-t border-gray-100 dark:border-border-dark/50">
+<p class="text-sm text-slate-400 italic">Nội dung chi tiết chỉ dành cho học viên đã đăng ký.</p>
+</div>
+</details>
+<details class="group flex flex-col rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark overflow-hidden transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors select-none">
+<div class="flex items-center gap-4">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">04</div>
+<p class="text-base font-bold text-slate-900 dark:text-white">Hàm (Functions) &amp; Modules</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-500 hidden sm:block">6 bài học • 1 giờ 10 phút</span>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</div>
+</summary>
+<div class="px-6 py-2 pb-5 border-t border-gray-100 dark:border-border-dark/50">
+<p class="text-sm text-slate-400 italic">Nội dung chi tiết chỉ dành cho học viên đã đăng ký.</p>
+</div>
+</details>
+</div>
+</div>
+<div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 border-t border-border-dark pt-8 mt-4">
+<h3 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">Yêu cầu khóa học</h3>
+<ul class="list-disc pl-5 space-y-2">
+<li>Máy tính có kết nối internet (Windows, macOS hoặc Linux).</li>
+<li>Không yêu cầu kiến thức lập trình trước đó.</li>
+<li>Tinh thần học hỏi và kiên nhẫn giải quyết vấn đề.</li>
+</ul>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark p-6 shadow-sm sticky top-24">
+<div class="flex flex-col gap-5">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Thời lượng</p>
+<p class="text-base font-semibold text-slate-900 dark:text-white">24 giờ video</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">signal_cellular_alt</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Trình độ</p>
+<p class="text-base font-semibold text-slate-900 dark:text-white">Cơ bản - Trung cấp</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Ngôn ngữ</p>
+<p class="text-base font-semibold text-slate-900 dark:text-white">Tiếng Việt</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">all_inclusive</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Truy cập</p>
+<p class="text-base font-semibold text-slate-900 dark:text-white">Trọn đời</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-border-dark/50">
+<button class="w-full h-12 rounded-lg bg-primary text-background-dark font-bold hover:brightness-110 transition-all mb-3 text-lg flex items-center justify-center gap-2">
+                                Bắt đầu học ngay (Miễn phí)
+                                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="hidden lg:block rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark p-6 shadow-sm">
+<h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined text-primary">verified</span>
+                            Bạn sẽ học được gì
+                        </h3>
+<ul class="flex flex-col gap-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300">Hiểu rõ tư duy lập trình và cách máy tính thực thi mã nguồn.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300">Thành thạo cú pháp Python, xử lý chuỗi, list, dictionary.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300">Làm việc với File, API và các thư viện phổ biến.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300">Xây dựng 3 dự án thực tế để đưa vào Portfolio.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-600 dark:text-slate-300">Chứng chỉ hoàn thành khóa học từ CodeMastery.</span>
+</li>
+</ul>
+</div>
+<div class="rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark p-6 shadow-sm">
+<h3 class="text-lg font-bold mb-4 text-slate-900 dark:text-white">Giảng viên</h3>
+<div class="flex items-center gap-4 mb-4">
+<div class="size-14 rounded-full overflow-hidden border-2 border-primary">
+<img alt="Chân dung giảng viên nam trẻ tuổi" class="w-full h-full object-cover" data-alt="Chân dung giảng viên Nguyễn Văn A" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASouWkVZ4qIjntLi2RmK0V3gEwabWX9MO8ijYhFl8DwDJ6x8VqnracJWlPuQ1ol4Qr2-IAkSOs-omNqTrRN0bX63EeRlIwCOiLINLgT9q9D5A3qz9qCNSajMo-GjagF2KNq6h9HkACH4yPbRyKte9yMgulfpC-UG-8XBKvesknvl7eYWkLRKge30A8CmXqgVwqnMhWxYhcwftfZkfisYzBVyNXVjrkd6XRMRx_5FgmbgDzksCCqz73Sne17xR6USIjpCYuxU1apDs"/>
+</div>
+<div>
+<p class="text-base font-bold text-slate-900 dark:text-white">Nguyễn Văn A</p>
+<p class="text-xs text-primary font-medium uppercase tracking-wide">Senior Python Dev</p>
+</div>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                            Kỹ sư phần mềm với 8 năm kinh nghiệm tại các tập đoàn công nghệ lớn. Đã giảng dạy cho hơn 5.000 học viên.
+                        </p>
+<div class="flex gap-3">
+<a class="size-8 rounded bg-background-dark flex items-center justify-center text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</a>
+<a class="size-8 rounded bg-background-dark flex items-center justify-center text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">alternate_email</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="border-t border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark py-8 px-10">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-[1280px] mx-auto">
+<div class="flex items-center gap-2 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-bold">CodeMastery</span>
+</div>
+<p class="text-sm text-slate-500">© 2024 CodeMastery. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-primary transition-colors text-sm" href="#">Điều khoản</a>
+<a class="text-slate-500 hover:text-primary transition-colors text-sm" href="#">Bảo mật</a>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

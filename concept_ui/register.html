@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeMastery Minimalist Auth Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f46e5", // Indigo
+                        "accent": "#f59e0b", // Amber/Gold
+                        "background-dark": "#0f172a", // Deep Navy
+                        "card-dark": "#1e293b", // Dark Navy
+                        "card-border": "#4f46e5", // Indigo border
+                        "input-bg": "#0f172a", 
+                        "text-secondary": "#94a3b8",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: "Noto Sans", sans-serif; }
+        h1, h2, h3, .font-display { font-family: "Space Grotesk", sans-serif; }#tab-login:checked ~ .tabs-nav .label-login,
+        #tab-register:checked ~ .tabs-nav .label-register {
+            color: #818cf8;border-bottom-color: #6366f1;}
+        #tab-login:checked ~ .tabs-nav .label-login .icon,
+        #tab-register:checked ~ .tabs-nav .label-register .icon {
+            color: #6366f1;
+        }
+        #tab-login:checked ~ #form-login { display: block; }
+        #tab-register:checked ~ #form-register { display: block; }#form-login, #form-register {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.5;
+            cursor: pointer;
+        }
+        ::-webkit-calendar-picker-indicator:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-background-dark min-h-screen flex items-center justify-center p-4 selection:bg-indigo-500/30 selection:text-indigo-200 overflow-hidden relative">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="w-full max-w-[480px] bg-card-dark rounded-2xl shadow-2xl border border-card-border/30 relative overflow-hidden z-10">
+<div class="h-1 w-full bg-gradient-to-r from-indigo-600 via-primary to-accent"></div>
+<input class="hidden" id="tab-login" name="auth" type="radio"/>
+<input checked="" class="hidden" id="tab-register" name="auth" type="radio"/>
+<div class="pt-10 pb-6 text-center px-6">
+<div class="flex justify-center mb-5">
+<div class="size-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-primary shadow-lg shadow-indigo-900/20">
+<span class="material-symbols-outlined text-4xl">terminal</span>
+</div>
+</div>
+<h1 class="text-3xl font-bold text-white mb-2 tracking-tight">CodeMastery</h1>
+<p class="text-text-secondary text-sm">Nền tảng học lập trình trực tuyến miễn phí</p>
+</div>
+<div class="tabs-nav flex border-b border-white/5 mx-8 mb-8">
+<label class="label-login flex-1 pb-3 text-center text-sm font-medium text-slate-500 hover:text-slate-300 cursor-pointer border-b-2 border-transparent transition-all duration-200 flex items-center justify-center gap-2 group" for="tab-login">
+<span class="material-symbols-outlined text-[20px] icon text-slate-500 group-hover:text-slate-300 transition-colors">login</span>
+                Đăng nhập
+            </label>
+<label class="label-register flex-1 pb-3 text-center text-sm font-medium text-slate-500 hover:text-slate-300 cursor-pointer border-b-2 border-transparent transition-all duration-200 flex items-center justify-center gap-2 group" for="tab-register">
+<span class="material-symbols-outlined text-[20px] icon text-slate-500 group-hover:text-slate-300 transition-colors">person_add</span>
+                Đăng ký
+            </label>
+</div>
+<div class="hidden px-8 pb-10" id="form-login">
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Email hoặc Mã SV</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[20px] group-focus-within:text-primary transition-colors">person</span>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="Nhập email hoặc mã sinh viên" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center ml-1">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Mật khẩu</label>
+<a class="text-xs text-primary hover:text-accent transition-colors" href="#">Quên mật khẩu?</a>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[20px] group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-accent text-white font-bold py-3 rounded-lg transition-colors duration-300 shadow-lg shadow-indigo-500/20 mt-2 flex items-center justify-center gap-2 group" type="button">
+<span>Truy cập ngay</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="mt-8 p-4 bg-indigo-950/30 border border-indigo-500/20 rounded-xl flex gap-3 items-start">
+<span class="material-symbols-outlined text-accent text-xl mt-0.5 shrink-0">school</span>
+<div class="space-y-1">
+<p class="text-xs font-bold text-white">Dành cho Giảng viên</p>
+<p class="text-xs text-indigo-200/70 leading-relaxed">
+                            Tài khoản giảng viên được cấp riêng. Vui lòng liên hệ ban quản trị nhà trường để nhận thông tin đăng nhập.
+                        </p>
+</div>
+</div>
+</form>
+</div>
+<div class="hidden px-8 pb-10" id="form-register">
+<form class="space-y-5">
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Họ và tên</label>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="Nguyễn Văn A" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Ngày sinh</label>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm [color-scheme:dark]" type="date"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Mã lớp</label>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm uppercase font-mono" placeholder="2305HTTA" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Mã sinh viên</label>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm uppercase font-mono" placeholder="2305HTTA001" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider ml-1">Mật khẩu</label>
+<input class="w-full bg-input-bg border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="Tự tạo mật khẩu" type="password"/>
+</div>
+<button class="w-full bg-primary hover:bg-accent text-white font-bold py-3 rounded-lg transition-colors duration-300 shadow-lg shadow-indigo-500/20 mt-4" type="button">
+                    Đăng ký tài khoản
+                </button>
+<p class="text-center text-xs text-slate-500 mt-4">
+                    Bằng cách đăng ký, bạn đồng ý với <a class="text-indigo-400 hover:text-accent underline decoration-indigo-400/30 underline-offset-2" href="#">Điều khoản</a> và <a class="text-indigo-400 hover:text-accent underline decoration-indigo-400/30 underline-offset-2" href="#">Chính sách</a>
+</p>
+</form>
+</div>
+</div>
+
+</body></html>
