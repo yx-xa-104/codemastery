@@ -2,7 +2,7 @@
 
 Modern interactive coding education platform with AI-powered tutoring, inspired by W3Schools but built with cutting-edge technologies.
 
-## 🚀 Features
+## Features
 
 - **Interactive Code Editor** - Write and execute code directly in browser (Monaco Editor)
 - **AI Tutor** - Context-aware AI assistant powered by Gemini 2.0 Flash
@@ -11,7 +11,7 @@ Modern interactive coding education platform with AI-powered tutoring, inspired 
 - **Progress Tracking** - Save your learning progress and code snippets
 - **Modern UI** - Beautiful, responsive 3-column layout with dark mode
 
-## 🏗️ Architecture
+## Architecture
 
 ### Tech Stack
 
@@ -68,7 +68,7 @@ codemastery/
     └── javascript/
 ```
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 
@@ -182,13 +182,13 @@ The platform implements multiple security layers:
 
 See [security_guide.md](./security_guide.md) for detailed security documentation.
 
-## 📖 Documentation
+## Documentation
 
 - [Implementation Plan](./implementation_plan.md) - Detailed architecture and code examples
 - [Security Guide](./security_guide.md) - Security considerations and best practices
 - [Task Checklist](./task.md) - Development roadmap
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Frontend tests
@@ -201,7 +201,7 @@ cd apps/api
 npm test
 ```
 
-## 🚢 Deployment
+## Deployment
 
 ### Docker Production Build
 
@@ -220,7 +220,7 @@ vercel deploy
 
 Connect your GitHub repository and set environment variables.
 
-## 📝 Creating Lessons
+## reating Lessons
 
 Lessons are written in MDX (Markdown + JSX):
 
@@ -244,7 +244,7 @@ print(name, age)
 <CodeEditor language="python" initialCode="name = 'Your Name'\nprint(name)" />
 ```
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by [W3Schools](https://www.w3schools.com)
 - Built with [Next.js](https://nextjs.org)
