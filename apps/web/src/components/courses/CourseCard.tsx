@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Clock, BookOpen, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface CourseCardProps {
@@ -9,8 +8,9 @@ interface CourseCardProps {
   duration: string;
   lessons: number;
   image: string;
-  progress?: number; // Optional progress percentage
+  progress?: number;
   slug: string;
+  isHot?: boolean;
 }
 
 export function CourseCard({
@@ -22,18 +22,20 @@ export function CourseCard({
   image,
   progress,
   slug,
+  isHot
 }: CourseCardProps) {
   return (
-    <div className="group card-glass rounded-xl overflow-hidden flex flex-col h-full relative">
+    <div className="group bg-code-dark rounded-xl overflow-hidden border border-indigo-900/50 hover:border-primary/60 transition-all hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full relative">
+      {isHot && (
+        <div className="absolute top-3 right-3 z-10 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold shadow-lg">HOT</div>
+      )}
       <div className="h-48 relative overflow-hidden bg-gray-900 group-hover:opacity-95 transition-opacity">
-        {/* Helper image container since we might not have real Next.js images configured for external domains yet, 
-            using regular img tag for now if src is external url, or just fallback */}
         <img
           src={image}
           alt={title}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-code-dark via-transparent to-transparent"></div>
       </div>
 
       <div className="p-5 flex flex-col flex-grow">
@@ -52,11 +54,11 @@ export function CourseCard({
 
         <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-400 mb-5">
           <div className="flex items-center">
-            <Clock className="w-4 h-4 mr-1.5 text-indigo-500" />
+            <span className="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">schedule</span> 
             {duration}
           </div>
           <div className="flex items-center">
-            <BookOpen className="w-4 h-4 mr-1.5 text-indigo-500" />
+            <span className="material-symbols-outlined text-[18px] mr-1.5 text-indigo-500">play_lesson</span>
             {lessons} bài học
           </div>
         </div>
@@ -79,7 +81,7 @@ export function CourseCard({
                 className="mt-3 block w-full text-center py-2.5 rounded-lg bg-accent-gold hover:bg-accent-gold-hover text-white font-bold transition-all shadow-glow flex items-center justify-center gap-2"
               >
                 Tiếp tục học
-                <ArrowRight className="w-4 h-4" />
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </Link>
             </div>
           ) : (

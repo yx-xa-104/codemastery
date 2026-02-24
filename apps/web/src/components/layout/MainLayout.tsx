@@ -13,24 +13,28 @@ export default function MainLayout({
   aiPanel,
 }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-midnight-900">
-      {/* Top Navigation */}
+    <div className="h-screen bg-navy-900 text-slate-300 font-sans overflow-hidden flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+      {/* Fixed Top Navigation — h-16 */}
       <TopNavigation />
 
-      {/* 3-Column Layout */}
-      <div className="grid grid-cols-[280px_1fr_380px] h-screen pt-[73px]">
-        {/* Left Sidebar - Lessons */}
-        <aside className="border-r border-indigo-700/30 bg-midnight-800 overflow-hidden">
+      {/* 3-Column Layout — fills remaining height */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Sidebar */}
+        <aside className="w-72 bg-navy-800 border-r border-navy-700 flex-shrink-0 hidden md:flex flex-col overflow-hidden">
           {sidebar}
         </aside>
 
-        {/* Main Content - Center */}
-        <main className="overflow-y-auto bg-midnight-900">
-          <div className="max-w-4xl mx-auto p-8">{children}</div>
+        {/* Center — Main Content */}
+        <main className="flex-1 flex flex-col min-w-0 bg-navy-900 overflow-hidden">
+          <div className="flex-1 overflow-y-auto navy-scroll px-8 pb-20">
+            <div className="max-w-4xl mx-auto pt-8">
+              {children}
+            </div>
+          </div>
         </main>
 
-        {/* Right Panel - AI Chat */}
-        <aside className="border-l border-amber-700/20 bg-midnight-800 overflow-hidden glow-border">
+        {/* Right Panel — AI Chat */}
+        <aside className="w-80 bg-navy-800 border-l border-navy-700 flex-shrink-0 hidden lg:flex flex-col overflow-hidden shadow-2xl">
           {aiPanel}
         </aside>
       </div>

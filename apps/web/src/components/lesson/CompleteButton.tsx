@@ -14,42 +14,29 @@ export default function CompleteButton({ lessonId, lessonTitle }: CompleteButton
   const { isComplete, markComplete, markIncomplete } = useProgressStore();
   const completed = mounted ? isComplete(lessonId) : false;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   const handleToggle = () => {
-    if (completed) {
-      markIncomplete(lessonId);
-    } else {
-      markComplete(lessonId);
-    }
+    completed ? markIncomplete(lessonId) : markComplete(lessonId);
   };
 
-  if (!mounted) {
-    return null; // Avoid hydration mismatch
-  }
+  if (!mounted) return null;
 
   return (
     <button
       onClick={handleToggle}
-      className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+      className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-sm ${
         completed
-          ? 'bg-indigo-900/40 text-amber-400 border-2 border-amber-600/60 shadow-glow-amber hover:bg-indigo-900/60'
-          : 'btn-primary'
+          ? 'bg-green-900/30 text-green-400 border border-green-600/50 hover:bg-green-900/50'
+          : 'bg-accent-gold hover:bg-accent-gold-hover text-navy-950 shadow-lg shadow-amber-900/20 transform hover:scale-105'
       }`}
     >
       {completed ? (
-        <>
-          <CheckCircle2 className="w-5 h-5" />
-          Completed
-        </>
+        <><CheckCircle2 className="w-5 h-5" /> Đã hoàn thành</>
       ) : (
-        <>
-          <Circle className="w-5 h-5" />
-          Mark as Complete
-        </>
+        <><Circle className="w-5 h-5" /> Đánh dấu hoàn thành</>
       )}
     </button>
   );
 }
+

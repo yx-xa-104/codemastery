@@ -16,7 +16,7 @@ export default function CodeEditor({
   initialCode = '',
   language,
   readonly = false,
-  height = '400px',
+  height = '300px',
   onCodeChange,
 }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode);
@@ -39,27 +39,17 @@ export default function CodeEditor({
 
     try {
       const startTime = Date.now();
-      
       const response = await fetch('/api/execute', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code,
-          language,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, language }),
       });
-
       const endTime = Date.now();
       setExecutionTime(endTime - startTime);
 
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
 
       const result = await response.json();
-
       if (result.error) {
         setError(result.error);
       } else {
@@ -80,38 +70,26 @@ export default function CodeEditor({
   };
 
   const handleAiExplain = () => {
-    // Dispatch custom event for AI explanation
-    window.dispatchEvent(
-      new CustomEvent('ai-explain-code', {
-        detail: { code, language },
-      })
-    );
+    window.dispatchEvent(new CustomEvent('ai-explain-code', { detail: { code, language } }));
   };
 
-  // Get Monaco language identifier
   const getMonacoLanguage = () => {
-    const languageMap: Record<string, string> = {
-      python: 'python',
-      javascript: 'javascript',
-      java: 'java',
-      cpp: 'cpp',
-      html: 'html',
+    const map: Record<string, string> = {
+      python: 'python', javascript: 'javascript', java: 'java', cpp: 'cpp', html: 'html',
     };
-    return languageMap[language] || 'plaintext';
+    return map[language] || 'plaintext';
   };
 
   return (
-    <div className="border border-indigo-700/30 rounded-lg overflow-hidden bg-midnight-950 shadow-glow-indigo">
+    <div className="border border-navy-700 rounded-xl overflow-hidden bg-navy-800 shadow-2xl">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 glass-indigo border-b border-indigo-700/30">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-amber-500 uppercase">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-navy-950 border-b border-navy-700">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-accent-gold uppercase tracking-wide">
             {language}
           </span>
           {executionTime !== null && (
-            <span className="text-xs text-amber-600">
-              ⏱ {executionTime}ms
-            </span>
+            <span className="text-xs text-slate-400">⏱ {executionTime}ms</span>
           )}
         </div>
 
@@ -119,8 +97,8 @@ export default function CodeEditor({
           <div className="flex items-center gap-2">
             <button
               onClick={handleAiExplain}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-300 bg-indigo-900/40 hover:bg-indigo-900/60 border border-indigo-600/40 hover:border-indigo-500/60 rounded-md transition-colors"
-              title="AI Explain Code"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-300 bg-indigo-600/20 hover:bg-indigo-600 hover:text-white border border-indigo-500/30 rounded-lg transition-all"
+              title="AI Explain"
             >
               <Sparkles className="w-4 h-4" />
               Explain
@@ -128,8 +106,8 @@ export default function CodeEditor({
 
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-300 bg-midnight-700 hover:bg-midnight-600 border border-indigo-700/40 hover:border-indigo-600/60 rounded-md transition-colors"
-              title="Reset Code"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded-lg transition-all"
+              title="Reset"
             >
               <RotateCcw className="w-4 h-4" />
               Reset
@@ -138,18 +116,12 @@ export default function CodeEditor({
             <button
               onClick={handleRun}
               disabled={isRunning}
-              className="btn-golden disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-bold text-navy-950 bg-accent-gold hover:bg-accent-gold-hover disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow-lg shadow-amber-900/20 transition-all transform hover:scale-105"
             >
               {isRunning ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Running...
-                </>
+                <><Loader2 className="w-4 h-4 animate-spin" /> Đang chạy...</>
               ) : (
-                <>
-                  <Play className="w-4 h-4" />
-                  Run
-                </>
+                <><Play className="w-4 h-4" /> Chạy thử</>
               )}
             </button>
           </div>
@@ -170,21 +142,23 @@ export default function CodeEditor({
           lineNumbers: 'on',
           scrollBeyondLastLine: false,
           automaticLayout: true,
-          tabSize: 2,
+          tabSize: 4,
           wordWrap: 'on',
           padding: { top: 16, bottom: 16 },
+          fontFamily: 'Source Code Pro, Fira Code, monospace',
         }}
       />
 
       {/* Output Panel */}
       {(output || error) && (
-        <div className="border-t border-indigo-700/30">
-          <div className="px-4 py-2 bg-midnight-800">
-            <p className="text-xs font-semibold text-amber-500 uppercase tracking-wide">
-              Output
+        <div className="border-t border-navy-700">
+          <div className="px-4 py-2 bg-navy-950 flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`} />
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              {error ? 'Lỗi' : 'Kết quả'}
             </p>
           </div>
-          <div className="px-4 py-3 bg-black font-mono text-sm max-h-64 overflow-y-auto">
+          <div className="px-4 py-3 bg-navy-950 font-mono text-sm max-h-40 overflow-y-auto">
             {error ? (
               <pre className="text-red-400 whitespace-pre-wrap">{error}</pre>
             ) : (

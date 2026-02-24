@@ -26,32 +26,29 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      {/* Logo */}
-      <div className="mb-8">
-        <Link href="/" className="block group">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
-            CodeMastery
-          </h1>
-        </Link>
-        <p className="text-sm text-gray-400 mt-2">
-          Master Programming
-        </p>
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Sidebar Header */}
+      <div className="p-5 border-b border-navy-700 bg-navy-800/50 flex-shrink-0">
+        <h2 className="font-bold text-lg text-white flex items-center gap-2">
+          <span className="material-symbols-outlined text-accent-gold">school</span>
+          Khóa học
+        </h2>
       </div>
 
-      <nav className="space-y-2">
+      {/* Scrollable nav */}
+      <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         {/* All Courses Link */}
         <Link
           href="/courses"
-          className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-indigo-900/40 rounded-lg transition-all duration-300 border border-transparent hover:border-amber-600/30 hover:shadow-glow-amber"
+          className="block px-3 py-2.5 text-sm text-slate-400 hover:bg-navy-700 hover:text-white rounded transition-colors"
         >
-          📚 All Courses
+          📚 Tất cả khóa học
         </Link>
 
         {/* Course Sections */}
-        <div className="pt-6">
-          <h2 className="px-4 text-xs font-semibold text-amber-600 uppercase tracking-wider mb-3">
-            Learning Paths
+        <div className="pt-4">
+          <h2 className="px-3 text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">
+            Lộ trình học
           </h2>
 
           {coursesData.map((course) => {
@@ -66,33 +63,33 @@ export default function Sidebar() {
               : 0;
 
             return (
-              <div key={course.id} className="mb-3">
+              <div key={course.id} className="mb-1">
                 {/* Course Header */}
                 <button
                   onClick={() => toggleCourse(course.id)}
-                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-200 hover:text-amber-400 hover:bg-indigo-900/30 rounded-lg transition-all duration-300 border border-transparent hover:border-amber-600/30 hover:shadow-glow-amber"
+                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-navy-700 rounded transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{course.icon}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{course.icon}</span>
                     <div className="text-left">
                       <div>{course.title}</div>
                       {mounted && progress > 0 && (
-                        <div className="text-xs text-amber-600 font-semibold mt-0.5">
-                          {progress}% Complete
+                        <div className="text-xs text-indigo-400 font-semibold mt-0.5">
+                          {progress}% hoàn thành
                         </div>
                       )}
                     </div>
                   </div>
                   {isExpanded ? (
-                    <ChevronDown className="w-4 h-4 text-amber-600" />
+                    <ChevronDown className="w-4 h-4 text-indigo-400 flex-shrink-0" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-gray-500" />
+                    <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
                   )}
                 </button>
 
                 {/* Lessons List */}
                 {isExpanded && (
-                  <div className="mt-2 ml-6 space-y-1 border-l-2 border-amber-700/40 pl-4">
+                  <div className="mt-1 ml-4 space-y-0.5 border-l border-indigo-500/30 pl-3">
                     {course.lessons.map((lesson) => {
                       const href = `/lessons/${course.id}/${lesson.slug}`;
                       const isActive = pathname === href;
@@ -102,18 +99,18 @@ export default function Sidebar() {
                         <Link
                           key={lesson.id}
                           href={href}
-                          className={`flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-300 ${
+                          className={`flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors ${
                             isActive
-                              ? 'bg-gradient-to-r from-amber-900/40 to-indigo-900/40 text-amber-400 font-semibold border border-amber-600/60 shadow-glow-amber-lg'
-                              : 'text-gray-400 hover:text-gray-200 hover:bg-indigo-900/30 border border-transparent hover:border-indigo-600/40'
+                              ? 'bg-indigo-600 text-white font-medium shadow-lg'
+                              : 'text-slate-400 hover:bg-navy-700 hover:text-white'
                           }`}
                         >
                           {completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                            <CheckCircle2 className="w-4 h-4 text-accent-gold flex-shrink-0" />
                           ) : (
-                            <Circle className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                            <Circle className="w-4 h-4 text-slate-600 flex-shrink-0" />
                           )}
-                          <span className="truncate flex-1">{lesson.title}</span>
+                          <span className="truncate">{lesson.title}</span>
                         </Link>
                       );
                     })}
@@ -127,3 +124,4 @@ export default function Sidebar() {
     </div>
   );
 }
+

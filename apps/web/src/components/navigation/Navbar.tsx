@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Menu, X, Code2 } from 'lucide-react';
 import { useState } from 'react';
 
 export function Navbar() {
@@ -33,8 +32,10 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    'nav-link inline-flex items-center px-1 pt-1 border-transparent',
-                    pathname === link.href ? 'active text-white' : ''
+                    'nav-link inline-flex items-center px-1 pt-1 text-sm font-medium border-transparent transition-colors',
+                    pathname === link.href 
+                      ? 'active-link text-white' 
+                      : 'text-gray-300 hover:text-primary-light'
                   )}
                 >
                   {link.name}
@@ -43,16 +44,17 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="hidden sm:flex w-9 h-9 rounded-full bg-gradient-to-br from-primary to-indigo-700 items-center justify-center text-white font-bold ring-2 ring-indigo-400/30 shadow-lg hover:shadow-glow-indigo transition-all">
+            <Link href="/profile" className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-indigo-700 flex items-center justify-center text-white font-bold ring-2 ring-indigo-400/30 shadow-lg hidden sm:flex">
               H
-            </button>
+            </Link>
             <div className="-mr-2 flex items-center sm:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-indigo-900/50 focus:outline-none"
               >
-                <span className="sr-only">Open main menu</span>
-                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                <span className="material-symbols-outlined">
+                  {isOpen ? 'close' : 'menu'}
+                </span>
               </button>
             </div>
           </div>
