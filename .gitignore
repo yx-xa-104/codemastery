@@ -139,3 +139,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 /docker
 /.agent
+/docs/*.md
+GEMINI.md
+ERRORS.md

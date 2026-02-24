@@ -1,101 +1,121 @@
-import MainLayout from '@/components/layout/MainLayout';
-import Sidebar from '@/components/layout/Sidebar';
-import LessonContent from '@/components/lesson/LessonContent';
-import CodeEditor from '@/components/editor/CodeEditor';
-import Breadcrumbs from '@/components/navigation/Breadcrumbs';
-import LessonNav from '@/components/navigation/LessonNav';
-import CompleteButton from '@/components/lesson/CompleteButton';
-import AiChat from '@/components/ai/AiChat';
-import { getLessonContent } from '@/lib/mdx';
-import { getAdjacentLessons, getCourseName, getLesson } from '@/lib/courses';
+"use client";
 
-export default async function LessonPage({
-  params,
-}: {
-  params: { course: string; lesson: string };
-}) {
-  const lessonData = await getLessonContent(params.course, params.lesson);
+import { Sidebar } from "@/components/layouts/Sidebar";
+import { CodeEditor } from "@/components/features/editor/CodeEditor";
+import { AiChatDrawer } from "@/components/features/ai/AiChatDrawer";
+import { useState } from "react";
+import { ArrowLeft, Menu, X, CheckCircle, BookOpen } from "lucide-react";
+import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
-  if (!lessonData) {
-    return (
-      <MainLayout
-        sidebar={<Sidebar />}
-        aiPanel={<AiChat lessonTitle="Not Found" />}
-      >
-        <div className="text-center py-16">
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Lesson Not Found
-          </h1>
-          <p className="text-gray-400">
-            The lesson "{params.lesson}" does not exist in the "{params.course}" course.
-          </p>
-        </div>
-      </MainLayout>
-    );
-  }
+export default function LessonPage() {
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const { metadata, content } = lessonData;
-  const courseName = getCourseName(params.course);
-  const { previous, next } = getAdjacentLessons(params.course, params.lesson);
+    // Sample data
+    const modules = [
+        {
+            id: "m1",
+            title: "Căn bản về JavaScript",
+            lessons: [
+                { id: "l1", title: "Giới thiệu JavaScript", duration: "10:00", isCompleted: true, type: "video" as const, slug: "intro" },
+                { id: "l2", title: "Biến và Kiểu dữ liệu", duration: "15:00", isCompleted: true, type: "interactive" as const, slug: "variables" },
+                { id: "l3", title: "Vòng lặp For", duration: "20:00", isCompleted: false, type: "interactive" as const, slug: "for-loop" },
+            ]
+        }
+    ];
 
-  // Determine language from course name or metadata
-  const language = (metadata.language || params.course) as 'python' | 'javascript' | 'java' | 'cpp';
+    const lessonContent = `
+# Vòng lặp \`for\` trong JavaScript
 
-  return (
-    <MainLayout
-      sidebar={<Sidebar />}
-      aiPanel={<AiChat lessonTitle={metadata.title || params.lesson} />}
-    >
-      {/* Breadcrumbs */}
-      <Breadcrumbs
-        items={[
-          { label: 'Courses', href: '/courses' },
-          { label: courseName, href: `/courses/${params.course}` },
-          { label: metadata.title || params.lesson, href: '#' },
-        ]}
-      />
+Vòng lặp \`for\` là một cấu trúc điều khiển lặp lặp đi lặp lại một khối lệnh một số lần nhất định.
 
-      {/* Lesson Content */}
-      <LessonContent content={content} metadata={metadata} />
-
-      {/* Interactive Code Editor Section */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          Try It Yourself
-        </h2>
-        <CodeEditor
-          language={language}
-          initialCode={getInitialCode(language)}
-          height="300px"
-        />
-      </div>
-
-      {/* Complete Lesson Button */}
-      {lessonData && (
-        <div className="mt-8 flex justify-center">
-          <CompleteButton
-            lessonId={`${params.course}-${params.lesson}`}
-            lessonTitle={metadata.title || params.lesson}
-          />
-        </div>
-      )}
-
-      {/* Lesson Navigation */}
-      <div className="mt-12">
-        <LessonNav previousLesson={previous} nextLesson={next} />
-      </div>
-    </MainLayout>
-  );
+## Cú pháp:
+\`\`\`javascript
+for (khởi tạo; điều kiện; bước tiếp) {
+  // code thực thi
 }
+\`\`\`
 
-// Helper function to provide default starter code
-function getInitialCode(language: string): string {
-  const starterCode: Record<string, string> = {
-    python: '# Write your Python code here\nprint("Hello, World!")',
-    javascript: '// Write your JavaScript code here\nconsole.log("Hello, World!");',
-    java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
-    cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, World!" << endl;\n    return 0;\n}',
-  };
+## Yêu cầu bài tập:
+Hãy sử dụng vòng lặp \`for\` để in ra các số từ 1 đến 5.
+`;
 
-  return starterCode[language] || '// Write your code here';
+    return (
+        <div className="flex flex-col h-screen bg-navy-950 text-slate-300 overflow-hidden font-sans">
+
+            {/* ===== TOP BAR - full width, always on top ===== */}
+            <div className="flex h-14 bg-navy-950 border-b border-slate-800 items-center justify-between px-4 flex-shrink-0 z-50 relative">
+                <div className="flex items-center gap-3 min-w-0">
+                    {/* Sidebar toggle (mobile) */}
+                    <button
+                        onClick={() => setSidebarOpen(!isSidebarOpen)}
+                        className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                        {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                    </button>
+
+                    {/* Back button */}
+                    <Link href="/courses" className="flex w-8 h-8 rounded-full bg-navy-800 items-center justify-center text-slate-400 hover:text-white transition-colors">
+                        <ArrowLeft className="w-4 h-4" />
+                    </Link>
+
+                    <h1 className="font-bold text-white text-sm lg:text-base tracking-tight truncate">
+                        3. Vòng lặp For
+                    </h1>
+                </div>
+
+                <button className="px-3 lg:px-4 py-2 bg-indigo-600/15 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600 hover:text-white rounded-lg transition-all flex items-center gap-2 text-xs lg:text-sm font-semibold flex-shrink-0">
+                    <CheckCircle className="w-4 h-4" />
+                    Đánh dấu hoàn thành
+                </button>
+            </div>
+
+            {/* ===== BODY: Sidebar + Content ===== */}
+            <div className="flex flex-1 overflow-hidden relative">
+
+                {/* Sidebar backdrop (mobile) */}
+                {isSidebarOpen && (
+                    <div
+                        className="fixed top-14 left-0 right-0 bottom-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+
+                {/* Sidebar */}
+                <Sidebar courseTitle="JavaScript Nâng cao" modules={modules} courseSlug="javascript-advanced" isOpen={isSidebarOpen} />
+
+                {/* Main content area */}
+                <div className="flex-1 flex flex-col lg:ml-80 h-full min-w-0">
+                    {/* Content: 2-column layout (Lesson + Editor) + AI Chat push panel */}
+                    <div className="flex-1 overflow-hidden flex flex-row">
+                        {/* Lesson + Editor columns */}
+                        <div className="flex-1 flex flex-col lg:flex-row gap-0 min-w-0">
+                            {/* Column 1: Reading Material */}
+                            <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 flex-shrink-0">
+                                <div className="p-5 lg:p-6">
+                                    <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+                                        <BookOpen className="w-4 h-4" />
+                                        Nội dung bài học
+                                    </div>
+                                    <div className="prose prose-invert prose-sm max-w-none prose-pre:bg-navy-900 prose-pre:border prose-pre:border-slate-800 prose-headings:text-slate-100 prose-p:text-slate-400 prose-p:leading-relaxed">
+                                        <ReactMarkdown>
+                                            {lessonContent}
+                                        </ReactMarkdown>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column 2: Code Editor (fills remaining space) */}
+                            <div className="flex-1 min-h-0 min-w-0 p-3 lg:p-4">
+                                <CodeEditor initialCode={`// In các số từ 1 đến 5\n`} />
+                            </div>
+                        </div>
+
+                        {/* AI Chat - inline push panel (desktop) */}
+                        <AiChatDrawer />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
