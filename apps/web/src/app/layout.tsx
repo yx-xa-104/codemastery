@@ -1,13 +1,20 @@
-import { ReactNode } from 'react';
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type { Metadata } from "next";
+import { Inter, Source_Code_Pro } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const sourceCodePro = Source_Code_Pro({
+  variable: "--font-source-code-pro",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'CodeMastery - Learn Programming Interactively',
-  description: 'Modern interactive coding platform with AI tutor',
+  title: "CodeMastery - Learn Programming Interactively",
+  description: "Modern interactive coding platform with AI tutor",
 };
 
 export default function RootLayout({
@@ -16,12 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="scroll-smooth">
+    <html lang="vi" className="dark scroll-smooth">
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
       </head>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-background-dark text-gray-100">{children}</body>
+      <body className={`${inter.variable} ${sourceCodePro.variable} font-sans antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
