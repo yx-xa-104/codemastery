@@ -142,3 +142,4 @@ vite.config.ts.timestamp-*
 /docs/*.md
 GEMINI.md
 ERRORS.md
+SUPABASE.txt
