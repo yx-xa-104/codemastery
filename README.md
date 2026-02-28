@@ -246,5 +246,4 @@ print(name, age)
 
 ## Acknowledgments
 
-- Inspired by [W3Schools](https://www.w3schools.com)
 - Built with [Next.js](https://nextjs.org)

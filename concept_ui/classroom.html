@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="scroll-smooth dark" lang="vi"><head>
+<html class="scroll-smooth" lang="vi"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>CodeMastery - Lớp Học Ảo &amp; Thông Báo</title>
@@ -12,21 +12,18 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#4F46E5", // Indigo-600
-                        "primary-dark": "#4338CA", // Indigo-700
-                        "primary-light": "#818CF8", // Indigo-400
+                        primary: "#4F46E5",
+                        "primary-dark": "#4338CA",
+                        "primary-light": "#818CF8",
                         "background-light": "#FFFFFF",
-                        "background-dark": "#010816", // Deep Navy requested
-                        "section-dark": "#0B1120", // Slightly lighter navy for sections
-                        "section-hover": "#111827",
+                        "background-dark": "#010816",
+                        "section-dark": "#0B1120",
                         "code-bg": "#E7E9EB",
-                        "code-dark": "#111827", // Gray-900
-                        "accent-gold": "#F59E0B", // Amber-500
-                        "accent-gold-hover": "#D97706", // Amber-600
-                        "accent-gold-light": "#FEF3C7", // Amber-100
-                        "accent-pink": "#FCE7F3",
-                        "accent-blue": "#E0F2FE",
-                        "accent-green": "#DCFCE7",
+                        "code-dark": "#111827",
+                        "accent-gold": "#F59E0B",
+                        "accent-gold-hover": "#D97706",
+                        "accent-gold-light": "#FEF3C7",
+                        "card-border": "#312E81",
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -44,19 +41,18 @@
         };
     </script>
 <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: #010816;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 3px;
+        ::-webkit-scrollbar-thumb {
+            background: #312e81;
+            border-radius: 4px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #374151;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4338ca;
         }
         .status-dot {
             box-shadow: 0 0 0 2px #0B1120;
