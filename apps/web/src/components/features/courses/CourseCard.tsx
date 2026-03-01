@@ -1,15 +1,23 @@
 import Link from "next/link";
-import { Clock, BookOpen, ArrowRight } from "lucide-react";
+import { Clock, BookOpen, ArrowRight, Flame } from "lucide-react";
+import type { CourseLevel } from "@/lib/supabase/database.types";
+
+const levelMap: Record<CourseLevel, string> = {
+    beginner: 'Cơ bản',
+    intermediate: 'Trung bình',
+    advanced: 'Nâng cao',
+};
 
 interface CourseCardProps {
     title: string;
     category: string;
-    level: "Cơ bản" | "Trung bình" | "Nâng cao";
+    level: CourseLevel;
     duration: string;
     lessons: number;
     image: string;
     progress?: number;
     slug: string;
+    isHot?: boolean;
 }
 
 export function CourseCard({
@@ -21,11 +29,18 @@ export function CourseCard({
     image,
     progress,
     slug,
+    isHot,
 }: CourseCardProps) {
     return (
         <div className="group glass rounded-2xl overflow-hidden flex flex-col h-full relative border border-white/5 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-glow-indigo hover:-translate-y-2">
-            {/* "Mới nhất" Badge */}
-            {progress === 0 && (
+            {/* Badges */}
+            {isHot && (
+                <div className="absolute top-4 right-4 z-10 bg-red-500/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-red-400/30 flex items-center gap-1.5 shadow-lg">
+                    <Flame className="w-3 h-3" />
+                    HOT
+                </div>
+            )}
+            {progress === 0 && !isHot && (
                 <div className="absolute top-4 right-4 z-10 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-1.5 shadow-lg">
                     <span className="w-2 h-2 rounded-full bg-green-400"></span>
                     New
@@ -39,17 +54,16 @@ export function CourseCard({
                     alt={title}
                     className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
                 />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-navy-900 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-navy-900 to-transparent"></div>
             </div>
 
-            <div className="p-6 flex flex-col flex-grow relative z-10">
+            <div className="p-6 flex flex-col grow relative z-10">
                 <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-wider text-indigo-300 uppercase bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">
                         {category}
                     </span>
                     <span className="text-[10px] font-bold tracking-wider text-amber-300 uppercase bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
-                        {level}
+                        {levelMap[level]}
                     </span>
                 </div>
 
@@ -77,7 +91,7 @@ export function CourseCard({
                             </div>
                             <div className="w-full bg-navy-950 rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
                                 <div
-                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
+                                    className="bg-linear-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
                                     style={{ width: `${progress}%` }}
                                 ></div>
                             </div>
