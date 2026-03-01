@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Source_Code_Pro } from "next/font/google";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,8 +14,8 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "CodeMastery - Learn Programming Interactively",
-  description: "Modern interactive coding platform with AI tutor",
+  title: "CodeMastery - Học lập trình tương tác",
+  description: "Nền tảng học lập trình trực tuyến với AI Tutor",
 };
 
 export default function RootLayout({
@@ -28,7 +29,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
       </head>
       <body className={`${inter.variable} ${sourceCodePro.variable} font-sans antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
