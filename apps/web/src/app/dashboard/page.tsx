@@ -3,8 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
-    BookOpen, Trophy, Flame, Clock, Bot, Pin,
-    TrendingUp, ChevronRight, Sparkles, BarChart3, School
+    BookOpen, Trophy, Flame, Clock, Bot,
+    TrendingUp, ChevronRight, Sparkles, BarChart3
 } from "lucide-react";
 
 const levelMap: Record<string, string> = {
@@ -28,15 +28,28 @@ export default async function DashboardPage() {
     const avatarUrl = user.user_metadata?.avatar_url;
 
     // Fetch enrollments with course info
-    const { data: enrollments } = await supabase
+    type EnrollmentRow = {
+        id: string;
+        progress_percent: number | null;
+        last_accessed_at: string | null;
+        courses: {
+            id: string; title: string; slug: string;
+            thumbnail_url: string | null; level: string;
+            total_lessons: number;
+            categories: { name: string } | null;
+        } | null;
+    };
+    const { data: rawEnrollments } = await supabase
         .from('enrollments')
-        .select('*, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
+        .select('id, progress_percent, last_accessed_at, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
         .eq('user_id', user.id)
         .order('last_accessed_at', { ascending: false })
         .limit(5);
 
-    const totalEnrolled = enrollments?.length ?? 0;
-    const avgProgress = enrollments?.length
+    const enrollments = (rawEnrollments ?? []) as unknown as EnrollmentRow[];
+
+    const totalEnrolled = enrollments.length;
+    const avgProgress = enrollments.length
         ? Math.round(enrollments.reduce((s, e) => s + (e.progress_percent ?? 0), 0) / enrollments.length)
         : 0;
 
@@ -264,7 +277,6 @@ export default async function DashboardPage() {
                                 <h3 className="text-white text-base font-bold">Khám phá nhanh</h3>
                                 {[
                                     { label: 'Tất cả khóa học', href: '/courses', icon: BookOpen },
-                                    { label: 'Lớp học của tôi', href: '/classroom/1', icon: School },
                                     { label: 'Lộ trình học tập', href: '/roadmap', icon: TrendingUp },
                                     { label: 'Bảng xếp hạng', href: '/leaderboard', icon: Trophy },
                                 ].map(({ label, href, icon: Icon }) => (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Code2, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, School } from "lucide-react";
+import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -35,7 +35,6 @@ export function Navbar() {
 
     const navLinks = [
         { name: "Khóa học", href: "/courses", icon: BookOpen },
-        { name: "Lớp học", href: "/classroom/1", icon: School },
         { name: "Lộ trình", href: "/roadmap", icon: Compass },
         { name: "Xếp hạng", href: "/leaderboard", icon: Trophy },
     ];
@@ -56,7 +55,7 @@ export function Navbar() {
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 group">
                         <div className="w-9 h-9 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-glow-indigo transition-transform group-hover:scale-105">
-                            <Code2 className="w-5 h-5 text-white" />
+                        <span className="text-white font-bold text-lg">✦</span>
                         </div>
                         <span className="text-lg font-bold text-white tracking-tight">
                             Code<span className="text-amber-500">Mastery</span>
