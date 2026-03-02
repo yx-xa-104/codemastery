@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Code2, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, X, Code2, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, School } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -23,7 +23,6 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Close user menu on outside click
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
@@ -36,6 +35,7 @@ export function Navbar() {
 
     const navLinks = [
         { name: "Khóa học", href: "/courses", icon: BookOpen },
+        { name: "Lớp học", href: "/classroom/1", icon: School },
         { name: "Lộ trình", href: "/roadmap", icon: Compass },
         { name: "Xếp hạng", href: "/leaderboard", icon: Trophy },
     ];
