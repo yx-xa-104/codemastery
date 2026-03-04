@@ -2,44 +2,58 @@
 
 import { useState, useCallback } from "react";
 
+export interface RunResult {
+    output: string;
+    error?: string;
+    executionTime?: number;
+}
+
 export function useCodeRunner(initialCode: string = "// Code here...") {
     const [code, setCode] = useState(initialCode);
-    const [output, setOutput] = useState<string | null>(null);
+    const [result, setResult] = useState<RunResult | null>(null);
     const [isRunning, setIsRunning] = useState(false);
 
-    const handleRun = useCallback(() => {
+    const handleRun = useCallback(async (language: string = "javascript") => {
+        if (!code.trim()) return;
         setIsRunning(true);
-        setTimeout(() => {
-            try {
-                const logs: string[] = [];
-                const originalLog = console.log;
-                console.log = (...args) => {
-                    logs.push(
-                        args
-                            .map((a) => (typeof a === "object" ? JSON.stringify(a) : a))
-                            .join(" ")
-                    );
-                };
+        setResult(null);
 
-                // eslint-disable-next-line no-new-func
-                const fn = new Function(code);
-                fn();
+        try {
+            const response = await fetch("/api/execute", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code, language }),
+            });
 
-                console.log = originalLog;
-                setOutput(
-                    logs.join("\n") || "Program finished successfully without output."
-                );
-            } catch (err: any) {
-                setOutput(`Error: ${err.message}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                setResult({ output: "", error: data.error ?? "Execution failed" });
+            } else {
+                setResult({
+                    output: data.output ?? "",
+                    error: data.error,
+                    executionTime: data.executionTime,
+                });
             }
+        } catch (err: any) {
+            setResult({ output: "", error: err.message ?? "Network error" });
+        } finally {
             setIsRunning(false);
-        }, 800);
+        }
     }, [code]);
 
     const handleReset = useCallback(() => {
         setCode(initialCode);
-        setOutput(null);
+        setResult(null);
     }, [initialCode]);
 
-    return { code, setCode, output, isRunning, handleRun, handleReset };
+    // Legacy: expose `output` string for backward compat with CodeEditor
+    const output = result
+        ? result.error
+            ? `Error: ${result.error}`
+            : result.output || "Program finished successfully without output."
+        : null;
+
+    return { code, setCode, output, result, isRunning, handleRun, handleReset };
 }

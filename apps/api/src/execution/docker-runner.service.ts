@@ -12,58 +12,42 @@ export class DockerRunnerService {
   private readonly logger = new Logger(DockerRunnerService.name);
   private readonly docker: Docker;
 
-  // Docker image mapping for each language
-  private readonly languageImages = {
+  private readonly languageImages: Record<string, string> = {
     python: 'python:3.11-alpine',
-    java: 'openjdk:17-alpine',
+    java: 'eclipse-temurin:17-jdk-alpine',
     cpp: 'gcc:12-alpine',
     javascript: 'node:20-alpine',
   };
 
   constructor() {
-    // Explicitly configure for Windows - use TCP port 2375
-    // Make sure Docker Desktop has "Expose daemon on tcp://localhost:2375" enabled
-    this.docker = new Docker({
-      host: '127.0.0.1',
-      port: 2375,
-    });
-    this.logger.log(`Docker service initialized on ${process.platform} via TCP:2375`);
+    const isWindows = process.platform === 'win32';
+    this.docker = isWindows
+      ? new Docker({ host: '127.0.0.1', port: 2375 })
+      : new Docker();
+    this.logger.log(
+      `Docker service initialized on ${process.platform} via ${isWindows ? 'TCP:2375' : 'unix socket'}`,
+    );
   }
 
   async runCode(code: string, language: string): Promise<RunResult> {
-    try {
-      const image = this.languageImages[language];
-      if (!image) {
-        throw new Error(`Unsupported language: ${language}`);
-      }
+    const image = this.languageImages[language];
+    if (!image) throw new Error(`Unsupported language: ${language}`);
 
-      // Ensure image is pulled
-      await this.ensureImage(image);
-
-      // Create execution script based on language
-      const script = this.createExecutionScript(code, language);
-
-      // Run in Docker container
-      const result = await this.runInContainer(image, script, language);
-
-      return result;
-    } catch (error) {
-      this.logger.error(`Docker execution failed: ${error.message}`);
-      throw error;
-    }
+    await this.ensureImage(image);
+    const script = this.createExecutionScript(code, language);
+    return this.runInContainer(image, script, language);
   }
 
   private async ensureImage(image: string): Promise<void> {
     try {
       await this.docker.getImage(image).inspect();
-      this.logger.log(`Image ${image} is available`);
     } catch {
       this.logger.log(`Pulling image: ${image}`);
-      await new Promise((resolve, reject) => {
-        this.docker.pull(image, (err, stream) => {
+      await new Promise<void>((resolve, reject) => {
+        this.docker.pull(image, (err: Error | null, stream: NodeJS.ReadableStream) => {
           if (err) return reject(err);
-          this.docker.modem.followProgress(stream, (err, res) =>
-            err ? reject(err) : resolve(res),
+          this.docker.modem.followProgress(stream, (err: Error | null) =>
+            err ? reject(err) : resolve(),
           );
         });
       });
@@ -73,27 +57,20 @@ export class DockerRunnerService {
   private createExecutionScript(code: string, language: string): string {
     switch (language) {
       case 'python':
-        return code;
-
       case 'javascript':
         return code;
 
-      case 'java':
-        // Extract class name or use default
+      case 'java': {
         const classMatch = code.match(/public\s+class\s+(\w+)/);
         const className = classMatch ? classMatch[1] : 'Main';
-        return `
-echo '${this.escapeCode(code)}' > ${className}.java
-javac ${className}.java
-java ${className}
-        `.trim();
+        const escaped = this.escapeCode(code);
+        return `printf '%s' '${escaped}' > ${className}.java && javac ${className}.java && java ${className}`;
+      }
 
-      case 'cpp':
-        return `
-echo '${this.escapeCode(code)}' > main.cpp
-g++ -o main main.cpp
-./main
-        `.trim();
+      case 'cpp': {
+        const escaped = this.escapeCode(code);
+        return `printf '%s' '${escaped}' > main.cpp && g++ -O2 -o main main.cpp && ./main`;
+      }
 
       default:
         throw new Error(`Unsupported language: ${language}`);
@@ -105,102 +82,87 @@ g++ -o main main.cpp
     script: string,
     language: string,
   ): Promise<RunResult> {
-    const containerId = `exec-${uuidv4()}`;
+    const containerName = `exec-${uuidv4()}`;
+
+    const cmd =
+      language === 'python'
+        ? ['python3', '-c', script]
+        : language === 'javascript'
+          ? ['node', '-e', script]
+          : ['/bin/sh', '-c', script];
 
     const container = await this.docker.createContainer({
       Image: image,
-      name: containerId,
-      Cmd:
-        language === 'python'
-          ? ['python', '-c', script]
-          : language === 'javascript'
-            ? ['node', '-e', script]
-            : ['/bin/sh', '-c', script],
-
-      // Security constraints
+      name: containerName,
+      Cmd: cmd,
+      AttachStdout: true,
+      AttachStderr: true,
       HostConfig: {
         AutoRemove: true,
-        Memory: 128 * 1024 * 1024, // 128MB
+        Memory: 128 * 1024 * 1024,
         MemorySwap: 128 * 1024 * 1024,
-        NanoCpus: 500000000, // 0.5 CPU
+        NanoCpus: 500_000_000,
         PidsLimit: 50,
-        NetworkMode: 'none', // No network access
-        ReadonlyRootfs: false, // Need writable for compilation
+        NetworkMode: 'none',
         SecurityOpt: ['no-new-privileges'],
         CapDrop: ['ALL'],
       },
-
-      // Working directory with tmpfs
       WorkingDir: '/tmp',
     });
 
     try {
       await container.start();
 
-      // Wait for container with timeout
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Execution timeout (5s)')), 5000);
-      });
+      await Promise.race([
+        container.wait(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Execution timeout (5s)')), 5000),
+        ),
+      ]);
 
-      const execPromise = container.wait();
-      await Promise.race([execPromise, timeoutPromise]);
-
-      // Get logs
-      const logs = await container.logs({
+      const logBuffer: Buffer = await container.logs({
         stdout: true,
         stderr: true,
-      });
+        follow: false,
+      }) as unknown as Buffer;
 
-      const output = logs.toString('utf8');
-      const { stdout, stderr } = this.parseLogs(output);
-
-      return {
-        stdout: stdout.slice(0, 1000000), // Max 1MB output
-        stderr: stderr.slice(0, 1000000),
-      };
-    } catch (error) {
-      // Kill container if still running
-      try {
-        await container.kill();
-        await container.remove();
-      } catch {}
-
+      return this.demuxBuffer(
+        Buffer.isBuffer(logBuffer) ? logBuffer : Buffer.from(logBuffer as unknown as string),
+      );
+    } catch (error: any) {
+      try { await container.kill(); } catch { /* already removed */ }
       throw error;
     }
   }
 
-  private escapeCode(code: string): string {
-    return code
-      .replace(/\\/g, '\\\\')
-      .replace(/'/g, "'\\''")
-      .replace(/\n/g, '\\n');
-  }
-
-  private parseLogs(logs: string): { stdout: string; stderr: string } {
-    // Simple log parsing - in production you might need more sophisticated parsing
-    const lines = logs.split('\n');
+  /**
+   * Demultiplex Docker's multiplexed log stream.
+   * Frame: [stream_type(1B)][reserved(3B)][size(4B BE)][payload]
+   * stream_type: 1 = stdout, 2 = stderr
+   */
+  private demuxBuffer(buf: Buffer): RunResult {
     const stdout: string[] = [];
     const stderr: string[] = [];
+    let offset = 0;
 
-    lines.forEach((line) => {
-      // Docker adds 8-byte headers to distinguish stdout/stderr
-      if (line.length > 8) {
-        const header = line.charCodeAt(0);
-        const content = line.slice(8);
-
-        if (header === 2) {
-          // stderr
-          stderr.push(content);
-        } else {
-          // stdout
-          stdout.push(content);
-        }
-      }
-    });
+    while (offset + 8 <= buf.length) {
+      const streamType = buf.readUInt8(offset);
+      const size = buf.readUInt32BE(offset + 4);
+      offset += 8;
+      if (offset + size > buf.length) break;
+      const payload = buf.slice(offset, offset + size).toString('utf8');
+      offset += size;
+      if (streamType === 2) stderr.push(payload);
+      else stdout.push(payload);
+    }
 
     return {
-      stdout: stdout.join('\n'),
-      stderr: stderr.join('\n'),
+      stdout: stdout.join('').slice(0, 100_000),
+      stderr: stderr.join('').slice(0, 100_000),
     };
+  }
+
+  private escapeCode(code: string): string {
+    return code.replace(/\\/g, '\\\\').replace(/'/g, "'\\''");
   }
 }
