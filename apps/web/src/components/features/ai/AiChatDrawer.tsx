@@ -39,8 +39,8 @@ export function AiChatDrawer({ onToggle, isOpen: controlledOpen, onClose }: AiCh
             {isOpen && (
                 <>
                     {/* Desktop: inline panel that pushes content */}
-                    <div className="hidden lg:flex w-[380px] h-full flex-shrink-0 border-l border-slate-800 bg-navy-950 flex-col">
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-navy-900 flex-shrink-0">
+                    <div className="hidden lg:flex w-[380px] h-full shrink-0 border-l border-slate-800 bg-navy-950 flex-col">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-navy-900 shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center relative">
                                     <Bot className="w-5 h-5 text-white" />
@@ -65,7 +65,7 @@ export function AiChatDrawer({ onToggle, isOpen: controlledOpen, onClose }: AiCh
 
                     {/* Mobile: full screen panel */}
                     <div className="lg:hidden fixed inset-0 z-50 bg-navy-950 flex flex-col">
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-navy-900 flex-shrink-0">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-navy-900 shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center relative">
                                     <Bot className="w-5 h-5 text-white" />

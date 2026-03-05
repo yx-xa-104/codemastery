@@ -99,9 +99,11 @@ export interface Database {
           total_lessons: number | null;
           teacher_id: string | null;
           status: CourseStatus;
+          is_published: boolean;
           is_featured: boolean;
           is_hot: boolean;
           is_free: boolean;
+          price: number | null;
           requirements: string[];
           learning_outcomes: string[];
           avg_rating: number | null;
@@ -180,10 +182,12 @@ export interface Database {
           title: string;
           slug: string | null;
           lesson_type: LessonType;
+          content: string | null;
           content_html: string | null;
           video_url: string | null;
           duration_minutes: number | null;
           starter_code: string | null;
+          exercise_config: Record<string, unknown> | null;
           solution_code: string | null;
           programming_language: string | null;
           sort_order: number;
@@ -302,6 +306,7 @@ export interface Database {
           status?: ProgressStatus;
           score?: number | null;
           code_submission?: string | null;
+          completed_at?: string | null;
         };
         Update: {
           status?: ProgressStatus;

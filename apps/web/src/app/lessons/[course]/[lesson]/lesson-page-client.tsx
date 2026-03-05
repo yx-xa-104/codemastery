@@ -3,10 +3,11 @@
 import { Sidebar } from "@/components/layouts/Sidebar";
 import { CodeEditor } from "@/components/features/editor/CodeEditor";
 import { AiChatDrawer } from "@/components/features/ai/AiChatDrawer";
-import { useState } from "react";
-import { ArrowLeft, Menu, X, CheckCircle, BookOpen } from "lucide-react";
+import { useState, useTransition } from "react";
+import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { createClient } from "@/lib/supabase/client";
 
 interface LessonModule {
     id: string;
@@ -31,18 +32,58 @@ interface LessonPageClientProps {
         exerciseConfig: Record<string, unknown> | null;
     };
     modules: LessonModule[];
+    userId?: string;
+    enrollmentId?: string;
+    isInitiallyCompleted?: boolean;
 }
 
-export function LessonPageClient({ course, lesson, modules }: LessonPageClientProps) {
+export function LessonPageClient({ course, lesson, modules, userId, enrollmentId, isInitiallyCompleted = false }: LessonPageClientProps) {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(isInitiallyCompleted);
+    const [isPending, startTransition] = useTransition();
 
+
+    // Determine language from exerciseConfig
+    const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
     const initialCode = lesson.exerciseConfig?.starterCode as string
         ?? `// ${lesson.title}\n// Bắt đầu code tại đây\n`;
+
+    const handleMarkComplete = () => {
+        if (isCompleted || !userId) return;
+
+        startTransition(async () => {
+            const supabase = createClient();
+            // Upsert lesson progress using actual schema (status enum, not is_completed bool)
+            await supabase.from('lesson_progress').upsert({
+                user_id: userId,
+                lesson_id: lesson.id,
+                status: 'completed' as const,
+                completed_at: new Date().toISOString(),
+            }, { onConflict: 'user_id,lesson_id' });
+
+            // Recalculate enrollment progress_percent
+            if (enrollmentId) {
+                const totalLessons = modules.reduce((sum, m) => sum + m.lessons.length, 0);
+                if (totalLessons > 0) {
+                    const { count } = await supabase
+                        .from('lesson_progress')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', userId)
+                        .eq('status', 'completed');
+                    const perc = Math.round(((count ?? 1) / totalLessons) * 100);
+                    await supabase.from('enrollments')
+                        .update({ progress_percent: Math.min(100, perc) })
+                        .eq('id', enrollmentId);
+                }
+            }
+            setIsCompleted(true);
+        });
+    };
 
     return (
         <div className="flex flex-col h-screen bg-[#010816] text-slate-300 overflow-hidden font-sans">
             {/* Top Bar */}
-            <div className="flex h-14 bg-[#010816] border-b border-slate-800 items-center justify-between px-4 flex-shrink-0 z-50">
+            <div className="flex h-14 bg-[#010816] border-b border-slate-800 items-center justify-between px-4 shrink-0 z-50">
                 <div className="flex items-center gap-3 min-w-0">
                     <button
                         onClick={() => setSidebarOpen(!isSidebarOpen)}
@@ -60,9 +101,20 @@ export function LessonPageClient({ course, lesson, modules }: LessonPageClientPr
                         {lesson.title}
                     </h1>
                 </div>
-                <button className="px-3 lg:px-4 py-2 bg-indigo-600/15 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600 hover:text-white rounded-lg transition-all flex items-center gap-2 text-xs lg:text-sm font-semibold">
-                    <CheckCircle className="w-4 h-4" />
-                    Đánh dấu hoàn thành
+                <button
+                    onClick={handleMarkComplete}
+                    disabled={isCompleted || isPending || !userId}
+                    className={`px-3 lg:px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-xs lg:text-sm font-semibold ${
+                        isCompleted
+                            ? 'bg-green-600/20 text-green-400 border border-green-500/30 cursor-default'
+                            : 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600 hover:text-white'
+                    } disabled:opacity-50`}
+                >
+                    {isPending
+                        ? <Loader2 className="w-4 h-4 animate-spin" />
+                        : <CheckCircle className="w-4 h-4" />
+                    }
+                    {isCompleted ? 'Đã hoàn thành' : 'Đánh dấu hoàn thành'}
                 </button>
             </div>
 
@@ -87,7 +139,7 @@ export function LessonPageClient({ course, lesson, modules }: LessonPageClientPr
                 <div className="flex-1 flex flex-col lg:ml-80 h-full min-w-0">
                     <div className="flex-1 overflow-hidden flex flex-row">
                         {/* Left: Lesson content */}
-                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 flex-shrink-0">
+                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 shrink-0">
                             <div className="p-5 lg:p-6">
                                 <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
                                     <BookOpen className="w-4 h-4" />
@@ -105,7 +157,7 @@ export function LessonPageClient({ course, lesson, modules }: LessonPageClientPr
 
                         {/* Right: Code editor */}
                         <div className="flex-1 min-h-0 min-w-0 p-3 lg:p-4">
-                            <CodeEditor initialCode={initialCode} />
+                            <CodeEditor initialCode={initialCode} language={language} />
                         </div>
                     </div>
                 </div>

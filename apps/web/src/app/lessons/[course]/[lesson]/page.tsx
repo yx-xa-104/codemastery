@@ -9,6 +9,9 @@ interface Props {
 export default async function LessonPage({ params }: Props) {
     const supabase = await createClient();
 
+    // Get authenticated user (silent fail — page still works for preview)
+    const { data: { user } } = await supabase.auth.getUser();
+
     // Fetch the course and its modules+lessons
     const { data: course } = await supabase
         .from('courses')
@@ -37,6 +40,30 @@ export default async function LessonPage({ params }: Props) {
 
     if (!lesson) notFound();
 
+    // Fetch enrollment id for progress tracking (if user is logged in)
+    let enrollmentId: string | undefined;
+    if (user) {
+        const { data: enrollment } = await supabase
+            .from('enrollments')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('course_id', course.id)
+            .single();
+        enrollmentId = enrollment?.id;
+    }
+
+    // Check if lesson is already completed
+    let isInitiallyCompleted = false;
+    if (user) {
+        const { data: progress } = await supabase
+            .from('lesson_progress')
+            .select('status')
+            .eq('user_id', user.id)
+            .eq('lesson_id', lesson.id)
+            .single();
+        isInitiallyCompleted = progress?.status === 'completed';
+    }
+
     // Map modules to the format Sidebar expects
     const sidebarModules = (modules ?? []).map(mod => ({
         id: mod.id,
@@ -49,7 +76,7 @@ export default async function LessonPage({ params }: Props) {
             title: l.title,
             slug: l.slug,
             duration: l.duration_minutes ? `${l.duration_minutes}:00` : '—',
-            isCompleted: false,     // TODO: fetch from lesson_progress
+            isCompleted: false,
             type: (l.lesson_type === 'video' ? 'video' : 'interactive') as 'video' | 'interactive',
         })),
     }));
@@ -65,6 +92,9 @@ export default async function LessonPage({ params }: Props) {
                 exerciseConfig: lesson.exercise_config,
             }}
             modules={sidebarModules}
+            userId={user?.id}
+            enrollmentId={enrollmentId}
+            isInitiallyCompleted={isInitiallyCompleted}
         />
     );
 }
