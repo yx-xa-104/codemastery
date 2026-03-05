@@ -6,15 +6,20 @@ import { AiChat } from "./AiChat";
 
 interface AiChatDrawerProps {
     onToggle?: (isOpen: boolean) => void;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
-export function AiChatDrawer({ onToggle }: AiChatDrawerProps) {
-    const [isOpen, setIsOpen] = useState(false);
+export function AiChatDrawer({ onToggle, isOpen: controlledOpen, onClose }: AiChatDrawerProps) {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
     const toggle = (open: boolean) => {
-        setIsOpen(open);
+        if (controlledOpen === undefined) setInternalOpen(open);
+        if (open === false) onClose?.();
         onToggle?.(open);
     };
+
 
     return (
         <>
