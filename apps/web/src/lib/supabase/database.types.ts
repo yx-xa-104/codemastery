@@ -58,6 +58,7 @@ export interface Database {
           role?: UserRole;
           updated_at?: string;
         };
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -82,6 +83,7 @@ export interface Database {
           icon?: string | null;
           sort_order?: number;
         };
+        Relationships: [];
       };
       courses: {
         Row: {
@@ -127,6 +129,7 @@ export interface Database {
           total_lessons?: number | null;
           teacher_id?: string | null;
           status?: CourseStatus;
+          is_published?: boolean;
           is_featured?: boolean;
           is_hot?: boolean;
           is_free?: boolean;
@@ -147,12 +150,22 @@ export interface Database {
           total_lessons?: number | null;
           teacher_id?: string | null;
           status?: CourseStatus;
+          is_published?: boolean;
           is_featured?: boolean;
           is_hot?: boolean;
           is_free?: boolean;
           requirements?: string[];
           learning_outcomes?: string[];
         };
+        Relationships: [
+          {
+            foreignKeyName: 'courses_category_id_fkey';
+            columns: ['category_id'];
+            isOneToOne: false;
+            referencedRelation: 'categories';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       modules: {
         Row: {
@@ -174,6 +187,15 @@ export interface Database {
           title?: string;
           sort_order?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'modules_course_id_fkey';
+            columns: ['course_id'];
+            isOneToOne: false;
+            referencedRelation: 'courses';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       lessons: {
         Row: {
@@ -201,10 +223,12 @@ export interface Database {
           title: string;
           slug?: string | null;
           lesson_type?: LessonType;
+          content?: string | null;
           content_html?: string | null;
           video_url?: string | null;
           duration_minutes?: number | null;
           starter_code?: string | null;
+          exercise_config?: Record<string, unknown> | null;
           solution_code?: string | null;
           programming_language?: string | null;
           sort_order?: number;
@@ -215,15 +239,26 @@ export interface Database {
           title?: string;
           slug?: string | null;
           lesson_type?: LessonType;
+          content?: string | null;
           content_html?: string | null;
           video_url?: string | null;
           duration_minutes?: number | null;
           starter_code?: string | null;
+          exercise_config?: Record<string, unknown> | null;
           solution_code?: string | null;
           programming_language?: string | null;
           sort_order?: number;
           is_free_preview?: boolean;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'lessons_module_id_fkey';
+            columns: ['module_id'];
+            isOneToOne: false;
+            referencedRelation: 'modules';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       quiz_questions: {
         Row: {
@@ -243,6 +278,7 @@ export interface Database {
           question_text?: string;
           sort_order?: number;
         };
+        Relationships: [];
       };
       quiz_options: {
         Row: {
@@ -264,6 +300,7 @@ export interface Database {
           is_correct?: boolean;
           sort_order?: number;
         };
+        Relationships: [];
       };
       enrollments: {
         Row: {
@@ -287,6 +324,22 @@ export interface Database {
           current_lesson_id?: string | null;
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'enrollments_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'enrollments_course_id_fkey';
+            columns: ['course_id'];
+            isOneToOne: false;
+            referencedRelation: 'courses';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       lesson_progress: {
         Row: {
@@ -314,6 +367,22 @@ export interface Database {
           code_submission?: string | null;
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'lesson_progress_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'lesson_progress_lesson_id_fkey';
+            columns: ['lesson_id'];
+            isOneToOne: false;
+            referencedRelation: 'lessons';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       pinned_courses: {
         Row: {
@@ -328,6 +397,7 @@ export interface Database {
           course_id: string;
         };
         Update: never;
+        Relationships: [];
       };
       learning_activity: {
         Row: {
@@ -348,6 +418,7 @@ export interface Database {
           duration_minutes?: number;
           lessons_completed?: number;
         };
+        Relationships: [];
       };
       course_reviews: {
         Row: {
@@ -369,6 +440,7 @@ export interface Database {
           rating?: number;
           comment?: string | null;
         };
+        Relationships: [];
       };
       classrooms: {
         Row: {
@@ -397,6 +469,7 @@ export interface Database {
           is_active?: boolean;
           max_members?: number;
         };
+        Relationships: [];
       };
       classroom_members: {
         Row: {
@@ -419,6 +492,7 @@ export interface Database {
           last_seen_at?: string | null;
           is_online?: boolean;
         };
+        Relationships: [];
       };
       classroom_posts: {
         Row: {
@@ -452,6 +526,7 @@ export interface Database {
           is_important?: boolean;
           attachment_urls?: string[];
         };
+        Relationships: [];
       };
       post_comments: {
         Row: {
@@ -470,6 +545,7 @@ export interface Database {
         Update: {
           content?: string;
         };
+        Relationships: [];
       };
       post_reactions: {
         Row: {
@@ -488,6 +564,7 @@ export interface Database {
         Update: {
           reaction_type?: string;
         };
+        Relationships: [];
       };
       ai_conversations: {
         Row: {
@@ -508,6 +585,7 @@ export interface Database {
           title?: string | null;
           context_lesson_id?: string | null;
         };
+        Relationships: [];
       };
       ai_messages: {
         Row: {
@@ -529,6 +607,7 @@ export interface Database {
           content?: string;
           code_snippet?: string | null;
         };
+        Relationships: [];
       };
       badges: {
         Row: {
@@ -555,6 +634,7 @@ export interface Database {
           criteria_type?: string;
           criteria_value?: number;
         };
+        Relationships: [];
       };
       user_badges: {
         Row: {
@@ -569,6 +649,7 @@ export interface Database {
           badge_id: string;
         };
         Update: never;
+        Relationships: [];
       };
       notifications: {
         Row: {
@@ -597,6 +678,7 @@ export interface Database {
           link_url?: string | null;
           is_read?: boolean;
         };
+        Relationships: [];
       };
     };
     Enums: {
