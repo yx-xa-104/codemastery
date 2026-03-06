@@ -7,7 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data: courses } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: courses } = await (supabase as any)
     .from('courses')
     .select('id, title, slug, short_description, thumbnail_url, level, duration_hours, total_lessons, is_hot, categories(name)')
     .eq('status', 'published')
@@ -34,7 +35,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(courses ?? []).map((course) => (
+            {(courses ?? []).map((course: any) => (
               <CourseCard
                 key={course.id}
                 title={course.title}

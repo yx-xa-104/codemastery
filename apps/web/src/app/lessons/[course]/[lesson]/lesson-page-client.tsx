@@ -54,7 +54,7 @@ export function LessonPageClient({ course, lesson, modules, userId, enrollmentId
         startTransition(async () => {
             const supabase = createClient();
             // Upsert lesson progress using actual schema (status enum, not is_completed bool)
-            await supabase.from('lesson_progress').upsert({
+            await (supabase.from('lesson_progress') as any).upsert({
                 user_id: userId,
                 lesson_id: lesson.id,
                 status: 'completed' as const,
@@ -71,7 +71,7 @@ export function LessonPageClient({ course, lesson, modules, userId, enrollmentId
                         .eq('user_id', userId)
                         .eq('status', 'completed');
                     const perc = Math.round(((count ?? 1) / totalLessons) * 100);
-                    await supabase.from('enrollments')
+                    await (supabase.from('enrollments') as any)
                         .update({ progress_percent: Math.min(100, perc) })
                         .eq('id', enrollmentId);
                 }

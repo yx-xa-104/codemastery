@@ -13,7 +13,8 @@ export default async function LessonPage({ params }: Props) {
     const { data: { user } } = await supabase.auth.getUser();
 
     // Fetch the course and its modules+lessons
-    const { data: course } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: course } = await (supabase as any)
         .from('courses')
         .select('id, title, slug')
         .eq('slug', params.course)
@@ -21,7 +22,8 @@ export default async function LessonPage({ params }: Props) {
 
     if (!course) notFound();
 
-    const { data: modules } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: modules } = await (supabase as any)
         .from('modules')
         .select('id, title, sort_order, lessons(id, title, slug, lesson_type, duration_minutes, sort_order)')
         .eq('course_id', course.id)
@@ -30,7 +32,8 @@ export default async function LessonPage({ params }: Props) {
 
     // Fetch the current lesson — the URL param may be slug or UUID
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.lesson);
-    const lessonQuery = supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lessonQuery = (supabase as any)
         .from('lessons')
         .select('id, title, slug, content, lesson_type, video_url, exercise_config');
 
@@ -43,7 +46,7 @@ export default async function LessonPage({ params }: Props) {
     // Fetch enrollment id for progress tracking (if user is logged in)
     let enrollmentId: string | undefined;
     if (user) {
-        const { data: enrollment } = await supabase
+        const { data: enrollment } = await (supabase as any)
             .from('enrollments')
             .select('id')
             .eq('user_id', user.id)
@@ -55,7 +58,7 @@ export default async function LessonPage({ params }: Props) {
     // Check if lesson is already completed
     let isInitiallyCompleted = false;
     if (user) {
-        const { data: progress } = await supabase
+        const { data: progress } = await (supabase as any)
             .from('lesson_progress')
             .select('status')
             .eq('user_id', user.id)
@@ -65,7 +68,7 @@ export default async function LessonPage({ params }: Props) {
     }
 
     // Map modules to the format Sidebar expects
-    const sidebarModules = (modules ?? []).map(mod => ({
+    const sidebarModules = (modules ?? []).map((mod: any) => ({
         id: mod.id,
         title: mod.title,
         lessons: (mod.lessons as unknown as Array<{

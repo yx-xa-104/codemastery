@@ -1,47 +1,34 @@
-// ============================
+// =============================
 // Types for CodeMastery App
-// ============================
+// =============================
+//
+// DB Row types — always use these for data from Supabase / API
+export type {
+  Tables,
+  InsertTables,
+  UpdateTables,
+  UserRole,
+  CourseLevel,
+  CourseStatus,
+  LessonType,
+  ProgressStatus,
+  PostType,
+} from '../lib/supabase/database.types';
 
 // --- Chat & AI ---
 export interface Message {
-    id: string;
-    role: "user" | "assistant";
-    content: string;
-}
-
-// --- Course & Lessons ---
-export interface Lesson {
-    id: string;
-    title: string;
-    duration: string;
-    isCompleted: boolean;
-    type: "video" | "interactive" | "quiz";
-    slug: string;
-}
-
-export interface Module {
-    id: string;
-    title: string;
-    lessons: Lesson[];
-}
-
-export interface Course {
-    title: string;
-    slug: string;
-    category: string;
-    level: string;
-    duration: string;
-    lessons: number;
-    image: string;
-    progress?: number;
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 // --- Code Editor ---
 export interface CodeEditorProps {
-    initialCode?: string;
-    language?: string;
-    onRun?: (code: string) => void;
+  initialCode?: string;
+  language?: string;
+  onRun?: (code: string) => void;
 }
 
 // --- Theme ---
-export type Theme = "dark" | "light";
+export type Theme = 'dark' | 'light';
+

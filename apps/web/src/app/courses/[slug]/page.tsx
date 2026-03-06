@@ -15,7 +15,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     const supabase = await createClient();
 
     // Fetch course with category
-    const { data: course } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: course } = await (supabase as any)
         .from('courses')
         .select('*, categories(name)')
         .eq('slug', slug)
@@ -24,7 +25,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     if (!course) return notFound();
 
     // Fetch modules with lessons
-    const { data: modules } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: modules } = await (supabase as any)
         .from('modules')
         .select('*, lessons(*)')
         .eq('course_id', course.id)
@@ -32,7 +34,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
         .order('sort_order', { referencedTable: 'lessons' });
 
     const categoryName = (course.categories as unknown as { name: string })?.name ?? 'Khác';
-    const totalLessons = modules?.reduce((sum, m) => sum + ((m.lessons as unknown[])?.length ?? 0), 0) ?? 0;
+    const totalLessons = (modules as any[])?.reduce((sum: number, m: any) => sum + ((m.lessons as unknown[])?.length ?? 0), 0) ?? 0;
 
     return (
         <MainLayout>
@@ -110,7 +112,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                             Bạn sẽ học được gì?
                                         </h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                                            {course.learning_outcomes.map((outcome, idx) => (
+                                            {course.learning_outcomes.map((outcome: any, idx: number) => (
                                                 <div key={idx} className="flex items-start gap-3">
                                                     <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
                                                         <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -130,7 +132,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                             Yêu cầu trước khi học
                                         </h2>
                                         <ul className="space-y-3">
-                                            {course.requirements.map((req, idx) => (
+                                            {course.requirements.map((req: any, idx: number) => (
                                                 <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm">
                                                     <span className="text-amber-400 mt-1">•</span>
                                                     {req}
@@ -145,7 +147,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                     <div>
                                         <h2 className="text-xl font-bold text-white mb-6">Nội dung khóa học</h2>
                                         <div className="space-y-4">
-                                            {modules.map((mod, idx) => {
+                                            {modules.map((mod: any, idx: number) => {
                                                 const lessons = (mod.lessons as unknown as { id: string; title: string; slug: string | null; duration_minutes: number | null; lesson_type: string; sort_order: number }[]) ?? [];
                                                 return (
                                                     <div key={mod.id} className="rounded-2xl overflow-hidden border border-slate-800/80 bg-navy-900/30">

@@ -21,9 +21,10 @@ export default async function AdminCoursesPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    const { data: courses } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: courses } = await (supabase as any)
         .from('courses')
-        .select('id, title, slug, level, is_published, thumbnail_url, total_enrollments, avg_rating, total_lessons, categories(name)')
+        .select('id, title, slug, level, status, thumbnail_url, total_enrollments, avg_rating, total_lessons, categories(name)')
         .order('created_at', { ascending: false });
 
     return (
@@ -61,7 +62,7 @@ export default async function AdminCoursesPage() {
             {/* Courses grid */}
             {courses && courses.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                    {courses.map(course => {
+                    {courses.map((course: any) => {
                         const category = (course.categories as unknown as { name: string } | null)?.name ?? '';
                         return (
                             <div key={course.id} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all group">
@@ -73,9 +74,9 @@ export default async function AdminCoursesPage() {
                                     }
                                     {/* Status badge */}
                                     <div className="absolute top-3 right-3">
-                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 border ${course.is_published ? 'bg-green-500/20 text-green-300 border-green-500/30' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'}`}>
+                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 border ${course.status === 'published' ? 'bg-green-500/20 text-green-300 border-green-500/30' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'}`}>
                                             <Circle className="w-1.5 h-1.5 fill-current" />
-                                            {course.is_published ? 'Đang hoạt động' : 'Bản nháp'}
+                                            {course.status === 'published' ? 'Đang hoạt động' : 'Bản nháp'}
                                         </span>
                                     </div>
                                 </div>

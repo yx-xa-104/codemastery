@@ -1,12 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { Tables } from '../types/database.types';
+import { handleSupabaseError } from '../common/supabase-error.util';
+
+type LessonWithModule = Tables<'lessons'> & {
+  modules: Pick<Tables<'modules'>, 'id' | 'title' | 'sort_order' | 'course_id'> | null;
+};
+
+type ModuleWithLessons = Tables<'modules'> & {
+  lessons: Tables<'lessons'>[];
+};
 
 @Injectable()
 export class LessonsService {
   constructor(private supabase: SupabaseService) {}
 
-  async findBySlug(courseSlug: string, lessonSlug: string) {
-    // First get the course
+  async findBySlug(
+    courseSlug: string,
+    lessonSlug: string,
+  ): Promise<LessonWithModule | null> {
     const { data: course } = await this.supabase.admin
       .from('courses')
       .select('id')
@@ -21,11 +33,11 @@ export class LessonsService {
       .eq('slug', lessonSlug)
       .single();
 
-    if (error) return null;
-    return data;
+    if (error) handleSupabaseError(error, `Lesson "${lessonSlug}" not found`);
+    return data as LessonWithModule;
   }
 
-  async getCourseLessons(courseId: string) {
+  async getCourseLessons(courseId: string): Promise<ModuleWithLessons[]> {
     const { data, error } = await this.supabase.admin
       .from('modules')
       .select('*, lessons(*)')
@@ -33,18 +45,19 @@ export class LessonsService {
       .order('sort_order')
       .order('sort_order', { referencedTable: 'lessons' });
 
-    if (error) throw error;
-    return data;
+    if (error) handleSupabaseError(error);
+    return data as ModuleWithLessons[];
   }
 
-  async getLessonContent(lessonId: string) {
+  async getLessonContent(lessonId: string): Promise<Tables<'lessons'>> {
     const { data, error } = await this.supabase.admin
       .from('lessons')
       .select('id, title, slug, content, lesson_type, video_url, duration_minutes, exercise_config')
       .eq('id', lessonId)
       .single();
 
-    if (error) throw error;
-    return data;
+    if (error) handleSupabaseError(error, `Lesson ${lessonId} not found`);
+    return data as Tables<'lessons'>;
   }
 }
+
