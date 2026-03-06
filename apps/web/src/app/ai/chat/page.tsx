@@ -114,7 +114,7 @@ export default function AiChatPage() {
     };
 
     return (
-        <MainLayout>
+        <MainLayout hideAiChat>
             <div className="h-[calc(100vh-64px)] bg-[#010816] flex flex-col lg:flex-row overflow-hidden">
 
                 {/* ── Left sidebar: features & suggestions ── */}
