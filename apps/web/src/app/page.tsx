@@ -1,8 +1,8 @@
-import { MainLayout } from "@/components/layouts/MainLayout";
-import { Hero } from "@/components/features/home/Hero";
-import { CourseCard } from "@/components/features/courses/CourseCard";
+import { MainLayout } from "@/shared/components/layouts/MainLayout";
+import { Hero } from "@/modules/home/components/Hero";
+import { CourseCard } from "@/modules/courses/components/CourseCard";
 import { Sparkles } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/shared/lib/supabase/server";
 
 export default async function HomePage() {
   const supabase = await createClient();

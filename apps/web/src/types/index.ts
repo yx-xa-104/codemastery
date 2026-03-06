@@ -1,8 +1,4 @@
-// =============================
-// Types for CodeMastery App
-// =============================
-//
-// DB Row types — always use these for data from Supabase / API
+// Bridge: re-export from shared/types for backward compatibility
 export type {
   Tables,
   InsertTables,
@@ -13,22 +9,6 @@ export type {
   LessonType,
   ProgressStatus,
   PostType,
-} from '../lib/supabase/database.types';
+} from '@/shared/lib/supabase/database.types';
 
-// --- Chat & AI ---
-export interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-// --- Code Editor ---
-export interface CodeEditorProps {
-  initialCode?: string;
-  language?: string;
-  onRun?: (code: string) => void;
-}
-
-// --- Theme ---
-export type Theme = 'dark' | 'light';
-
+export type { Message, CodeEditorProps, Theme } from '@/shared/types';

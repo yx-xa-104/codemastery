@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Source_Code_Pro } from "next/font/google";
-import { AuthProvider } from "@/components/providers/AuthProvider";
+import { AuthProvider } from "@/shared/providers/AuthProvider";
 import "./globals.css";
 
 const inter = Inter({
