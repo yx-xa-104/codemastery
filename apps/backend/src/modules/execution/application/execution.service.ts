@@ -11,15 +11,67 @@ export class ExecutionService {
         try {
             this.validateCode(code, language);
 
-            // TODO: Implement code execution backend (e.g. serverless, WASM, or external API)
-            this.logger.warn('Code execution backend not yet implemented');
+            // Map user-friendly language names to Piston language identifiers
+            const languageMap: Record<string, string> = {
+                'java': 'java',
+                'cpp': 'cpp',
+                'csharp': 'csharp',
+                'php': 'php',
+                'pascal': 'pascal',
+                'postgresql': 'postgresql',
+                'mysql': 'mysql',
+                'sqlserver': 'sqlserver',
+                'typescript': 'typescript',
+            };
+
+            const pistonLang = languageMap[language.toLowerCase()];
+            if (!pistonLang) {
+                return {
+                    output: '',
+                    error: `Language ${language} is not supported by the remote execution engine.`,
+                    executionTime: 0,
+                };
+            }
+
+            const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    language: pistonLang,
+                    version: '*', // Sử dụng phiên bản mới nhất khả dụng
+                    files: [
+                        {
+                            content: code,
+                        }
+                    ],
+                    compile_timeout: 10000,
+                    run_timeout: 10000,
+                }),
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(`Piston API Error: ${errData.message || response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            let runOutput = data.run?.output || '';
+            let runError = data.run?.stderr || '';
+
+            // Nếu vòng compile bị lỗi
+            if (data.compile?.code !== 0 && data.compile?.stderr) {
+                runError = `Compilation Error:\n${data.compile.stderr}\n\n${runError}`;
+            }
 
             return {
-                output: '',
-                error: 'Code execution is not yet configured. Please set up an execution backend.',
+                output: runOutput,
+                error: runError ? runError : undefined,
                 executionTime: Date.now() - startTime,
             };
-        } catch (error) {
+        } catch (error: any) {
             this.logger.error(`Execution failed: ${error.message}`);
             return {
                 output: '',
@@ -30,37 +82,9 @@ export class ExecutionService {
     }
 
     private validateCode(code: string, language: string): void {
-        if (code.length > 10000) {
-            throw new Error('Code too long (max 10KB)');
+        if (!code || code.length > 20000) {
+            throw new Error('Code is too long or empty (max 20KB)');
         }
 
-        const supportedLanguages = ['python', 'java', 'cpp', 'javascript'];
-        if (!supportedLanguages.includes(language)) {
-            throw new Error(`Unsupported language: ${language}`);
-        }
-
-        const blacklist = {
-            python: [
-                /import\s+os/,
-                /import\s+subprocess/,
-                /import\s+sys/,
-                /__import__/,
-                /eval\(/,
-                /exec\(/,
-            ],
-            javascript: [
-                /require\s*\(\s*['"]child_process['"]/,
-                /require\s*\(\s*['"]fs['"]/,
-                /eval\(/,
-                /Function\(/,
-            ],
-        };
-
-        const patterns = blacklist[language] || [];
-        for (const pattern of patterns) {
-            if (pattern.test(code)) {
-                throw new Error(`Forbidden pattern detected`);
-            }
-        }
     }
 }
