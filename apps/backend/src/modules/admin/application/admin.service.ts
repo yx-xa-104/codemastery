@@ -9,8 +9,24 @@ export class AdminService {
         return this.adminRepository.getDashboardStats();
     }
 
+    async getRecentCourses() {
+        return this.adminRepository.getRecentCourses();
+    }
+
+    async getRecentStudents() {
+        return this.adminRepository.getRecentStudents();
+    }
+
     async getReportStats() {
         return this.adminRepository.getReportStats();
+    }
+
+    async getTopCourses() {
+        return this.adminRepository.getTopCourses();
+    }
+
+    async getEnrollmentsByDay(days = 7) {
+        return this.adminRepository.getEnrollmentsByDay(days);
     }
 
     async getStudents() {
@@ -34,5 +50,21 @@ export class AdminService {
 
     async getRecentEnrollments() {
         return this.adminRepository.getRecentEnrollments();
+    }
+
+    async getAllUsers() {
+        return this.adminRepository.getAllUsers();
+    }
+
+    async updateUserRole(userId: string, role: string) {
+        const validRoles = ['student', 'teacher', 'admin'];
+        if (!validRoles.includes(role)) {
+            throw new Error(`Invalid role: ${role}`);
+        }
+        return this.adminRepository.updateUserRole(userId, role);
+    }
+
+    async updateUserLockStatus(userId: string, locked: boolean) {
+        return this.adminRepository.updateUserLockStatus(userId, locked);
     }
 }

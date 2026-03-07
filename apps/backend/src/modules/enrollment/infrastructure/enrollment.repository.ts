@@ -111,4 +111,98 @@ export class EnrollmentRepository {
             .maybeSingle();
         return data as Tables<'lesson_progress'> | null;
     }
+
+    async getLessonType(lessonId: string): Promise<string | null> {
+        const { data } = await this.supabase.admin
+            .from('lessons')
+            .select('lesson_type')
+            .eq('id', lessonId)
+            .single();
+        return (data as any)?.lesson_type ?? null;
+    }
+
+    // ── Learning Activity ────────────────────────────────────────────
+
+    async upsertLearningActivity(userId: string) {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Try to update existing record for today
+        const { data: existing } = await (this.supabase.admin as any)
+            .from('learning_activity')
+            .select('id, lessons_completed')
+            .eq('user_id', userId)
+            .eq('activity_date', today)
+            .maybeSingle();
+
+        if (existing) {
+            await (this.supabase.admin as any)
+                .from('learning_activity')
+                .update({ lessons_completed: (existing.lessons_completed ?? 0) + 1 })
+                .eq('id', existing.id);
+        } else {
+            await (this.supabase.admin as any)
+                .from('learning_activity')
+                .insert({ user_id: userId, activity_date: today, lessons_completed: 1 });
+        }
+    }
+
+    // ── Pinned Courses ───────────────────────────────────────────────
+
+    async pinCourse(userId: string, courseId: string) {
+        const { data, error } = await (this.supabase.admin as any)
+            .from('enrollments')
+            .update({ is_pinned: true })
+            .eq('user_id', userId)
+            .eq('course_id', courseId)
+            .select()
+            .single();
+
+        if (error) handleSupabaseError(error);
+        return data;
+    }
+
+    async unpinCourse(userId: string, courseId: string) {
+        const { data, error } = await (this.supabase.admin as any)
+            .from('enrollments')
+            .update({ is_pinned: false })
+            .eq('user_id', userId)
+            .eq('course_id', courseId)
+            .select()
+            .single();
+
+        if (error) handleSupabaseError(error);
+        return data;
+    }
+
+    async getPinnedCourses(userId: string) {
+        const { data, error } = await this.supabase.admin
+            .from('enrollments')
+            .select('*, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
+            .eq('user_id', userId)
+            .eq('is_pinned', true as any)
+            .order('enrolled_at', { ascending: false });
+
+        if (error) handleSupabaseError(error);
+        return data ?? [];
+    }
+
+    // ── Code Submission ──────────────────────────────────────────────
+
+    async saveCodeSubmission(userId: string, lessonId: string, code: string) {
+        const { data, error } = await (this.supabase.admin as any)
+            .from('lesson_progress')
+            .upsert(
+                {
+                    user_id: userId,
+                    lesson_id: lessonId,
+                    code_submission: code,
+                },
+                { onConflict: 'user_id,lesson_id' },
+            )
+            .select()
+            .single();
+
+        if (error) handleSupabaseError(error);
+        return data;
+    }
 }

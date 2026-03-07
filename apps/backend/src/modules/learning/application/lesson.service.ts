@@ -21,4 +21,18 @@ export class LessonService {
     async getLessonContent(lessonId: string): Promise<Tables<'lessons'>> {
         return this.lessonRepository.findContentById(lessonId);
     }
+
+    // ── CRUD Operations ──────────────────────────────────────────────
+
+    async create(moduleId: string, lessonData: Partial<Tables<'lessons'>>) {
+        return this.lessonRepository.create(moduleId, lessonData);
+    }
+
+    async update(id: string, lessonData: Partial<Tables<'lessons'>>) {
+        return this.lessonRepository.update(id, lessonData);
+    }
+
+    async delete(id: string) {
+        return this.lessonRepository.delete(id);
+    }
 }

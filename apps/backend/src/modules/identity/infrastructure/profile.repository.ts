@@ -41,6 +41,28 @@ export class ProfileRepository {
         return data as Tables<'profiles'>;
     }
 
+    async uploadAvatar(userId: string, file: any): Promise<string> {
+        const ext = file.originalname.split('.').pop() || 'jpg';
+        const path = `avatars/${userId}.${ext}`;
+
+        // Upload to Supabase Storage (upsert to overwrite old avatar)
+        const { error } = await this.supabase.admin.storage
+            .from('avatars')
+            .upload(path, file.buffer, {
+                contentType: file.mimetype,
+                upsert: true,
+            });
+
+        if (error) handleSupabaseError(error, 'Failed to upload avatar');
+
+        // Get public URL
+        const { data: urlData } = this.supabase.admin.storage
+            .from('avatars')
+            .getPublicUrl(path);
+
+        return urlData.publicUrl;
+    }
+
     async findBadges(userId: string): Promise<BadgeWithDefinition[]> {
         const { data, error } = await this.supabase.admin
             .from('user_badges')

@@ -25,6 +25,12 @@ export class ProfileService {
         return this.profileRepository.update(userId, updates);
     }
 
+    async uploadAvatar(userId: string, file: any) {
+        const avatarUrl = await this.profileRepository.uploadAvatar(userId, file);
+        await this.profileRepository.update(userId, { avatar_url: avatarUrl });
+        return { avatar_url: avatarUrl };
+    }
+
     async getMyBadges(userId: string): Promise<BadgeWithDefinition[]> {
         return this.profileRepository.findBadges(userId);
     }

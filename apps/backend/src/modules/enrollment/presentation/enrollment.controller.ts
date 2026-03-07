@@ -57,4 +57,36 @@ export class EnrollmentController {
     getLessonProgress(@CurrentUser('id') userId: string, @Param('lessonId') lessonId: string) {
         return this.enrollmentService.getLessonProgress(userId, lessonId);
     }
+
+    // ── Pinned Courses ───────────────────────────────────────────────
+
+    @Post('pin/:courseId')
+    @ApiOperation({ summary: 'Pin a course' })
+    pinCourse(@CurrentUser('id') userId: string, @Param('courseId') courseId: string) {
+        return this.enrollmentService.pinCourse(userId, courseId);
+    }
+
+    @Delete('pin/:courseId')
+    @ApiOperation({ summary: 'Unpin a course' })
+    unpinCourse(@CurrentUser('id') userId: string, @Param('courseId') courseId: string) {
+        return this.enrollmentService.unpinCourse(userId, courseId);
+    }
+
+    @Get('pinned')
+    @ApiOperation({ summary: 'Get pinned courses' })
+    getPinnedCourses(@CurrentUser('id') userId: string) {
+        return this.enrollmentService.getPinnedCourses(userId);
+    }
+
+    // ── Code Submission ──────────────────────────────────────────────
+
+    @Patch('lessons/:lessonId/submission')
+    @ApiOperation({ summary: 'Save code submission for a lesson' })
+    saveCodeSubmission(
+        @CurrentUser('id') userId: string,
+        @Param('lessonId') lessonId: string,
+        @Body('code') code: string,
+    ) {
+        return this.enrollmentService.saveCodeSubmission(userId, lessonId, code);
+    }
 }

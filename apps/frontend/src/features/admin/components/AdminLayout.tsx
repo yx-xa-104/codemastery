@@ -4,18 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/shared/stores/useAuthStore";
 import {
-    LayoutDashboard, BookOpen, Users, BarChart2,
-    MessageSquare, Settings, Plus, Bell, BookMarked
+    LayoutDashboard, Users, BarChart2, Settings, Bell, Shield
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/admin/dashboard', icon: LayoutDashboard },
-    { label: 'Khóa học', href: '/admin/courses', icon: BookOpen },
-    { label: 'Học viên', href: '/admin/students', icon: Users },
-    { label: 'Bài tập', href: '/admin/exercises', icon: BookMarked },
+    { label: 'Tài khoản', href: '/admin/users', icon: Users },
     { label: 'Báo cáo', href: '/admin/reports', icon: BarChart2 },
-    { label: 'Tin nhắn', href: '/admin/messages', icon: MessageSquare, badge: 3 },
     { label: 'Cài đặt', href: '/admin/settings', icon: Settings },
 ];
 
@@ -30,7 +26,7 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
     const pathname = usePathname();
     const { user } = useUser();
 
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Giảng viên';
+    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Admin';
     const avatarUrl = user?.user_metadata?.avatar_url;
     const initials = displayName.charAt(0).toUpperCase();
 
@@ -42,11 +38,11 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                     <Link href="/" className="text-xl font-bold tracking-tighter text-white">
                         Code<span className="text-indigo-500">Mastery</span>
                     </Link>
-                    <span className="text-[10px] uppercase tracking-wide bg-indigo-900/50 text-indigo-200 px-1.5 py-0.5 rounded border border-indigo-500/30">Teacher</span>
+                    <span className="text-[10px] uppercase tracking-wide bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded border border-red-500/30">Admin</span>
                 </div>
 
                 <nav className="flex-1 py-5 px-3 space-y-0.5 overflow-y-auto">
-                    {NAV_ITEMS.map(({ label, href, icon: Icon, badge }) => {
+                    {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
                         const isActive = pathname === href || (href !== '/admin/dashboard' && pathname.startsWith(href));
                         return (
                             <Link key={label} href={href}
@@ -56,7 +52,6 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                                     }`}>
                                 <Icon className="w-4 h-4 shrink-0" />
                                 {label}
-                                {badge && <span className="ml-auto bg-red-500 text-white text-[10px] py-0.5 px-1.5 rounded-full">{badge}</span>}
                             </Link>
                         );
                     })}
@@ -65,15 +60,15 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                 <div className="p-4 border-t border-indigo-900/30">
                     <div className="flex items-center gap-3 px-2">
                         {avatarUrl ? (
-                            <img src={avatarUrl} className="size-9 rounded-full border border-amber-500/50 object-cover shrink-0" alt="" />
+                            <img src={avatarUrl} className="size-9 rounded-full border border-red-500/50 object-cover shrink-0" alt="" />
                         ) : (
-                            <div className="size-9 rounded-full bg-linear-to-tr from-amber-500 to-yellow-300 p-[2px] shrink-0">
+                            <div className="size-9 rounded-full bg-linear-to-tr from-red-500 to-orange-400 p-[2px] shrink-0">
                                 <div className="size-full rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-white">{initials}</div>
                             </div>
                         )}
                         <div className="min-w-0">
                             <p className="text-sm font-medium text-white truncate">{displayName}</p>
-                            <p className="text-xs text-slate-500">Giảng viên cao cấp</p>
+                            <p className="text-xs text-slate-500">Quản trị viên</p>
                         </div>
                     </div>
                 </div>
@@ -86,7 +81,7 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                     <div className="flex-1 max-w-lg hidden md:block">
                         <input
                             className="block w-full pl-4 pr-4 py-2 border border-slate-700 rounded-full bg-[#010816] text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
-                            placeholder="Tìm kiếm..."
+                            placeholder="Tìm kiếm tài khoản..."
                         />
                     </div>
                     <div className="flex items-center gap-3 ml-4">
@@ -94,10 +89,9 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-1 right-2 size-2 rounded-full bg-red-500 ring-1 ring-[#0B1120]" />
                         </Button>
-                        <Link href="/admin/courses/create"
-                            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-all shadow-md shrink-0">
-                            <Plus className="w-4 h-4" /> Tạo khóa học
-                        </Link>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-xs font-medium text-red-300">
+                            <Shield className="w-3.5 h-3.5" /> Admin Panel
+                        </div>
                     </div>
                 </header>
 

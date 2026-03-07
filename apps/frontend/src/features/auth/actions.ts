@@ -6,8 +6,12 @@ import { redirect } from "next/navigation";
 export async function signInWithPassword(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
+  let email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  if (email && !email.includes("@")) {
+    email = `${email.toLowerCase()}@student.codemastery.vn`;
+  }
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 

@@ -8,6 +8,8 @@ import { EnrollmentModule } from './modules/enrollment/enrollment.module';
 import { ExecutionModule } from './modules/execution/execution.module';
 import { AiModule } from './modules/ai/ai.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { GamificationModule } from './modules/gamification/gamification.module';
 
 @Module({
   imports: [
@@ -28,6 +30,9 @@ import { AdminModule } from './modules/admin/admin.module';
     ExecutionModule,
     AiModule,
     AdminModule,
+    NotificationModule,
+    GamificationModule,
   ],
 })
 export class AppModule { }
+

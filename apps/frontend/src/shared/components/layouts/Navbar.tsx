@@ -6,6 +6,7 @@ import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashb
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
+import { NotificationBell } from "@/shared/components/NotificationBell";
 import { useUser } from "@/shared/stores/useAuthStore";
 import { signOut } from "@/features/auth/actions";
 import { Button } from "@/shared/components/ui/button";
@@ -100,7 +101,9 @@ export function Navbar() {
                         {loading ? (
                             <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />
                         ) : user ? (
-                            /* Logged-in: Avatar + Dropdown */
+                            /* Logged-in: Notification + Avatar + Dropdown */
+                            <>
+                            <NotificationBell />
                             <div className="relative" ref={userMenuRef}>
                                 <Button
                                     variant="ghost"
@@ -175,6 +178,7 @@ export function Navbar() {
                                     )}
                                 </AnimatePresence>
                             </div>
+                            </>
                         ) : (
                             /* Not logged-in: Login + Register buttons */
                             <>

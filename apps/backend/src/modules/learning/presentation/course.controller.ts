@@ -1,7 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { SupabaseAuthGuard, RolesGuard, Roles, CurrentUser } from '@common/index';
 import { CourseService } from '../application/course.service';
 import { FindCoursesDto } from './dtos/find-courses.dto';
+import { CreateCourseDto } from './dtos/create-course.dto';
+import { UpdateCourseDto } from './dtos/update-course.dto';
+import { CreateCategoryDto, UpdateCategoryDto } from './dtos/category.dto';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -18,10 +22,43 @@ export class CourseController {
         });
     }
 
+    @Get('search')
+    @ApiOperation({ summary: 'Search courses by keyword' })
+    search(@Query('q') q: string) {
+        return this.courseService.search(q || '');
+    }
+
     @Get('categories')
     @ApiOperation({ summary: 'Get all course categories' })
     getCategories() {
         return this.courseService.getCategories();
+    }
+
+    @Post('categories')
+    @ApiOperation({ summary: 'Create a category (admin)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('admin')
+    createCategory(@Body() body: CreateCategoryDto) {
+        return this.courseService.createCategory(body.name, body.icon, body.sort_order);
+    }
+
+    @Patch('categories/:id')
+    @ApiOperation({ summary: 'Update a category (admin)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('admin')
+    updateCategory(@Param('id') id: string, @Body() body: UpdateCategoryDto) {
+        return this.courseService.updateCategory(id, body);
+    }
+
+    @Delete('categories/:id')
+    @ApiOperation({ summary: 'Delete a category (admin)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('admin')
+    deleteCategory(@Param('id') id: string) {
+        return this.courseService.deleteCategory(id);
     }
 
     @Get(':slug')
@@ -35,5 +72,32 @@ export class CourseController {
     async getModules(@Param('slug') slug: string) {
         const course = await this.courseService.findBySlug(slug);
         return this.courseService.findModulesWithLessons(course.id);
+    }
+
+    @Post()
+    @ApiOperation({ summary: 'Create a course (teacher/admin)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('teacher', 'admin')
+    create(@CurrentUser('id') userId: string, @Body() body: CreateCourseDto) {
+        return this.courseService.create({ ...body, teacher_id: userId } as any);
+    }
+
+    @Patch(':id')
+    @ApiOperation({ summary: 'Update a course (teacher/admin)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('teacher', 'admin')
+    update(@Param('id') id: string, @Body() body: UpdateCourseDto) {
+        return this.courseService.update(id, body as any);
+    }
+
+    @Delete(':id')
+    @ApiOperation({ summary: 'Delete a course (admin only)' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('admin')
+    remove(@Param('id') id: string) {
+        return this.courseService.delete(id);
     }
 }

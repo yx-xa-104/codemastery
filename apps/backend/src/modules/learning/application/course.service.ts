@@ -26,4 +26,36 @@ export class CourseService {
     async getCategories(): Promise<Tables<'categories'>[]> {
         return this.courseRepository.findAllCategories();
     }
+
+    // ── CRUD Operations ──────────────────────────────────────────────
+
+    async create(courseData: Partial<Tables<'courses'>>) {
+        return this.courseRepository.create(courseData);
+    }
+
+    async update(id: string, courseData: Partial<Tables<'courses'>>) {
+        return this.courseRepository.update(id, courseData);
+    }
+
+    async delete(id: string) {
+        return this.courseRepository.delete(id);
+    }
+
+    async search(query: string) {
+        return this.courseRepository.search(query);
+    }
+
+    // ── Category CRUD ────────────────────────────────────────────────
+
+    async createCategory(name: string, icon?: string, sortOrder?: number) {
+        return this.courseRepository.createCategory(name, icon, sortOrder);
+    }
+
+    async updateCategory(id: string, updates: { name?: string; icon?: string; sort_order?: number }) {
+        return this.courseRepository.updateCategory(id, updates);
+    }
+
+    async deleteCategory(id: string) {
+        return this.courseRepository.deleteCategory(id);
+    }
 }

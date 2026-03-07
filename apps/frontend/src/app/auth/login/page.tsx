@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Code2, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Code2, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import { signInWithPassword } from "@/app/auth/actions";
 import { Button } from "@/shared/components/ui/button";
 
 export default function LoginPage() {
-    const router = useRouter();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPw, setShowPw] = useState(false);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -18,10 +17,25 @@ export default function LoginPage() {
         setError("");
 
         const formData = new FormData(e.currentTarget);
+
+        // Auto-convert student ID to email if needed
+        const emailVal = formData.get("email") as string;
+        if (emailVal && !emailVal.includes("@")) {
+            formData.set("email", `${emailVal.toLowerCase()}@student.codemastery.vn`);
+        }
+
         const result = await signInWithPassword(formData);
 
         if (result?.error) {
-            setError(result.error);
+            // Translate common Supabase error messages
+            const msg = result.error;
+            if (msg.includes("Invalid login credentials")) {
+                setError("Email hoặc mật khẩu không đúng");
+            } else if (msg.includes("Email not confirmed")) {
+                setError("Tài khoản chưa được xác nhận. Vui lòng kiểm tra email.");
+            } else {
+                setError(msg);
+            }
             setLoading(false);
         }
         // On success, server action redirects to /dashboard
@@ -84,12 +98,13 @@ export default function LoginPage() {
                                 className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-gray-600 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all text-sm"
                             />
                         </div>
+                        <p className="text-[11px] text-slate-500 ml-1">Nhập mã SV sẽ tự động chuyển thành email @student.codemastery.vn</p>
                     </div>
 
                     <div className="space-y-2">
                         <div className="flex justify-between items-center ml-1">
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mật khẩu</label>
-                            <Link href="#" className="text-xs text-indigo-400 hover:text-amber-500 transition-colors">
+                            <Link href="/auth/forgot-password" className="text-xs text-indigo-400 hover:text-amber-500 transition-colors">
                                 Quên mật khẩu?
                             </Link>
                         </div>
@@ -97,11 +112,18 @@ export default function LoginPage() {
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
                             <input
                                 name="password"
-                                type="password"
+                                type={showPw ? "text" : "password"}
                                 required
                                 placeholder="••••••••"
-                                className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-gray-600 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all text-sm"
+                                className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-3 pl-10 pr-10 text-white placeholder:text-gray-600 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all text-sm"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPw(!showPw)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                            >
+                                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
                         </div>
                     </div>
 

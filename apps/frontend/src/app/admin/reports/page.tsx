@@ -5,9 +5,19 @@ import { cookies } from "next/headers";
 import { TrendingUp, Users, BookOpen, Star, Download } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
-const WEEK_LABELS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-const ENROLL_DATA = [18, 32, 27, 45, 38, 22, 15];
-const REVENUE_DATA = [1.2, 2.4, 1.8, 3.1, 2.7, 1.5, 0.9];
+async function fetchAPI(path: string, cookieStore: any) {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    try {
+        const res = await fetch(`${API_URL}${path}`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) return await res.json();
+    } catch (e) {
+        console.error(`Failed to fetch ${path}`, e);
+    }
+    return null;
+}
 
 export default async function AdminReportsPage() {
     const supabase = await createClient();
@@ -15,26 +25,17 @@ export default async function AdminReportsPage() {
     if (!user) redirect('/auth/login');
 
     const cookieStore = await cookies();
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-    let totalStudents = 0, totalEnrollments = 0, totalCourses = 0;
 
-    try {
-        const res = await fetch(`${API_URL}/api/admin/reports/stats`, {
-            headers: { Cookie: cookieStore.toString() },
-            cache: 'no-store'
-        });
-        if (res.ok) {
-            const data = await res.json();
-            if (data.totalStudents !== undefined) totalStudents = data.totalStudents;
-            if (data.totalEnrollments !== undefined) totalEnrollments = data.totalEnrollments;
-            if (data.totalCourses !== undefined) totalCourses = data.totalCourses;
-        }
-    } catch (e) {
-        console.error("Failed to fetch admin report stats", e);
-    }
+    const [stats, topCourses, chartData] = await Promise.all([
+        fetchAPI('/api/admin/reports/stats', cookieStore),
+        fetchAPI('/api/admin/reports/top-courses', cookieStore),
+        fetchAPI('/api/admin/reports/enrollments-chart', cookieStore),
+    ]);
 
-    const maxEnroll = Math.max(...ENROLL_DATA);
-    const maxRevenue = Math.max(...REVENUE_DATA);
+    const enrollChart: { label: string; count: number }[] = chartData ?? [];
+    const maxEnroll = Math.max(...enrollChart.map(d => d.count), 1);
+    const topCoursesData: any[] = topCourses ?? [];
+    const maxEnrollTop = Math.max(...topCoursesData.map(c => c.total_enrollments || 0), 1);
 
     return (
         <AdminLayout
@@ -49,10 +50,10 @@ export default async function AdminReportsPage() {
             {/* KPI row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {[
-                    { icon: Users, label: 'Tổng học viên', value: totalStudents ?? 0, delta: '+12%' },
-                    { icon: BookOpen, label: 'Lượt đăng ký', value: totalEnrollments ?? 0, delta: '+8%' },
-                    { icon: Star, label: 'Đánh giá TB', value: '4.8', delta: '+0.2' },
-                    { icon: TrendingUp, label: 'Khóa học hoạt động', value: totalCourses ?? 0, delta: 'Tổng' },
+                    { icon: Users, label: 'Tổng học viên', value: stats?.totalStudents ?? 0, delta: 'Toàn hệ thống' },
+                    { icon: BookOpen, label: 'Lượt đăng ký', value: stats?.totalEnrollments ?? 0, delta: 'Tổng cộng' },
+                    { icon: Star, label: 'Đánh giá TB', value: stats?.avgRating ?? '0', delta: `${stats?.reviewCount ?? 0} đánh giá` },
+                    { icon: TrendingUp, label: 'Khóa học', value: stats?.totalCourses ?? 0, delta: 'Tổng' },
                 ].map(({ icon: Icon, label, value, delta }) => (
                     <div key={label} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-5">
                         <div className="flex justify-between items-start mb-3">
@@ -65,53 +66,36 @@ export default async function AdminReportsPage() {
                 ))}
             </div>
 
+            {/* Enrollment chart */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                {/* Enrollment chart */}
                 <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6">
                     <div className="flex justify-between items-center mb-5">
                         <h3 className="font-bold text-white text-sm">Học viên đăng ký mới</h3>
-                        <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">Tuần này</span>
+                        <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">7 ngày qua</span>
                     </div>
                     <div className="flex items-end gap-2 h-36">
-                        {ENROLL_DATA.map((v, i) => (
+                        {enrollChart.map((d, i) => (
                             <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                                <span className="text-[10px] text-slate-400">{v}</span>
+                                <span className="text-[10px] text-slate-400">{d.count}</span>
                                 <div
-                                    className={`w-full rounded-t transition-all ${i === 3 ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'bg-slate-700 hover:bg-indigo-500/50'}`}
-                                    style={{ height: `${(v / maxEnroll) * 100}%` }}
+                                    className={`w-full rounded-t transition-all ${d.count === Math.max(...enrollChart.map(x => x.count)) ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'bg-slate-700 hover:bg-indigo-500/50'}`}
+                                    style={{ height: `${(d.count / maxEnroll) * 100}%`, minHeight: d.count > 0 ? '4px' : '0px' }}
                                 />
-                                <span className={`text-[10px] ${i === 3 ? 'text-white font-bold' : 'text-slate-500'}`}>{WEEK_LABELS[i]}</span>
+                                <span className="text-[10px] text-slate-500">{d.label}</span>
                             </div>
                         ))}
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
-                        <span>Tổng tuần: <strong className="text-white">{ENROLL_DATA.reduce((a, b) => a + b, 0)}</strong> học viên</span>
-                        <span>TB/ngày: <strong className="text-white">{Math.round(ENROLL_DATA.reduce((a, b) => a + b, 0) / 7)}</strong></span>
+                        <span>Tổng tuần: <strong className="text-white">{enrollChart.reduce((a, b) => a + b.count, 0)}</strong> học viên</span>
+                        <span>TB/ngày: <strong className="text-white">{enrollChart.length > 0 ? Math.round(enrollChart.reduce((a, b) => a + b.count, 0) / enrollChart.length) : 0}</strong></span>
                     </div>
                 </div>
 
-                {/* Revenue chart */}
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6">
-                    <div className="flex justify-between items-center mb-5">
-                        <h3 className="font-bold text-white text-sm">Doanh thu (triệu VND)</h3>
-                        <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">Tuần này</span>
-                    </div>
-                    <div className="flex items-end gap-2 h-36">
-                        {REVENUE_DATA.map((v, i) => (
-                            <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                                <span className="text-[10px] text-slate-400">{v}M</span>
-                                <div
-                                    className={`w-full rounded-t transition-all ${i === 3 ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'bg-slate-700 hover:bg-amber-500/50'}`}
-                                    style={{ height: `${(v / maxRevenue) * 100}%` }}
-                                />
-                                <span className={`text-[10px] ${i === 3 ? 'text-white font-bold' : 'text-slate-500'}`}>{WEEK_LABELS[i]}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
-                        <span>Doanh thu tuần: <strong className="text-white">{REVENUE_DATA.reduce((a, b) => a + b, 0).toFixed(1)}M</strong></span>
-                        <span className="text-green-400 font-medium">↑ +23% vs tuần trước</span>
-                    </div>
+                {/* Placeholder for a second chart card */}
+                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                    <TrendingUp className="w-10 h-10 text-slate-700 mb-3" />
+                    <p className="text-slate-400 text-sm font-medium mb-1">Biểu đồ tiến độ</p>
+                    <p className="text-xs text-slate-500">Đang phát triển — sẽ hiển thị tỷ lệ hoàn thành khóa học</p>
                 </div>
             </div>
 
@@ -121,25 +105,23 @@ export default async function AdminReportsPage() {
                     <h3 className="font-bold text-white text-sm">Top Khóa học phổ biến</h3>
                 </div>
                 <div className="p-5 space-y-4">
-                    {[
-                        { title: 'Lập trình Web Frontend Cơ bản', students: 456, rating: 4.9, percent: 92 },
-                        { title: 'JavaScript Nâng cao & ES6+', students: 215, rating: 4.7, percent: 58 },
-                        { title: 'Python cho Khoa học Dữ liệu', students: 189, rating: 4.8, percent: 45 },
-                    ].map((c, i) => (
-                        <div key={i} className="flex items-center gap-4">
+                    {topCoursesData.length === 0 ? (
+                        <p className="text-center text-sm text-slate-500 py-4">Chưa có dữ liệu</p>
+                    ) : topCoursesData.map((c: any, i: number) => (
+                        <div key={c.id} className="flex items-center gap-4">
                             <span className="text-lg font-bold text-slate-600 w-6 shrink-0">#{i + 1}</span>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-white mb-1 truncate">{c.title}</p>
                                 <div className="flex items-center gap-2">
                                     <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${c.percent}%` }} />
+                                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${((c.total_enrollments || 0) / maxEnrollTop) * 100}%` }} />
                                     </div>
-                                    <span className="text-xs text-slate-400 shrink-0">{c.percent}%</span>
+                                    <span className="text-xs text-slate-400 shrink-0">{Math.round(((c.total_enrollments || 0) / maxEnrollTop) * 100)}%</span>
                                 </div>
                             </div>
                             <div className="text-right shrink-0">
-                                <p className="text-xs font-medium text-white">{c.students.toLocaleString()} HV</p>
-                                <p className="text-xs text-amber-400">⭐ {c.rating}</p>
+                                <p className="text-xs font-medium text-white">{(c.total_enrollments || 0).toLocaleString()} HV</p>
+                                <p className="text-xs text-amber-400">⭐ {c.avg_rating?.toFixed(1) ?? '–'}</p>
                             </div>
                         </div>
                     ))}

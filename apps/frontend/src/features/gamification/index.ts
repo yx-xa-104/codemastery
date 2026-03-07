@@ -1,2 +1,2 @@
-// Gamification module — leaderboard, roadmap, projects
+// Gamification module — leaderboard, roadmap
 export {};
