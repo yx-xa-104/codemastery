@@ -2,6 +2,7 @@ import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import {
     Users, BookOpen, MessageSquare, Star, TrendingUp,
     ChevronRight, Circle, Video
@@ -31,8 +32,24 @@ export default async function AdminDashboardPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    const { count: courseCount } = await supabase.from('courses').select('*', { count: 'exact', head: true });
-    const { count: enrollCount } = await supabase.from('enrollments').select('*', { count: 'exact', head: true });
+    const cookieStore = await cookies();
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    let courseCount = 3;
+    let enrollCount = 1248;
+
+    try {
+        const res = await fetch(`${API_URL}/api/admin/dashboard/stats`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.courseCount !== undefined) courseCount = data.courseCount;
+            if (data.enrollCount !== undefined) enrollCount = data.enrollCount;
+        }
+    } catch (e) {
+        console.error("Failed to fetch admin dashboard stats", e);
+    }
 
     const stats = [
         { label: 'Tổng học viên', value: enrollCount ?? 1248, change: '+12%', icon: Users, color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' },

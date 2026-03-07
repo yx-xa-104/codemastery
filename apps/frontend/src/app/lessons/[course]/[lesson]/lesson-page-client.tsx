@@ -7,7 +7,7 @@ import { useState, useTransition } from "react";
 import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { createClient } from "@/shared/lib/supabase/client";
+import { apiClient } from "@/shared/lib/api-client";
 import { Button } from "@/shared/components/ui/button";
 
 interface LessonModule {
@@ -53,31 +53,12 @@ export function LessonPageClient({ course, lesson, modules, userId, enrollmentId
         if (isCompleted || !userId) return;
 
         startTransition(async () => {
-            const supabase = createClient();
-            // Upsert lesson progress using actual schema (status enum, not is_completed bool)
-            await (supabase.from('lesson_progress') as any).upsert({
-                user_id: userId,
-                lesson_id: lesson.id,
-                status: 'completed' as const,
-                completed_at: new Date().toISOString(),
-            }, { onConflict: 'user_id,lesson_id' });
-
-            // Recalculate enrollment progress_percent
-            if (enrollmentId) {
-                const totalLessons = modules.reduce((sum, m) => sum + m.lessons.length, 0);
-                if (totalLessons > 0) {
-                    const { count } = await supabase
-                        .from('lesson_progress')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('user_id', userId)
-                        .eq('status', 'completed');
-                    const perc = Math.round(((count ?? 1) / totalLessons) * 100);
-                    await (supabase.from('enrollments') as any)
-                        .update({ progress_percent: Math.min(100, perc) })
-                        .eq('id', enrollmentId);
-                }
+            try {
+                await apiClient.post(`/api/enrollments/lessons/${lesson.id}/complete`, {});
+                setIsCompleted(true);
+            } catch (err) {
+                console.error("Failed to mark lesson complete:", err);
             }
-            setIsCompleted(true);
         });
     };
 

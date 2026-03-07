@@ -7,6 +7,7 @@ import { IdentityModule } from './modules/identity/identity.module';
 import { EnrollmentModule } from './modules/enrollment/enrollment.module';
 import { ExecutionModule } from './modules/execution/execution.module';
 import { AiModule } from './modules/ai/ai.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AiModule } from './modules/ai/ai.module';
     EnrollmentModule,
     ExecutionModule,
     AiModule,
+    AdminModule,
   ],
 })
 export class AppModule { }

@@ -42,4 +42,12 @@ export class EnrollmentService {
     ): Promise<Tables<'lesson_progress'>> {
         return this.enrollmentRepository.upsertLessonProgress(userId, lessonId);
     }
+
+    async getEnrollment(userId: string, courseId: string) {
+        return this.enrollmentRepository.findByUserAndCourse(userId, courseId);
+    }
+
+    async getLessonProgress(userId: string, lessonId: string) {
+        return this.enrollmentRepository.getLessonProgress(userId, lessonId);
+    }
 }

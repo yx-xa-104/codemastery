@@ -99,17 +99,14 @@ npm install
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-GOOGLE_API_KEY=your-gemini-api-key
 ```
 
 **Backend** (`apps/backend/.env`):
-
 ```env
 PORT=3001
 DATABASE_URL=postgresql://user:pass@localhost:5432/codemastery
 SUPABASE_URL=your-supabase-url
 SUPABASE_SERVICE_ROLE_KEY=your-service-key
-GOOGLE_API_KEY=your-gemini-api-key
 JWT_SECRET=your-secret-min-32-chars
 ```
 

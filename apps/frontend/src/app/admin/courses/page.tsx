@@ -2,6 +2,7 @@ import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { Plus, Eye, Edit3, BookOpen, Users, Circle, Search } from "lucide-react";
 
 const levelMap: Record<string, string> = {
@@ -21,11 +22,21 @@ export default async function AdminCoursesPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: courses } = await (supabase as any)
-        .from('courses')
-        .select('id, title, slug, level, status, thumbnail_url, total_enrollments, avg_rating, total_lessons, categories(name)')
-        .order('created_at', { ascending: false });
+    const cookieStore = await cookies();
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    let courses: any[] = [];
+    try {
+        const res = await fetch(`${API_URL}/api/courses`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            courses = data.sort((a: any, b: any) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+        }
+    } catch (err) {
+        console.error("Failed to fetch courses for admin", err);
+    }
 
     return (
         <AdminLayout

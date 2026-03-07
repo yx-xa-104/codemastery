@@ -5,11 +5,20 @@ import { CourseCard } from "@/features/courses/components/CourseCard";
 import { Search, Filter, Sparkles, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { createClient } from "@/shared/lib/supabase/client";
-import type { Tables } from "@/shared/lib/supabase/database.types";
+import { apiClient } from "@/shared/lib/api-client";
 import { Button } from "@/shared/components/ui/button";
 
-type CourseWithCategory = Tables<'courses'> & {
+type Category = { name: string; sort_order: number };
+type CourseWithCategory = {
+    id: string;
+    title: string;
+    slug: string;
+    short_description: string | null;
+    thumbnail_url: string | null;
+    level: 'beginner' | 'intermediate' | 'advanced';
+    duration_hours: number | null;
+    total_lessons: number | null;
+    is_hot: boolean;
     categories: { name: string } | null;
 };
 
@@ -17,32 +26,25 @@ export default function CoursesPage() {
     const [activeFilter, setActiveFilter] = useState("Tất cả");
     const [searchQuery, setSearchQuery] = useState("");
     const [courses, setCourses] = useState<CourseWithCategory[]>([]);
-    const [categories, setCategories] = useState<Tables<'categories'>[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const supabase = createClient();
-
         async function fetchData() {
             setLoading(true);
+            try {
+                // Fetch categories
+                const cats = await apiClient.get<Category[]>('/api/courses/categories');
+                setCategories(cats);
 
-            // Fetch categories
-            const { data: cats } = await supabase
-                .from('categories')
-                .select('*')
-                .order('sort_order');
-
-            if (cats) setCategories(cats);
-
-            // Fetch courses with category name
-            const { data: coursesData } = await supabase
-                .from('courses')
-                .select('*, categories(name)')
-                .eq('status', 'published')
-                .order('created_at', { ascending: false });
-
-            if (coursesData) setCourses(coursesData as CourseWithCategory[]);
-            setLoading(false);
+                // Fetch courses
+                const coursesData = await apiClient.get<CourseWithCategory[]>('/api/courses?status=published');
+                setCourses(coursesData);
+            } catch (error) {
+                console.error('Failed to fetch courses data:', error);
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchData();

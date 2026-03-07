@@ -1,6 +1,7 @@
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { TrendingUp, Users, BookOpen, Star, Download } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -13,9 +14,24 @@ export default async function AdminReportsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    const { count: totalStudents } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-    const { count: totalEnrollments } = await supabase.from('enrollments').select('*', { count: 'exact', head: true });
-    const { count: totalCourses } = await supabase.from('courses').select('*', { count: 'exact', head: true });
+    const cookieStore = await cookies();
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    let totalStudents = 0, totalEnrollments = 0, totalCourses = 0;
+
+    try {
+        const res = await fetch(`${API_URL}/api/admin/reports/stats`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.totalStudents !== undefined) totalStudents = data.totalStudents;
+            if (data.totalEnrollments !== undefined) totalEnrollments = data.totalEnrollments;
+            if (data.totalCourses !== undefined) totalCourses = data.totalCourses;
+        }
+    } catch (e) {
+        console.error("Failed to fetch admin report stats", e);
+    }
 
     const maxEnroll = Math.max(...ENROLL_DATA);
     const maxRevenue = Math.max(...REVENUE_DATA);

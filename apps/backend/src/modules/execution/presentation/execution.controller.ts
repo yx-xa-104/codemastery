@@ -4,7 +4,7 @@ import { ExecutionService } from '../application/execution.service';
 import { ExecuteCodeDto } from './dtos/execute-code.dto';
 
 @ApiTags('execution')
-@Controller('api/execute')
+@Controller('execute')
 export class ExecutionController {
     constructor(private readonly executionService: ExecutionService) { }
 

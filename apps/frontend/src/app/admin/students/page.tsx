@@ -1,6 +1,7 @@
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Users, BookOpen, TrendingUp, Search, Mail } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -25,21 +26,35 @@ export default async function AdminStudentsPage() {
         profiles: { full_name: string | null; student_id: string | null; avatar_url: string | null } | null;
     };
 
-    const { data: rawEnrollments } = await supabase
-        .from('enrollments')
-        .select('id, progress_percent, enrolled_at, user_id, courses(title, level), profiles(full_name, student_id, avatar_url)')
-        .order('enrolled_at', { ascending: false })
-        .limit(50);
+    const cookieStore = await cookies();
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    let enrollments: EnrollRow[] = [];
+    let totalStudents = 0;
+    let totalEnrollments = 0;
 
-    const enrollments = (rawEnrollments ?? []) as unknown as EnrollRow[];
+    try {
+        const [resEnrollments, resStats] = await Promise.all([
+            fetch(`${API_URL}/api/admin/enrollments`, {
+                headers: { Cookie: cookieStore.toString() },
+                cache: 'no-store'
+            }),
+            fetch(`${API_URL}/api/admin/reports/stats`, {
+                headers: { Cookie: cookieStore.toString() },
+                cache: 'no-store'
+            })
+        ]);
 
-    const { count: totalStudents } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-
-    const { count: totalEnrollments } = await supabase
-        .from('enrollments')
-        .select('*', { count: 'exact', head: true });
+        if (resEnrollments.ok) {
+            enrollments = await resEnrollments.json();
+        }
+        if (resStats.ok) {
+            const stats = await resStats.json();
+            totalStudents = stats.totalStudents || 0;
+            totalEnrollments = stats.totalEnrollments || 0;
+        }
+    } catch (err) {
+        console.error('Failed to fetch data for students page', err);
+    }
 
     return (
         <AdminLayout

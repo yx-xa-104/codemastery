@@ -8,14 +8,14 @@ import { EnrollmentWithCourse } from '../domain/enrollment.interface';
 export class EnrollmentRepository {
     constructor(private supabase: SupabaseService) { }
 
-    async findByUserAndCourse(userId: string, courseId: string) {
+    async findByUserAndCourse(userId: string, courseId: string): Promise<{ id: string } | null> {
         const { data } = await this.supabase.admin
             .from('enrollments')
             .select('id')
             .eq('user_id', userId)
             .eq('course_id', courseId)
-            .single();
-        return data;
+            .maybeSingle();
+        return data as { id: string } | null;
     }
 
     async create(userId: string, courseId: string): Promise<Tables<'enrollments'>> {
@@ -100,5 +100,15 @@ export class EnrollmentRepository {
         } catch {
             // RPC may not exist yet — ignore
         }
+    }
+
+    async getLessonProgress(userId: string, lessonId: string): Promise<Tables<'lesson_progress'> | null> {
+        const { data } = await this.supabase.admin
+            .from('lesson_progress')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('lesson_id', lessonId)
+            .maybeSingle();
+        return data as Tables<'lesson_progress'> | null;
     }
 }

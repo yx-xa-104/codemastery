@@ -1,7 +1,6 @@
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, Trophy, BadgeCheck } from "lucide-react";
 import Link from "next/link";
-import { createClient } from "@/shared/lib/supabase/server";
 import { notFound } from "next/navigation";
 
 const levelMap: Record<string, string> = {
@@ -12,29 +11,33 @@ const levelMap: Record<string, string> = {
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const supabase = await createClient();
 
-    // Fetch course with category
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: course } = await (supabase as any)
-        .from('courses')
-        .select('*, categories(name)')
-        .eq('slug', slug)
-        .single();
+    let course = null;
+    let modules = [];
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+    try {
+        const resCourse = await fetch(`${API_URL}/api/courses/${slug}`, { next: { revalidate: 60 } });
+        if (resCourse.ok) {
+            course = await resCourse.json();
+        }
+    } catch (err) {
+        console.error("Failed to fetch course details", err);
+    }
 
     if (!course) return notFound();
 
-    // Fetch modules with lessons
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: modules } = await (supabase as any)
-        .from('modules')
-        .select('*, lessons(*)')
-        .eq('course_id', course.id)
-        .order('sort_order')
-        .order('sort_order', { referencedTable: 'lessons' });
+    try {
+        const resModules = await fetch(`${API_URL}/api/courses/${slug}/modules`, { next: { revalidate: 60 } });
+        if (resModules.ok) {
+            modules = await resModules.json();
+        }
+    } catch (err) {
+        console.error("Failed to fetch modules", err);
+    }
 
-    const categoryName = (course.categories as unknown as { name: string })?.name ?? 'Khác';
-    const totalLessons = (modules as any[])?.reduce((sum: number, m: any) => sum + ((m.lessons as unknown[])?.length ?? 0), 0) ?? 0;
+    const categoryName = course.category?.name ?? course.categories?.name ?? 'Khác';
+    const totalLessons = modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length ?? 0), 0) ?? 0;
 
     return (
         <MainLayout>

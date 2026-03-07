@@ -2,6 +2,7 @@ import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import {
     User, Mail, Shield, Bell, CreditCard, LogOut,
     Camera, BookOpen, Award, TrendingUp, Calendar
@@ -25,20 +26,24 @@ export default async function AccountProfilePage() {
     const joinDate = new Date(user.created_at).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long' });
 
     // Fetch enrollment stats
-    const { count: enrollCount } = await supabase
-        .from('enrollments')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-
-    const { data: enrollments } = await supabase
-        .from('enrollments')
-        .select('progress_percent, courses(title, slug, thumbnail_url, level)')
-        .eq('user_id', user.id)
-        .order('enrolled_at', { ascending: false })
-        .limit(4);
-
     type EnrollRow = { progress_percent: number | null; courses: { title: string; slug: string; thumbnail_url: string | null; level: string } | null };
-    const typedEnrollments = (enrollments ?? []) as unknown as EnrollRow[];
+    let typedEnrollments: EnrollRow[] = [];
+    let enrollCount = 0;
+    try {
+        const cookieStore = await cookies();
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        const res = await fetch(`${API_URL}/api/enrollments`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            enrollCount = data.length;
+            typedEnrollments = data.slice(0, 4); // limit 4
+        }
+    } catch (err) {
+        console.error("Failed to fetch API profile enrollments", err);
+    }
 
     const avgProgress = typedEnrollments.length > 0
         ? Math.round(typedEnrollments.reduce((sum, e) => sum + (e.progress_percent ?? 0), 0) / typedEnrollments.length)

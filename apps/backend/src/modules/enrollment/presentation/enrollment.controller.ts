@@ -44,4 +44,17 @@ export class EnrollmentController {
     markLessonComplete(@CurrentUser('id') userId: string, @Param('lessonId') lessonId: string) {
         return this.enrollmentService.markLessonComplete(userId, lessonId);
     }
+
+    @Get('courses/:courseId/status')
+    @ApiOperation({ summary: 'Get enrollment status for a course' })
+    async getCourseStatus(@CurrentUser('id') userId: string, @Param('courseId') courseId: string) {
+        const enrollment = await this.enrollmentService.getEnrollment(userId, courseId);
+        return { enrollmentId: enrollment ? enrollment.id : null };
+    }
+
+    @Get('lessons/:lessonId/progress')
+    @ApiOperation({ summary: 'Get lesson progress status' })
+    getLessonProgress(@CurrentUser('id') userId: string, @Param('lessonId') lessonId: string) {
+        return this.enrollmentService.getLessonProgress(userId, lessonId);
+    }
 }

@@ -2,6 +2,7 @@ import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import {
     BookOpen, Trophy, Flame, Clock, Bot,
     TrendingUp, ChevronRight, Sparkles, BarChart3
@@ -39,14 +40,22 @@ export default async function DashboardPage() {
             categories: { name: string } | null;
         } | null;
     };
-    const { data: rawEnrollments } = await supabase
-        .from('enrollments')
-        .select('id, progress_percent, last_accessed_at, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
-        .eq('user_id', user.id)
-        .order('last_accessed_at', { ascending: false })
-        .limit(5);
 
-    const enrollments = (rawEnrollments ?? []) as unknown as EnrollmentRow[];
+    let enrollments: EnrollmentRow[] = [];
+    try {
+        const cookieStore = await cookies();
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        const res = await fetch(`${API_URL}/api/enrollments`, {
+            headers: { Cookie: cookieStore.toString() },
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            enrollments = data.slice(0, 5); // display only recent 5
+        }
+    } catch (err) {
+        console.error("Failed to fetch enrollments on dashboard", err);
+    }
 
     const totalEnrolled = enrollments.length;
     const avgProgress = enrollments.length

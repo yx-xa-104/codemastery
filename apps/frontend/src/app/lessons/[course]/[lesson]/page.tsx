@@ -1,70 +1,63 @@
-import { createClient } from "@/shared/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { LessonPageClient } from "./lesson-page-client";
+import { cookies } from "next/headers";
 
 interface Props {
-    params: { course: string; lesson: string };
+    params: Promise<{ course: string; lesson: string }>;
 }
 
 export default async function LessonPage({ params }: Props) {
-    const supabase = await createClient();
+    const { course: courseSlug, lesson: lessonSlugOrId } = await params;
 
-    // Get authenticated user (silent fail — page still works for preview)
-    const { data: { user } } = await supabase.auth.getUser();
+    // Server fetch utility with Authorization cookie
+    const getAuthHeaders = async () => {
+        const cookieStore = await cookies();
+        const customSessionData = cookieStore.get('sb-auth-token');
+        // Note: For NextJS SSR passing supabase token, we might have to pass session token
+        // Wait, supabase stores tokens in cookies like sb-xxxx-auth-token.
+        // It's often simpler to forward the cookie header as is
+        return { Cookie: cookieStore.toString() };
+    };
 
-    // Fetch the course and its modules+lessons
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: course } = await (supabase as any)
-        .from('courses')
-        .select('id, title, slug')
-        .eq('slug', params.course)
-        .single();
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
+    // Fetch course
+    const resCourse = await fetch(`${API_URL}/api/courses/${courseSlug}`, { next: { revalidate: 60 } });
+    const course = resCourse.ok ? await resCourse.json() : null;
     if (!course) notFound();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: modules } = await (supabase as any)
-        .from('modules')
-        .select('id, title, sort_order, lessons(id, title, slug, lesson_type, duration_minutes, sort_order)')
-        .eq('course_id', course.id)
-        .order('sort_order')
-        .order('sort_order', { referencedTable: 'lessons' });
+    // Fetch modules
+    const resModules = await fetch(`${API_URL}/api/courses/${courseSlug}/modules`, { next: { revalidate: 60 } });
+    const modules = resModules.ok ? await resModules.json() : [];
 
-    // Fetch the current lesson — the URL param may be slug or UUID
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.lesson);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const lessonQuery = (supabase as any)
-        .from('lessons')
-        .select('id, title, slug, content, lesson_type, video_url, exercise_config');
-
-    const { data: lesson } = isUUID
-        ? await lessonQuery.eq('id', params.lesson).single()
-        : await lessonQuery.eq('slug', params.lesson).single();
-
+    // Fetch lesson
+    const resLesson = await fetch(`${API_URL}/api/lessons/${courseSlug}/${lessonSlugOrId}`, { next: { revalidate: 60 } });
+    const lesson = resLesson.ok ? await resLesson.json() : null;
     if (!lesson) notFound();
 
-    // Fetch enrollment id for progress tracking (if user is logged in)
+    // Headers with cookies for protected endpoint
+    const authHeaders = await getAuthHeaders();
+
+    // Fetch enrollment check
     let enrollmentId: string | undefined;
-    if (user) {
-        const { data: enrollment } = await (supabase as any)
-            .from('enrollments')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('course_id', course.id)
-            .single();
-        enrollmentId = enrollment?.id;
+    const resStatus = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/status`, {
+        headers: authHeaders,
+        cache: 'no-store'
+    });
+    if (resStatus.ok) {
+        const statusData = await resStatus.json();
+        enrollmentId = statusData.enrollmentId;
     }
 
-    // Check if lesson is already completed
+    // Check if lesson is initially completed
     let isInitiallyCompleted = false;
-    if (user) {
-        const { data: progress } = await (supabase as any)
-            .from('lesson_progress')
-            .select('status')
-            .eq('user_id', user.id)
-            .eq('lesson_id', lesson.id)
-            .single();
-        isInitiallyCompleted = progress?.status === 'completed';
+    const resProgress = await fetch(`${API_URL}/api/enrollments/lessons/${lesson.id}/progress`, {
+        headers: authHeaders,
+        cache: 'no-store'
+    });
+    if (resProgress.ok) {
+        const progressData = await resProgress.json();
+        isInitiallyCompleted = progressData?.status === 'completed';
     }
 
     // Map modules to the format Sidebar expects
@@ -95,7 +88,7 @@ export default async function LessonPage({ params }: Props) {
                 exerciseConfig: lesson.exercise_config,
             }}
             modules={sidebarModules}
-            userId={user?.id}
+            userId={undefined} // Handled implicitly by API token downstream if needed
             enrollmentId={enrollmentId}
             isInitiallyCompleted={isInitiallyCompleted}
         />

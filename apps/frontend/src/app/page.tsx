@@ -2,18 +2,20 @@ import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { Hero } from "@/features/home/components/Hero";
 import { CourseCard } from "@/features/courses/components/CourseCard";
 import { Sparkles } from "lucide-react";
-import { createClient } from "@/shared/lib/supabase/server";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: courses } = await (supabase as any)
-    .from('courses')
-    .select('id, title, slug, short_description, thumbnail_url, level, duration_hours, total_lessons, is_hot, categories(name)')
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
-    .limit(6);
+  let courses = [];
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const res = await fetch(`${API_URL}/api/courses?status=published`, { next: { revalidate: 60 } });
+    if (res.ok) {
+      courses = await res.json();
+      // Giới hạn 6 khóa học mới nhất
+      courses = courses.slice(0, 6);
+    }
+  } catch (err) {
+    console.error("Failed to fetch courses for homepage", err);
+  }
 
   return (
     <MainLayout>
@@ -39,7 +41,7 @@ export default async function HomePage() {
               <CourseCard
                 key={course.id}
                 title={course.title}
-                category={(course.categories as unknown as { name: string })?.name ?? 'Khác'}
+                category={course.category?.name ?? 'Khác'}
                 level={course.level}
                 duration={`${course.duration_hours ?? 0}h`}
                 lessons={course.total_lessons ?? 0}
