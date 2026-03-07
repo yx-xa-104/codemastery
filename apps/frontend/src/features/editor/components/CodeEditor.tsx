@@ -7,9 +7,19 @@ import { useCodeRunner } from "@/features/editor/hooks/useCodeRunner";
 
 const LANGUAGE_OPTIONS = [
     { label: "JavaScript", value: "javascript", ext: "js" },
+    { label: "TypeScript", value: "typescript", ext: "ts" },
     { label: "Python", value: "python", ext: "py" },
     { label: "Java", value: "java", ext: "java" },
     { label: "C++", value: "cpp", ext: "cpp" },
+    { label: "C#", value: "csharp", ext: "cs" },
+    { label: "PHP", value: "php", ext: "php" },
+    { label: "Pascal", value: "pascal", ext: "pas" },
+    { label: "HTML", value: "html", ext: "html" },
+    { label: "CSS", value: "css", ext: "css" },
+    { label: "SQL (SQLite)", value: "sql", ext: "sql" },
+    { label: "PostgreSQL", value: "postgresql", ext: "sql" },
+    { label: "MySQL", value: "mysql", ext: "sql" },
+    { label: "SQL Server", value: "sqlserver", ext: "sql" },
 ];
 
 interface CodeEditorProps {
@@ -120,9 +130,16 @@ export function CodeEditor({
                         </span>
                     )}
                 </div>
-                <div className="p-3 flex-1 overflow-y-auto font-mono text-xs">
+                <div className="p-3 flex-1 overflow-y-auto font-mono text-xs relative">
                     {!result ? (
-                        <span className="text-slate-600 italic">Nhấn "Chạy" để xem kết quả...</span>
+                        <span className="text-slate-600 italic">Nhấn &quot;Chạy&quot; để xem kết quả...</span>
+                    ) : result.htmlPreview ? (
+                        <iframe
+                            srcDoc={result.htmlPreview}
+                            title="preview"
+                            sandbox="allow-scripts"
+                            className="w-full h-full border-none bg-white rounded"
+                        />
                     ) : (
                         <div className="space-y-1">
                             {result.output && (
