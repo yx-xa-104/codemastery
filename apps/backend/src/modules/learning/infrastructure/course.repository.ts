@@ -27,6 +27,28 @@ export class CourseRepository {
         return data as CourseWithCategory[];
     }
 
+    async findByTeacher(teacherId: string): Promise<CourseWithCategory[]> {
+        const { data, error } = await this.supabase.admin
+            .from('courses')
+            .select('*, categories(id, name, slug)')
+            .eq('teacher_id', teacherId)
+            .order('created_at', { ascending: false });
+
+        if (error) handleSupabaseError(error);
+        return data as CourseWithCategory[];
+    }
+
+    async findById(id: string): Promise<CourseWithCategory> {
+        const { data, error } = await this.supabase.admin
+            .from('courses')
+            .select('*, categories(id, name, slug)')
+            .eq('id', id)
+            .single();
+
+        if (error) handleSupabaseError(error, `Course "${id}" not found`);
+        return data as CourseWithCategory;
+    }
+
     async findBySlug(slug: string): Promise<CourseWithCategory> {
         const { data, error } = await this.supabase.admin
             .from('courses')

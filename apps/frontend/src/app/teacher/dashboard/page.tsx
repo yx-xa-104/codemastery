@@ -17,7 +17,7 @@ export default async function TeacherDashboardPage() {
     let enrollmentCount = 0;
     let courses: any[] = [];
     try {
-        const res = await fetch(`${API_URL}/api/courses`, {
+        const res = await fetch(`${API_URL}/api/courses/my`, {
             headers: { Cookie: cookieStore.toString() },
             cache: 'no-store'
         });

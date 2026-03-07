@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown } from "lucide-react";
+import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, Shield, GraduationCap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
@@ -13,7 +13,7 @@ import { Button } from "@/shared/components/ui/button";
 
 export function Navbar() {
     const pathname = usePathname();
-    const { user, loading } = useUser();
+    const { user, role, loading } = useUser();
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -137,14 +137,36 @@ export function Navbar() {
                                                 <p className="text-xs text-slate-500 truncate">{user.email}</p>
                                             </div>
                                             <div className="p-1">
-                                                <Link
-                                                    href="/dashboard"
-                                                    onClick={() => setUserMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                >
-                                                    <LayoutDashboard className="w-4 h-4 text-indigo-400" />
-                                                    Dashboard
-                                                </Link>
+                                                {role === 'admin' && (
+                                                    <Link
+                                                        href="/admin/dashboard"
+                                                        onClick={() => setUserMenuOpen(false)}
+                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                    >
+                                                        <Shield className="w-4 h-4 text-red-400" />
+                                                        Admin Panel
+                                                    </Link>
+                                                )}
+                                                {role === 'teacher' && (
+                                                    <Link
+                                                        href="/teacher/dashboard"
+                                                        onClick={() => setUserMenuOpen(false)}
+                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                    >
+                                                        <GraduationCap className="w-4 h-4 text-amber-400" />
+                                                        Teacher Panel
+                                                    </Link>
+                                                )}
+                                                {(!role || role === 'student') && (
+                                                    <Link
+                                                        href="/dashboard"
+                                                        onClick={() => setUserMenuOpen(false)}
+                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                    >
+                                                        <LayoutDashboard className="w-4 h-4 text-indigo-400" />
+                                                        Dashboard
+                                                    </Link>
+                                                )}
                                                 <Link
                                                     href="/account/settings"
                                                     onClick={() => setUserMenuOpen(false)}
@@ -257,9 +279,21 @@ export function Navbar() {
                                                 <p className="text-xs text-slate-500">{user.email}</p>
                                             </div>
                                         </div>
-                                        <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
-                                            <LayoutDashboard className="w-5 h-5" /> Dashboard
-                                        </Link>
+                                        {role === 'admin' && (
+                                            <Link href="/admin/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
+                                                <Shield className="w-5 h-5 text-red-400" /> Admin Panel
+                                            </Link>
+                                        )}
+                                        {role === 'teacher' && (
+                                            <Link href="/teacher/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
+                                                <GraduationCap className="w-5 h-5 text-amber-400" /> Teacher Panel
+                                            </Link>
+                                        )}
+                                        {(!role || role === 'student') && (
+                                            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
+                                                <LayoutDashboard className="w-5 h-5" /> Dashboard
+                                            </Link>
+                                        )}
                                         <form action={signOut}>
                                             <Button type="submit" variant="ghost" className="w-full flex justify-start items-center gap-3 px-4 py-3 h-12 rounded-lg text-sm text-red-400 hover:bg-red-500/10">
                                                 <LogOut className="w-5 h-5" /> Đăng xuất
