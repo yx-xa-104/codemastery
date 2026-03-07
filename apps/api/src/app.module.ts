@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { SupabaseModule } from './supabase/supabase.module';
-import { AuthModule } from './auth/auth.module';
-import { CoursesModule } from './courses/courses.module';
-import { LessonsModule } from './lessons/lessons.module';
-import { EnrollmentsModule } from './enrollments/enrollments.module';
-import { ProfileModule } from './profile/profile.module';
-import { ExecutionModule } from './execution/execution.module';
-import { AiModule } from './ai/ai.module';
+import { SupabaseModule } from './shared/database/supabase.module';
+import { AuthModule } from './shared/auth/auth.module';
+import { CourseModule } from './modules/course/course.module';
+import { LessonModule } from './modules/lesson/lesson.module';
+import { EnrollmentModule } from './modules/enrollment/enrollment.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { ExecutionModule } from './modules/execution/execution.module';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { AiModule } from './ai/ai.module';
     }),
     SupabaseModule,
     AuthModule,
-    CoursesModule,
-    LessonsModule,
-    EnrollmentsModule,
+    CourseModule,
+    LessonModule,
+    EnrollmentModule,
     ProfileModule,
     ExecutionModule,
     AiModule,

@@ -220,12 +220,12 @@ export function GlobalAiChat() {
                                                 : <Bot className="w-3 h-3 text-white" />
                                             }
                                         </div>
-                                        <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
+                                        <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed break-words overflow-hidden ${
                                             msg.role === "user"
                                                 ? "bg-indigo-600 text-white rounded-tr-sm"
                                                 : "bg-[#1a2744] border border-slate-700/40 text-slate-200 rounded-tl-sm"
                                         }`}>
-                                            <div className="prose prose-invert prose-xs max-w-none [&_pre]:text-[11px] [&_code]:text-[11px] [&_p]:my-0.5">
+                                            <div className="prose prose-invert prose-xs max-w-none [&_pre]:text-[11px] [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-all [&_code]:text-[11px] [&_code]:break-all [&_p]:my-0.5 [&_p]:break-words">
                                                 <ReactMarkdown>{msg.content}</ReactMarkdown>
                                             </div>
                                         </div>
