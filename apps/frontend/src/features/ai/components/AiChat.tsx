@@ -4,7 +4,8 @@ import { Send, Bot, User, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useChat } from "@/features/ai/hooks/useChat";
+import { useAiChat } from "@/features/ai-chat/model/useAiChat";
+import { useState, useRef, useEffect } from "react";
 
 import { Button } from "@/shared/components/ui/button";
 
@@ -13,13 +14,25 @@ interface AiChatProps {
 }
 
 export function AiChat({ embedded = false }: AiChatProps) {
-    const { messages, input, setInput, isTyping, handleSend, messagesEndRef } = useChat();
+    const { messages, isLoading: isTyping, sendMessage } = useAiChat();
+    const [input, setInput] = useState("");
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    const handleSend = () => {
+        if (!input.trim() || isTyping) return;
+        sendMessage(input.trim());
+        setInput("");
+    };
 
     return (
         <div className="flex flex-col h-full bg-navy-950 overflow-hidden">
             {/* Header - only shown in standalone mode */}
             {!embedded && (
-                <div className="flex items-center gap-3 p-4 bg-navy-900 border-b border-slate-800 flex-shrink-0">
+                <div className="flex items-center gap-3 p-4 bg-navy-900 border-b border-slate-800 shrink-0">
                     <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center relative">
                         <Bot className="w-5 h-5 text-white" />
                         <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-navy-900"></div>
@@ -41,7 +54,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
                         className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
                         <div
-                            className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === "user" ? "bg-amber-500" : "bg-indigo-600"
+                            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${msg.role === "user" ? "bg-amber-500" : "bg-indigo-600"
                                 }`}
                         >
                             {msg.role === "user" ? (
@@ -59,11 +72,13 @@ export function AiChat({ embedded = false }: AiChatProps) {
                             <div className="prose prose-invert prose-sm max-w-none">
                                 <ReactMarkdown
                                     components={{
-                                        code({ node, inline, className, children, ...props }: any) {
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                        code({ inline, className, children, ...props }: any) {
                                             const match = /language-(\w+)/.exec(className || "");
                                             return !inline && match ? (
                                                 <div className="rounded-lg overflow-hidden my-2 border border-slate-800">
                                                     <SyntaxHighlighter
+                                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                         style={vscDarkPlus as any}
                                                         language={match[1]}
                                                         PreTag="div"
@@ -87,7 +102,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
                         </div>
                     </div>
                 ))}
-                {isTyping && (
+                {isTyping && messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.content === '' && (
                     <div className="flex gap-3">
                         <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center">
                             <Bot className="w-3.5 h-3.5 text-white" />
@@ -105,7 +120,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
             </div>
 
             {/* Input */}
-            <div className="p-3 border-t border-slate-800 flex-shrink-0 bg-navy-900">
+            <div className="p-3 border-t border-slate-800 shrink-0 bg-navy-900">
                 <div className="relative flex items-center">
                     <textarea
                         value={input}
@@ -122,7 +137,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
                     />
                     <Button
                         onClick={() => handleSend()}
-                        disabled={!input.trim()}
+                        disabled={!input.trim() || isTyping}
                         size="icon"
                         className="absolute right-2 p-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
                     >

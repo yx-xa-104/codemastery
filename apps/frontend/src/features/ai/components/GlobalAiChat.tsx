@@ -6,36 +6,18 @@ import { Button } from "@/shared/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
-interface Message {
-    id: string;
-    role: "user" | "assistant";
-    content: string;
-}
-
-const WELCOME: Message = {
-    id: "init",
-    role: "assistant",
-    content: "Xin chào! 👋 Mình là **AI Tutor** của CodeMastery.\n\nBạn cần hỗ trợ gì về lập trình không?",
-};
-
-const FALLBACKS = [
-    "Đây là câu hỏi thú vị! Hãy phân tích từng bước:\n\n```js\n// Ví dụ minh họa\nconst solve = (n) => n <= 1 ? n : solve(n-1) + solve(n-2);\n```\n\n_AI đang offline, Phase 6 sẽ tích hợp Gemini thật_ 🚀",
-    "Tốt lắm! Khái niệm này hoạt động dựa trên **scope chain** và closure. Thử xem:\n\n```python\ndef outer():\n    count = 0\n    def inner():\n        return count + 1\n    return inner\n```\n\n_Đang dùng fallback. AI thật sẽ sớm ra mắt!_ ✨",
-    "Pattern này rất phổ biến trong lập trình hiện đại:\n\n```ts\nconst result = items\n  .filter(x => x.active)\n  .map(x => x.value);\n```\n\n_Offline mode. Gemini AI sẽ thay thế trong Phase 6!_ 💡",
-];
-
 const QUICK_PROMPTS = ["Closure là gì?", "Debug lỗi TypeScript", "Giải thích async/await"];
+
+import { useAiChat } from "@/features/ai-chat/model/useAiChat";
 
 export function GlobalAiChat() {
     const [isOpen, setIsOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([WELCOME]);
     const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const [fallbackIdx, setFallbackIdx] = useState(0);
-    const [hasUnread, setHasUnread] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const { messages, isLoading: isTyping, sendMessage, abortStream } = useAiChat();
 
     // Scroll messages container (not window)
     useEffect(() => {
@@ -44,18 +26,9 @@ export function GlobalAiChat() {
         }
     }, [messages]);
 
-    // Mark unread when AI responds while closed/minimized
-    useEffect(() => {
-        const lastMsg = messages[messages.length - 1];
-        if (lastMsg?.role === "assistant" && lastMsg.id !== "init" && (!isOpen || isMinimized)) {
-            setHasUnread(true);
-        }
-    }, [messages, isOpen, isMinimized]);
-
     const handleOpen = () => {
         setIsOpen(true);
         setIsMinimized(false);
-        setHasUnread(false);
         setTimeout(() => textareaRef.current?.focus(), 150);
     };
 
@@ -70,53 +43,21 @@ export function GlobalAiChat() {
         const content = (text ?? input).trim();
         if (!content || isTyping) return;
 
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: "user", content }]);
         setInput("");
         resetTextarea();
-        setIsTyping(true);
         setTimeout(() => textareaRef.current?.focus(), 0);
 
-        try {
-            const res = await fetch("/api/ai/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: content }),
-                signal: AbortSignal.timeout(8000),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setMessages(prev => [...prev, {
-                    id: (Date.now() + 1).toString(),
-                    role: "assistant",
-                    content: data.reply ?? data.content,
-                }]);
-                setIsTyping(false);
-                setTimeout(() => textareaRef.current?.focus(), 0);
-                return;
-            }
-        } catch { /* fallback */ }
-
-        setTimeout(() => {
-            setMessages(prev => [...prev, {
-                id: (Date.now() + 1).toString(),
-                role: "assistant",
-                content: FALLBACKS[fallbackIdx % FALLBACKS.length],
-            }]);
-            setFallbackIdx(i => i + 1);
-            setIsTyping(false);
-            textareaRef.current?.focus();
-        }, 1200);
-    }, [input, isTyping, fallbackIdx]);
+        sendMessage(content);
+    }, [input, isTyping, sendMessage]);
 
     return (
         <>
             {/* ── FAB Button ── */}
             {!isOpen && (
-                <Button
+                <button
                     onClick={handleOpen}
                     aria-label="Mở AI Tutor"
-                    variant="ghost"
-                    className="fixed bottom-6 right-6 z-50 group hover:bg-transparent"
+                    className="fixed bottom-6 right-6 z-50 group border-none outline-none bg-transparent p-0 cursor-pointer"
                 >
                     {/* Pulse ring */}
                     <span className="absolute inset-0 rounded-full bg-indigo-500 opacity-30 animate-ping" />
@@ -126,14 +67,8 @@ export function GlobalAiChat() {
                         <span className="text-sm font-semibold tracking-tight">AI Tutor</span>
                         {/* Online dot */}
                         <span className="absolute -top-0.5 -right-0.5 size-3.5 bg-green-500 rounded-full border-2 border-[#010816]" />
-                        {/* Unread badge */}
-                        {hasUnread && (
-                            <span className="absolute -top-1.5 -left-1.5 size-5 bg-amber-500 rounded-full border-2 border-[#010816] flex items-center justify-center text-[9px] font-bold">
-                                !
-                            </span>
-                        )}
                     </span>
-                </Button>
+                </button>
             )}
 
             {/* ── Chat popup ── */}
@@ -178,8 +113,11 @@ export function GlobalAiChat() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={handleClose}
-                                className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                onClick={() => {
+                                    handleClose();
+                                    abortStream();
+                                }}
+                                className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                                 title="Đóng"
                             >
                                 <X className="w-4 h-4" />
@@ -239,7 +177,7 @@ export function GlobalAiChat() {
                                     </div>
                                 ))}
 
-                                {isTyping && (
+                                {isTyping && messages[messages.length -1]?.role === 'assistant' && messages[messages.length -1]?.content === '' && (
                                     <div className="flex gap-2">
                                         <div className="size-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
                                             <Bot className="w-3 h-3 text-white" />
