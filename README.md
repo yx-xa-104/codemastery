@@ -6,7 +6,7 @@ Modern interactive coding education platform with AI-powered tutoring, inspired 
 
 - **Interactive Code Editor** - Write and execute code directly in browser (Monaco Editor)
 - **AI Tutor** - Context-aware AI assistant powered by Gemini 2.0 Flash
-- **Secure Code Execution** - Docker-based sandboxed environment for Python, JavaScript, Java, C++
+- **Secure Code Execution** - Sandboxed environment for Python, JavaScript, Java, C++
 - **Real-time Learning** - Instant feedback and code explanations
 - **Progress Tracking** - Save your learning progress and code snippets
 - **Modern UI** - Beautiful, responsive 3-column layout with dark mode
@@ -15,24 +15,25 @@ Modern interactive coding education platform with AI-powered tutoring, inspired 
 
 ### Tech Stack
 
-**Frontend:**
+**Frontend (Feature-Sliced Design):**
 
 - Next.js 14 (App Router, SSR)
 - TypeScript
 - Tailwind CSS
 - Monaco Editor
 - Supabase (Auth & Database)
+- Zustand (State Management)
+- Shadcn UI (Components)
 
 **Backend:**
 
 - NestJS (Node.js/TypeScript)
 - PostgreSQL (via Supabase)
-- Dockerode (Code execution)
 - Gemini AI API
 
 **Infrastructure:**
 
-- Docker (Code sandboxing)
+- Supabase (Database + Auth)
 - Strapi CMS (Content management)
 
 ### Project Structure
@@ -40,28 +41,19 @@ Modern interactive coding education platform with AI-powered tutoring, inspired 
 ```
 codemastery/
 ├── apps/
-│   ├── web/              # Next.js frontend
+│   ├── frontend/         # Next.js frontend (FSD Architecture)
 │   │   ├── src/
-│   │   │   ├── app/      # Pages & layouts
-│   │   │   ├── components/
-│   │   │   └── lib/
+│   │   │   ├── app/      # Routing & Pages
+│   │   │   ├── features/ # Business Modules (Auth, Courses, AI, etc.)
+│   │   │   └── shared/   # Components, UI (Shadcn), Stores (Zustand)
 │   │   └── package.json
 │   │
-│   └── api/              # NestJS backend
+│   └── backend/          # NestJS backend
 │       ├── src/
-│       │   ├── execution/ # Docker code runner
-│       │   ├── ai/        # AI service
-│       │   ├── auth/      # Authentication
-│       │   └── lessons/   # Content API
+│       │   ├── modules/   # Business modules
+│       │   ├── common/    # Shared guards, decorators
+│       │   └── infrastructure/ # Database, event-bus
 │       └── package.json
-│
-├── docker/
-│   ├── runners/          # Language-specific images
-│   │   ├── python.Dockerfile
-│   │   ├── java.Dockerfile
-│   │   ├── cpp.Dockerfile
-│   │   └── javascript.Dockerfile
-│   └── docker-compose.yml
 │
 └── content/              # MDX lesson files
     ├── python/
@@ -73,7 +65,6 @@ codemastery/
 ### Prerequisites
 
 - Node.js 20+
-- Docker Desktop
 - PostgreSQL (or Supabase account)
 - Gemini API key
 
@@ -89,20 +80,20 @@ cd codemastery
 **Frontend:**
 
 ```bash
-cd apps/web
+cd apps/frontend
 npm install
 ```
 
 **Backend:**
 
 ```bash
-cd apps/api
+cd apps/backend
 npm install
 ```
 
 ### 3. Setup environment variables
 
-**Frontend** (`apps/web/.env`):
+**Frontend** (`apps/frontend/.env`):
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
@@ -111,7 +102,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 GOOGLE_API_KEY=your-gemini-api-key
 ```
 
-**Backend** (`apps/api/.env`):
+**Backend** (`apps/backend/.env`):
 
 ```env
 PORT=3001
@@ -122,48 +113,30 @@ GOOGLE_API_KEY=your-gemini-api-key
 JWT_SECRET=your-secret-min-32-chars
 ```
 
-### 4. Pull Docker images
+### 4. Run database migrations
 
 ```bash
-docker pull python:3.11-alpine
-docker pull openjdk:17-alpine
-docker pull gcc:12-alpine
-docker pull node:20-alpine
-```
-
-### 5. Run database migrations
-
-```bash
-cd apps/api
+cd apps/backend
 npm run migration:run
 ```
 
-### 6. Start development servers
-
-**Option A: Individual services**
+### 5. Start development servers
 
 Terminal 1 - Frontend:
 
 ```bash
-cd apps/web
+cd apps/frontend
 npm run dev
 ```
 
 Terminal 2 - Backend:
 
 ```bash
-cd apps/api
+cd apps/backend
 npm run start:dev
 ```
 
-**Option B: Docker Compose**
-
-```bash
-cd docker
-docker-compose up
-```
-
-### 7. Access the application
+### 6. Access the application
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
@@ -173,46 +146,31 @@ docker-compose up
 
 The platform implements multiple security layers:
 
-- **Docker Sandboxing** - Isolated containers with resource limits
 - **Input Validation** - Code size limits, pattern blacklisting
 - **Rate Limiting** - Prevents abuse
-- **Network Isolation** - No internet access from containers
-- **Read-only Filesystem** - Prevents file system attacks
 - **Timeouts** - 5-second execution limit
 
 See [security_guide.md](./security_guide.md) for detailed security documentation.
-
-## Documentation
-
-- [Implementation Plan](./implementation_plan.md) - Detailed architecture and code examples
-- [Security Guide](./security_guide.md) - Security considerations and best practices
-- [Task Checklist](./task.md) - Development roadmap
 
 ## Testing
 
 ```bash
 # Frontend tests
-cd apps/web
+cd apps/frontend
 npm test
 npm run test:e2e
 
 # Backend tests
-cd apps/api
+cd apps/backend
 npm test
 ```
 
 ## Deployment
 
-### Docker Production Build
-
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
-
 ### Vercel (Frontend)
 
 ```bash
-cd apps/web
+cd apps/frontend
 vercel deploy
 ```
 
