@@ -22,6 +22,15 @@ export class CourseController {
         });
     }
 
+    @Get('my')
+    @ApiOperation({ summary: 'Get courses created by current teacher' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard, RolesGuard)
+    @Roles('teacher')
+    findMyCourses(@CurrentUser('id') userId: string) {
+        return this.courseService.findByTeacher(userId);
+    }
+
     @Get('search')
     @ApiOperation({ summary: 'Search courses by keyword' })
     search(@Query('q') q: string) {
@@ -78,26 +87,34 @@ export class CourseController {
     @ApiOperation({ summary: 'Create a course (teacher/admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     create(@CurrentUser('id') userId: string, @Body() body: CreateCourseDto) {
         return this.courseService.create({ ...body, teacher_id: userId } as any);
     }
 
     @Patch(':id')
-    @ApiOperation({ summary: 'Update a course (teacher/admin)' })
+    @ApiOperation({ summary: 'Update a course (owner or admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
-    update(@Param('id') id: string, @Body() body: UpdateCourseDto) {
-        return this.courseService.update(id, body as any);
+    @Roles('teacher')
+    update(
+        @Param('id') id: string,
+        @Body() body: UpdateCourseDto,
+        @CurrentUser('id') userId: string,
+    ) {
+        return this.courseService.update(id, body as any, userId);
     }
 
     @Delete(':id')
-    @ApiOperation({ summary: 'Delete a course (admin only)' })
+    @ApiOperation({ summary: 'Delete a course (owner or admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('admin')
-    remove(@Param('id') id: string) {
-        return this.courseService.delete(id);
+    @Roles('teacher')
+    remove(
+        @Param('id') id: string,
+        @CurrentUser('id') userId: string,
+    ) {
+        return this.courseService.delete(id, userId);
     }
 }
+

@@ -13,13 +13,25 @@ export async function signInWithPassword(formData: FormData) {
     email = `${email.toLowerCase()}@student.codemastery.vn`;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  // Fetch role to redirect to correct panel
+  let redirectPath = '/dashboard';
+  if (user) {
+    const { data: profile } = await (supabase as any)
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+    if (profile?.role === 'admin') redirectPath = '/admin/dashboard';
+    else if (profile?.role === 'teacher') redirectPath = '/teacher/dashboard';
+  }
+
+  redirect(redirectPath);
 }
 
 export async function signUp(formData: FormData) {
@@ -57,7 +69,7 @@ export async function signUp(formData: FormData) {
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  redirect("/auth/login");
 }
 
 export async function signInWithGoogle() {

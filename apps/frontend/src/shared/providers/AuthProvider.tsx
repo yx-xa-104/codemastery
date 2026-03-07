@@ -2,32 +2,46 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { createClient } from '@/shared/lib/supabase/client';
-import { useAuthStore } from '@/shared/stores/useAuthStore';
+import { useAuthStore, type UserRole } from '@/shared/stores/useAuthStore';
 
-/**
- * AuthProvider: Initializes auth state from Supabase and syncs to Zustand store.
- * Wrap the app root with this component.
- */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const setUser = useAuthStore((s) => s.setUser);
+  const setRole = useAuthStore((s) => s.setRole);
+
+  const fetchRole = async (userId: string) => {
+    const supabase = createClient();
+    const { data } = await (supabase as any)
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+    if (data?.role) {
+      setRole(data.role as UserRole);
+    }
+  };
 
   useEffect(() => {
     const supabase = createClient();
 
-    // Get initial session
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
+      if (user) fetchRole(user.id);
     });
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
+        const user = session?.user ?? null;
+        setUser(user);
+        if (user) {
+          fetchRole(user.id);
+        } else {
+          setRole('student');
+        }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [setUser]);
+  }, [setUser, setRole]);
 
   return <>{children}</>;
 }

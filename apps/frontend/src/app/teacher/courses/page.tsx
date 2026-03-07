@@ -26,7 +26,7 @@ export default async function TeacherCoursesPage() {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     let courses: any[] = [];
     try {
-        const res = await fetch(`${API_URL}/api/courses`, {
+        const res = await fetch(`${API_URL}/api/courses/my`, {
             headers: { Cookie: cookieStore.toString() },
             cache: 'no-store'
         });

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { Tables } from '@infra/database/database.types';
 import { CourseRepository } from '../infrastructure/course.repository';
 import { CourseWithCategory, ModuleWithLessons } from '../domain/course.interface';
@@ -27,17 +27,29 @@ export class CourseService {
         return this.courseRepository.findAllCategories();
     }
 
+    async findByTeacher(teacherId: string): Promise<CourseWithCategory[]> {
+        return this.courseRepository.findByTeacher(teacherId);
+    }
+
     // ── CRUD Operations ──────────────────────────────────────────────
 
     async create(courseData: Partial<Tables<'courses'>>) {
         return this.courseRepository.create(courseData);
     }
 
-    async update(id: string, courseData: Partial<Tables<'courses'>>) {
+    async update(id: string, courseData: Partial<Tables<'courses'>>, userId: string) {
+        const course = await this.courseRepository.findById(id);
+        if ((course as any).teacher_id !== userId) {
+            throw new ForbiddenException('Bạn không có quyền chỉnh sửa khóa học này');
+        }
         return this.courseRepository.update(id, courseData);
     }
 
-    async delete(id: string) {
+    async delete(id: string, userId: string) {
+        const course = await this.courseRepository.findById(id);
+        if ((course as any).teacher_id !== userId) {
+            throw new ForbiddenException('Bạn không có quyền xóa khóa học này');
+        }
         return this.courseRepository.delete(id);
     }
 
