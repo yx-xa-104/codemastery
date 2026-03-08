@@ -1,0 +1,57 @@
+---
+title: "Biến, Kiểu dữ liệu & Operators"
+description: "Khai báo biến, các kiểu dữ liệu và toán tử trong JavaScript"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Biến, Kiểu dữ liệu & Operators
+
+## Khai báo biến
+
+```javascript
+var oldWay = "ES5";       // Function scope, tránh dùng
+let name = "An";          // Block scope, có thể gán lại
+const PI = 3.14159;       // Block scope, không thể gán lại
+```
+
+## Kiểu dữ liệu (Data Types)
+
+| Kiểu | Ví dụ | typeof |
+|------|-------|--------|
+| String | `"Hello"` | `"string"` |
+| Number | `42`, `3.14` | `"number"` |
+| Boolean | `true`, `false` | `"boolean"` |
+| Undefined | `undefined` | `"undefined"` |
+| Null | `null` | `"object"` (bug lịch sử) |
+| BigInt | `9007199254740991n` | `"bigint"` |
+| Symbol | `Symbol("id")` | `"symbol"` |
+| Object | `{}`, `[]` | `"object"` |
+
+## Operators — Toán tử
+
+```javascript
+// Arithmetic: +, -, *, /, %, **
+console.log(2 ** 3);  // 8
+
+// So sánh: dùng === thay vì ==
+console.log(5 === "5");  // false (strict)
+console.log(5 == "5");   // true (loose, tránh dùng)
+
+// Logic: &&, ||, !
+const canDrive = age >= 18 && hasLicense;
+
+// Nullish coalescing
+const name = user.name ?? "Ẩn danh";
+
+// Optional chaining
+const city = user?.address?.city;
+```
+
+## Ép kiểu (Type Coercion)
+```javascript
+String(42)       // "42"
+Number("42")     // 42
+Boolean("")      // false
+Boolean("hello") // true
+```

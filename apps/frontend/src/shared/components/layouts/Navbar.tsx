@@ -168,7 +168,7 @@ export function Navbar() {
                                                     </Link>
                                                 )}
                                                 <Link
-                                                    href="/account/settings"
+                                                    href="/dashboard/settings"
                                                     onClick={() => setUserMenuOpen(false)}
                                                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
                                                 >
@@ -176,7 +176,7 @@ export function Navbar() {
                                                     Cài đặt
                                                 </Link>
                                                 <Link
-                                                    href="/account/profile"
+                                                    href="/dashboard/profile"
                                                     onClick={() => setUserMenuOpen(false)}
                                                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
                                                 >

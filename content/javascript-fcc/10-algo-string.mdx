@@ -1,0 +1,51 @@
+---
+title: "Thuật toán xử lý chuỗi"
+description: "Các thuật toán phổ biến với string"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Thuật toán xử lý chuỗi
+
+## Đảo ngược chuỗi
+```javascript
+const reverse = str => [...str].reverse().join("");
+reverse("hello"); // "olleh"
+```
+
+## Kiểm tra Palindrome
+```javascript
+function isPalindrome(str) {
+  const clean = str.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return clean === [...clean].reverse().join("");
+}
+isPalindrome("A man, a plan, a canal: Panama"); // true
+```
+
+## Đếm từ
+```javascript
+const wordCount = str => str.trim().split(/\s+/).length;
+wordCount("Xin chào các bạn"); // 4
+```
+
+## Title Case
+```javascript
+function titleCase(str) {
+  return str.toLowerCase()
+    .split(" ")
+    .map(w => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
+titleCase("xin chào thế giới"); // "Xin Chào Thế Giới"
+```
+
+## Caesar Cipher
+```javascript
+function caesarCipher(str, shift) {
+  return str.replace(/[a-z]/gi, char => {
+    const base = char <= 'Z' ? 65 : 97;
+    return String.fromCharCode(((char.charCodeAt(0) - base + shift) % 26) + base);
+  });
+}
+caesarCipher("HELLO", 3); // "KHOOR"
+```

@@ -1,0 +1,49 @@
+---
+title: "Thực hành: Logic cơ bản"
+description: "Bài tập về biến, điều kiện và vòng lặp"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Thực hành: Logic Cơ Bản
+
+## Bài 1: FizzBuzz
+```javascript
+for (let i = 1; i <= 100; i++) {
+  if (i % 15 === 0) console.log("FizzBuzz");
+  else if (i % 3 === 0) console.log("Fizz");
+  else if (i % 5 === 0) console.log("Buzz");
+  else console.log(i);
+}
+```
+
+## Bài 2: Tìm số lớn nhất
+```javascript
+function findMax(arr) {
+  let max = arr[0];
+  for (const num of arr) {
+    if (num > max) max = num;
+  }
+  return max;
+}
+console.log(findMax([3, 7, 2, 9, 1])); // 9
+```
+
+## Bài 3: Đếm ký tự
+```javascript
+function countChars(str) {
+  const result = {};
+  for (const char of str.toLowerCase()) {
+    if (char !== " ") {
+      result[char] = (result[char] || 0) + 1;
+    }
+  }
+  return result;
+}
+console.log(countChars("hello")); // { h:1, e:1, l:2, o:1 }
+```
+
+## Thử thách
+1. Viết hàm kiểm tra số nguyên tố
+2. Viết hàm đảo ngược chuỗi mà không dùng `.reverse()`
+3. Viết hàm tìm số Fibonacci thứ n

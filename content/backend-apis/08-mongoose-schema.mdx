@@ -1,0 +1,63 @@
+---
+title: "Mongoose Schema & Models"
+description: "Định nghĩa schema và models với Mongoose"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Mongoose Schema & Models
+
+## Kết nối
+```javascript
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost:27017/school");
+```
+
+## Schema & Model
+```javascript
+const studentSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
+  age: { type: Number, min: 0, max: 150 },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+  gpa: { type: Number, default: 0 },
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Instance methods
+studentSchema.methods.getInfo = function() {
+  return `${this.name} - GPA: ${this.gpa}`;
+};
+
+// Static methods
+studentSchema.statics.findByEmail = function(email) {
+  return this.findOne({ email });
+};
+
+// Virtual
+studentSchema.virtual("isHonor").get(function() {
+  return this.gpa >= 3.5;
+});
+
+const Student = mongoose.model("Student", studentSchema);
+```
+
+## CRUD Operations
+```javascript
+// Create
+const student = await Student.create({ name: "An", email: "an@mail.com", age: 20 });
+
+// Read
+const all = await Student.find({ isActive: true }).sort({ name: 1 }).limit(10);
+const one = await Student.findById(id);
+
+// Update
+await Student.findByIdAndUpdate(id, { gpa: 3.8 }, { new: true });
+
+// Delete
+await Student.findByIdAndDelete(id);
+
+// Populate (JOIN)
+const withCourses = await Student.findById(id).populate("courses");
+```

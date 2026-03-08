@@ -1,0 +1,53 @@
+---
+title: "CREATE, INSERT & SELECT"
+description: "Tạo bảng, thêm và truy vấn dữ liệu SQL"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# CREATE, INSERT & SELECT
+
+## Tạo bảng (CREATE TABLE)
+```sql
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    age INT CHECK (age >= 0 AND age <= 150),
+    gpa DECIMAL(3,2) DEFAULT 0.00,
+    enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE courses (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    credits INT NOT NULL DEFAULT 3
+);
+
+CREATE TABLE enrollments (
+    student_id INT REFERENCES students(id) ON DELETE CASCADE,
+    course_id INT REFERENCES courses(id) ON DELETE CASCADE,
+    grade CHAR(1),
+    PRIMARY KEY (student_id, course_id)
+);
+```
+
+## Thêm dữ liệu (INSERT)
+```sql
+INSERT INTO students (name, email, age, gpa) VALUES
+    ('Nguyễn An', 'an@mail.com', 20, 3.50),
+    ('Trần Bình', 'binh@mail.com', 21, 3.80),
+    ('Lê Chi', 'chi@mail.com', 19, 3.20);
+
+INSERT INTO courses (title, credits) VALUES
+    ('Cơ sở dữ liệu', 4),
+    ('Lập trình Python', 3);
+```
+
+## Truy vấn (SELECT)
+```sql
+SELECT * FROM students;
+SELECT name, gpa FROM students WHERE gpa >= 3.5;
+SELECT name, age FROM students ORDER BY age DESC LIMIT 5;
+SELECT DISTINCT age FROM students;
+```

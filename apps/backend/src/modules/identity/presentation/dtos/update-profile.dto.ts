@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsIn } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateProfileDto {
@@ -31,4 +31,10 @@ export class UpdateProfileDto {
     @IsOptional()
     @IsString()
     class_code?: string;
+
+    @ApiPropertyOptional({ description: 'Gender', enum: ['male', 'female', 'other'] })
+    @IsOptional()
+    @IsString()
+    @IsIn(['male', 'female', 'other'])
+    gender?: string;
 }

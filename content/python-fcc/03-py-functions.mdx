@@ -1,0 +1,52 @@
+---
+title: "Hàm & Lambda"
+description: "Định nghĩa hàm, parameters, lambda expressions"
+difficulty: "beginner"
+language: "python"
+---
+
+# Hàm & Lambda
+
+## Định nghĩa hàm
+```python
+def greet(name, greeting="Xin chào"):
+    """Hàm chào - docstring"""
+    return f"{greeting}, {name}!"
+
+print(greet("An"))             # "Xin chào, An!"
+print(greet("An", "Hello"))    # "Hello, An!"
+```
+
+## *args & **kwargs
+```python
+def sum_all(*args):
+    return sum(args)
+sum_all(1, 2, 3, 4)  # 10
+
+def create_user(**kwargs):
+    return kwargs
+create_user(name="An", age=20)  # {"name": "An", "age": 20}
+```
+
+## Lambda
+```python
+square = lambda x: x ** 2
+add = lambda a, b: a + b
+
+# Dùng với sorted, map, filter
+students = [("An", 85), ("Bình", 92), ("Chi", 78)]
+sorted(students, key=lambda s: s[1], reverse=True)
+
+numbers = [1, 2, 3, 4, 5]
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+doubled = list(map(lambda x: x * 2, numbers))
+```
+
+## Type Hints (khuyên dùng)
+```python
+def calculate_area(width: float, height: float) -> float:
+    return width * height
+
+def process_items(items: list[str]) -> dict[str, int]:
+    return {item: len(item) for item in items}
+```

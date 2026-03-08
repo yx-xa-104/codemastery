@@ -1,0 +1,49 @@
+---
+title: "File System & Permissions"
+description: "Hệ thống file và phân quyền Linux"
+difficulty: "intermediate"
+language: "bash"
+---
+
+# File System & Permissions
+
+## Cấu trúc thư mục Linux
+```
+/             # Root
+├── home/     # Thư mục người dùng
+├── etc/      # Cấu hình hệ thống
+├── var/      # Dữ liệu thay đổi (logs, databases)
+├── usr/      # Chương trình người dùng
+├── tmp/      # File tạm
+└── bin/      # Lệnh cơ bản
+```
+
+## Permissions
+```bash
+# Hiển thị: -rwxr-xr--
+# Type | Owner | Group | Others
+# -    | rwx   | r-x   | r--
+
+chmod 755 script.sh    # rwxr-xr-x
+chmod +x script.sh     # Thêm execute
+chmod u+w file.txt     # Owner thêm write
+
+# Số: r=4, w=2, x=1
+# 755 = rwx(7) r-x(5) r-x(5)
+# 644 = rw-(6) r--(4) r--(4)
+
+# Đổi sở hữu
+chown user:group file.txt
+```
+
+## Environment Variables
+```bash
+echo $HOME             # /home/username
+echo $PATH             # Đường dẫn tìm lệnh
+export MY_VAR="hello"  # Tạo biến môi trường
+
+# .bashrc hoặc .zshrc
+export PATH="$HOME/.local/bin:$PATH"
+alias ll="ls -la"
+alias gs="git status"
+```

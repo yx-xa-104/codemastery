@@ -1,0 +1,59 @@
+---
+title: "Thực hành: OOP Project"
+description: "Bài tập OOP: xây dựng hệ thống quản lý"
+difficulty: "beginner"
+language: "python"
+---
+
+# Thực hành: OOP Project
+
+## Hệ thống quản lý thư viện
+```python
+from datetime import datetime
+
+class Book:
+    def __init__(self, title, author, isbn):
+        self.title = title
+        self.author = author
+        self.isbn = isbn
+        self.is_available = True
+
+    def __str__(self):
+        status = "Có sẵn" if self.is_available else "Đã mượn"
+        return f"{self.title} - {self.author} [{status}]"
+
+class Member:
+    def __init__(self, name, member_id):
+        self.name = name
+        self.id = member_id
+        self.borrowed = []
+
+    def borrow(self, book):
+        if not book.is_available:
+            return f"'{book.title}' đã được mượn"
+        book.is_available = False
+        self.borrowed.append({"book": book, "date": datetime.now()})
+        return f"{self.name} đã mượn '{book.title}'"
+
+    def return_book(self, book):
+        book.is_available = True
+        self.borrowed = [b for b in self.borrowed if b["book"] != book]
+        return f"{self.name} đã trả '{book.title}'"
+
+class Library:
+    def __init__(self, name):
+        self.name = name
+        self.books = []
+        self.members = []
+
+    def add_book(self, book):
+        self.books.append(book)
+
+    def search(self, keyword):
+        return [b for b in self.books
+                if keyword.lower() in b.title.lower()
+                or keyword.lower() in b.author.lower()]
+
+    def available_books(self):
+        return [b for b in self.books if b.is_available]
+```

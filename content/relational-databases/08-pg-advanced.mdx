@@ -1,0 +1,57 @@
+---
+title: "Indexes, Triggers & Functions"
+description: "Index, trigger và stored functions trong PostgreSQL"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# Indexes, Triggers & Functions
+
+## Indexes — Tăng tốc truy vấn
+```sql
+CREATE INDEX idx_students_name ON students(name);
+CREATE INDEX idx_students_email ON students(email) WHERE email IS NOT NULL;
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+
+-- Composite index
+CREATE INDEX idx_enrollments_user_course ON enrollments(student_id, course_id);
+
+-- GIN index cho JSONB
+CREATE INDEX idx_settings_prefs ON settings USING GIN (preferences);
+```
+
+## Stored Functions
+```sql
+CREATE OR REPLACE FUNCTION calculate_gpa(student_id INT)
+RETURNS DECIMAL AS $$
+DECLARE avg_grade DECIMAL;
+BEGIN
+    SELECT AVG(
+        CASE grade
+            WHEN 'A' THEN 4.0 WHEN 'B' THEN 3.0
+            WHEN 'C' THEN 2.0 WHEN 'D' THEN 1.0
+            ELSE 0.0
+        END
+    ) INTO avg_grade
+    FROM enrollments WHERE enrollments.student_id = calculate_gpa.student_id;
+    RETURN COALESCE(avg_grade, 0);
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT name, calculate_gpa(id) FROM students;
+```
+
+## Triggers
+```sql
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON students
+    FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+```

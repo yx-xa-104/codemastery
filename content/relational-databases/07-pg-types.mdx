@@ -1,0 +1,50 @@
+---
+title: "Data Types & Constraints"
+description: "Kiểu dữ liệu và ràng buộc trong PostgreSQL"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# PostgreSQL: Data Types & Constraints
+
+## Kiểu dữ liệu đặc biệt
+```sql
+-- UUID
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL
+);
+
+-- JSON / JSONB
+CREATE TABLE settings (
+    user_id UUID REFERENCES users(id),
+    preferences JSONB DEFAULT '{}'::jsonb
+);
+INSERT INTO settings VALUES (
+    '...', '{"theme": "dark", "lang": "vi"}'::jsonb
+);
+SELECT preferences->>'theme' FROM settings;  -- "dark"
+SELECT preferences @> '{"lang": "vi"}' FROM settings;  -- true
+
+-- Array
+CREATE TABLE tags (
+    post_id INT,
+    labels TEXT[] DEFAULT '{}'
+);
+INSERT INTO tags VALUES (1, ARRAY['python', 'tutorial']);
+SELECT * FROM tags WHERE 'python' = ANY(labels);
+
+-- ENUM
+CREATE TYPE status AS ENUM ('active', 'inactive', 'banned');
+```
+
+## Constraints
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    price DECIMAL(10,2) CHECK (price > 0),
+    category TEXT NOT NULL DEFAULT 'general',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```

@@ -1,0 +1,56 @@
+---
+title: "Box Model & Positioning"
+description: "Mô hình hộp và cách định vị phần tử"
+difficulty: "beginner"
+language: "css"
+---
+
+# Box Model & Positioning
+
+## Box Model — Mô hình hộp
+
+Mỗi phần tử HTML là một hộp gồm 4 lớp:
+
+```
+┌─────────────── margin ───────────────┐
+│ ┌──────────── border ──────────────┐ │
+│ │ ┌────────── padding ──────────┐  │ │
+│ │ │       content              │  │ │
+│ │ └────────────────────────────┘  │ │
+│ └──────────────────────────────────┘ │
+└──────────────────────────────────────┘
+```
+
+```css
+.card {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin: 16px auto;
+  box-sizing: border-box; /* width bao gồm padding + border */
+}
+```
+
+## Positioning — Định vị
+
+| Giá trị | Mô tả |
+|---------|-------|
+| `static` | Mặc định, theo luồng bình thường |
+| `relative` | Dịch chuyển so với vị trí gốc |
+| `absolute` | Định vị so với parent relative gần nhất |
+| `fixed` | Cố định trên viewport |
+| `sticky` | Kết hợp relative + fixed |
+
+```css
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+```

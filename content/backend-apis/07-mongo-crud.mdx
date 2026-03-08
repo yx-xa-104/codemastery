@@ -1,0 +1,59 @@
+---
+title: "NoSQL & MongoDB CRUD"
+description: "Giới thiệu NoSQL và thao tác CRUD với MongoDB"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# NoSQL & MongoDB CRUD
+
+## SQL vs NoSQL
+| Tiêu chí | SQL | NoSQL (MongoDB) |
+|----------|-----|--------|
+| Cấu trúc | Bảng, hàng, cột | Collections, Documents |
+| Schema | Cố định | Linh hoạt |
+| Quan hệ | Foreign keys | Embedded / Reference |
+| Truy vấn | SQL | JSON-like queries |
+
+## MongoDB CRUD
+```javascript
+const { MongoClient } = require("mongodb");
+const uri = "mongodb://localhost:27017";
+const client = new MongoClient(uri);
+
+async function main() {
+  await client.connect();
+  const db = client.db("school");
+  const students = db.collection("students");
+
+  // CREATE
+  await students.insertOne({ name: "An", age: 20, scores: [9, 8, 7] });
+  await students.insertMany([
+    { name: "Bình", age: 21 },
+    { name: "Chi", age: 19 }
+  ]);
+
+  // READ
+  const all = await students.find({}).toArray();
+  const one = await students.findOne({ name: "An" });
+  const filtered = await students.find({ age: { $gte: 20 } }).toArray();
+
+  // UPDATE
+  await students.updateOne({ name: "An" }, { $set: { age: 21 } });
+  await students.updateMany({}, { $inc: { age: 1 } });
+
+  // DELETE
+  await students.deleteOne({ name: "Chi" });
+
+  await client.close();
+}
+main();
+```
+
+## Query Operators
+```javascript
+{ age: { $gt: 18, $lt: 25 } }    // 18 < age < 25
+{ name: { $in: ["An", "Bình"] } } // name IN
+{ $or: [{ age: 20 }, { age: 21 }] }
+{ scores: { $elemMatch: { $gte: 9 } } }
+```

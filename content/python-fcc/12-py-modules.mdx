@@ -1,0 +1,65 @@
+---
+title: "Modules & Packages"
+description: "Tổ chức code với modules và packages"
+difficulty: "beginner"
+language: "python"
+---
+
+# Modules & Packages
+
+## Import
+```python
+import os
+from pathlib import Path
+from datetime import datetime, timedelta
+from collections import Counter, defaultdict
+
+# Alias
+import numpy as np
+import pandas as pd
+```
+
+## Tạo Module riêng
+```python
+# utils.py
+def slugify(text):
+    return text.lower().replace(" ", "-")
+
+def format_currency(amount):
+    return f"{amount:,.0f} VNĐ"
+
+# main.py
+from utils import slugify, format_currency
+print(slugify("Xin Chào"))  # "xin-chào"
+```
+
+## Package Structure
+```
+mypackage/
+├── __init__.py
+├── math_utils.py
+├── string_utils.py
+└── sub_package/
+    ├── __init__.py
+    └── helpers.py
+```
+
+## Virtual Environment
+```bash
+python -m venv venv
+source venv/bin/activate    # Linux/Mac
+venv\Scripts\activate       # Windows
+
+pip install requests flask
+pip freeze > requirements.txt
+pip install -r requirements.txt
+```
+
+## Thư viện vô dùng
+| Thư viện | Mục đích |
+|---------|---------|
+| `requests` | HTTP requests |
+| `flask` / `fastapi` | Web framework |
+| `pytest` | Testing |
+| `pandas` | Data analysis |
+| `sqlalchemy` | ORM database |

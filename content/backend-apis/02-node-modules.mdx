@@ -1,0 +1,57 @@
+---
+title: "Modules & File System"
+description: "Module system và thao tác file trong Node.js"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Modules & File System
+
+## CommonJS Modules
+```javascript
+// math.js
+function add(a, b) { return a + b; }
+function multiply(a, b) { return a * b; }
+module.exports = { add, multiply };
+
+// main.js
+const { add, multiply } = require("./math");
+console.log(add(2, 3)); // 5
+```
+
+## ES Modules
+```javascript
+// utils.mjs (hoặc "type": "module" trong package.json)
+export const greet = (name) => `Xin chào, ${name}!`;
+export default class Logger { /* ... */ }
+
+// app.mjs
+import Logger, { greet } from "./utils.mjs";
+```
+
+## File System (fs)
+```javascript
+const fs = require("fs");
+const path = require("path");
+
+// Đọc file (async)
+fs.readFile("data.txt", "utf-8", (err, data) => {
+  if (err) throw err;
+  console.log(data);
+});
+
+// Đọc file (Promise)
+const { readFile, writeFile } = require("fs/promises");
+
+async function processFile() {
+  const content = await readFile("input.txt", "utf-8");
+  const result = content.toUpperCase();
+  await writeFile("output.txt", result);
+  console.log("Xong!");
+}
+
+// Path
+const filePath = path.join(__dirname, "data", "config.json");
+path.extname("file.txt");  // ".txt"
+path.basename("/a/b/c.js"); // "c.js"
+```

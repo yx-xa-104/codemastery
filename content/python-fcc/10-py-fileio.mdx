@@ -1,0 +1,56 @@
+---
+title: "File I/O & Error Handling"
+description: "Đọc ghi file và xử lý lỗi trong Python"
+difficulty: "beginner"
+language: "python"
+---
+
+# File I/O & Error Handling
+
+## Đọc/Ghi File
+```python
+# Ghi file
+with open("data.txt", "w", encoding="utf-8") as f:
+    f.write("Dòng 1\n")
+    f.write("Dòng 2\n")
+
+# Đọc file
+with open("data.txt", "r", encoding="utf-8") as f:
+    content = f.read()       # Đọc toàn bộ
+    # lines = f.readlines()  # Đọc theo dòng
+
+# Đọc JSON
+import json
+with open("config.json") as f:
+    config = json.load(f)
+
+# Ghi JSON
+with open("output.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+# CSV
+import csv
+with open("students.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row["name"], row["score"])
+```
+
+## Error Handling
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Không thể chia cho 0!")
+except (TypeError, ValueError) as e:
+    print(f"Lỗi: {e}")
+else:
+    print("Thành công!")
+finally:
+    print("Luôn chạy")
+
+# Custom Exception
+class InvalidScoreError(Exception):
+    def __init__(self, score):
+        super().__init__(f"Điểm {score} không hợp lệ (0-100)")
+```

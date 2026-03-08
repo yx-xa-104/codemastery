@@ -1,0 +1,44 @@
+---
+title: "Khái niệm Functional Programming"
+description: "Lập trình hàm: Immutability, Pure Functions, Side Effects"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Functional Programming
+
+Lập trình hàm (FP) là paradigm dựa trên hàm thuần túy, tránh side effects và dữ liệu bất biến.
+
+## Pure Functions — Hàm thuần túy
+```javascript
+// ✅ Pure: cùng input → cùng output, không side effects
+const add = (a, b) => a + b;
+const toUpper = str => str.toUpperCase();
+
+// ❌ Impure: phụ thuộc hoặc thay đổi state bên ngoài
+let count = 0;
+const increment = () => ++count;
+```
+
+## Immutability — Bất biến
+```javascript
+// ❌ Mutating
+const addItem = (arr, item) => { arr.push(item); return arr; };
+
+// ✅ Immutable
+const addItem = (arr, item) => [...arr, item];
+const updateUser = (user, updates) => ({ ...user, ...updates });
+```
+
+## First-Class Functions
+```javascript
+// Hàm là giá trị — có thể gán, truyền, trả về
+const greet = name => `Xin chào, ${name}!`;
+const process = (fn, value) => fn(value);
+process(greet, "An"); // "Xin chào, An!"
+```
+
+## Tại sao FP?
+- **Dễ test**: Pure functions dễ unit test
+- **Dễ debug**: Không side effects → ít lỗi
+- **Dễ kết hợp**: Compose nhiều hàm nhỏ thành pipeline

@@ -148,12 +148,29 @@ export class EnrollmentRepository {
 
     // ── Pinned Courses ───────────────────────────────────────────────
 
+    async getLearningActivity(userId: string, days: number = 7) {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        const startStr = startDate.toISOString().split('T')[0];
+
+        const { data, error } = await this.supabase.admin
+            .from('learning_activity')
+            .select('activity_date, lessons_completed, duration_minutes')
+            .eq('user_id', userId)
+            .gte('activity_date', startStr)
+            .order('activity_date', { ascending: true });
+
+        if (error) handleSupabaseError(error);
+        return data ?? [];
+    }
+
     async pinCourse(userId: string, courseId: string) {
         const { data, error } = await (this.supabase.admin as any)
-            .from('enrollments')
-            .update({ is_pinned: true })
-            .eq('user_id', userId)
-            .eq('course_id', courseId)
+            .from('pinned_courses')
+            .upsert(
+                { user_id: userId, course_id: courseId },
+                { onConflict: 'user_id,course_id' },
+            )
             .select()
             .single();
 
@@ -162,25 +179,22 @@ export class EnrollmentRepository {
     }
 
     async unpinCourse(userId: string, courseId: string) {
-        const { data, error } = await (this.supabase.admin as any)
-            .from('enrollments')
-            .update({ is_pinned: false })
+        const { error } = await this.supabase.admin
+            .from('pinned_courses')
+            .delete()
             .eq('user_id', userId)
-            .eq('course_id', courseId)
-            .select()
-            .single();
+            .eq('course_id', courseId);
 
         if (error) handleSupabaseError(error);
-        return data;
+        return { message: 'Unpinned' };
     }
 
     async getPinnedCourses(userId: string) {
         const { data, error } = await this.supabase.admin
-            .from('enrollments')
+            .from('pinned_courses')
             .select('*, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
             .eq('user_id', userId)
-            .eq('is_pinned', true as any)
-            .order('enrolled_at', { ascending: false });
+            .order('pinned_at', { ascending: false });
 
         if (error) handleSupabaseError(error);
         return data ?? [];

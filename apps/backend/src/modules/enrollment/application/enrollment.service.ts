@@ -70,6 +70,12 @@ export class EnrollmentService {
         return this.enrollmentRepository.getLessonProgress(userId, lessonId);
     }
 
+    // ── Learning Activity ────────────────────────────────────────────
+
+    async getLearningActivity(userId: string, days: number = 7) {
+        return this.enrollmentRepository.getLearningActivity(userId, days);
+    }
+
     // ── Pinned Courses ───────────────────────────────────────────────
 
     async pinCourse(userId: string, courseId: string) {

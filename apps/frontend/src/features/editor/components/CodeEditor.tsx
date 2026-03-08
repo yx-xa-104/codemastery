@@ -26,12 +26,14 @@ interface CodeEditorProps {
     initialCode?: string;
     language?: string;
     onRun?: (code: string) => void;
+    onChange?: (code: string) => void;
 }
 
 export function CodeEditor({
     initialCode = "// Code here...",
     language: defaultLang = "javascript",
     onRun,
+    onChange,
 }: CodeEditorProps) {
     const { code, setCode, result, isRunning, handleRun, handleReset } = useCodeRunner(initialCode);
     const [selectedLang, setSelectedLang] = useState(defaultLang);
@@ -97,7 +99,7 @@ export function CodeEditor({
                     language={selectedLang}
                     theme="vs-dark"
                     value={code}
-                    onChange={(val) => setCode(val || "")}
+                    onChange={(val) => { setCode(val || ""); onChange?.(val || ""); }}
                     options={{
                         minimap: { enabled: false },
                         fontSize: 13,

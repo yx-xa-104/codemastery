@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Get, Patch, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Delete, Get, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SupabaseAuthGuard, CurrentUser } from '@common/index';
 import { EnrollmentService } from '../application/enrollment.service';
@@ -76,6 +76,17 @@ export class EnrollmentController {
     @ApiOperation({ summary: 'Get pinned courses' })
     getPinnedCourses(@CurrentUser('id') userId: string) {
         return this.enrollmentService.getPinnedCourses(userId);
+    }
+
+    // ── Learning Activity ────────────────────────────────────────────
+
+    @Get('activity')
+    @ApiOperation({ summary: 'Get learning activity for the past N days' })
+    getLearningActivity(
+        @CurrentUser('id') userId: string,
+        @Query('days') days?: string,
+    ) {
+        return this.enrollmentService.getLearningActivity(userId, parseInt(days || '7', 10));
     }
 
     // ── Code Submission ──────────────────────────────────────────────

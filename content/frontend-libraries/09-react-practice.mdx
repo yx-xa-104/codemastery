@@ -1,0 +1,55 @@
+---
+title: "Thực hành: React App"
+description: "Bài tập xây dựng ứng dụng React"
+difficulty: "intermediate"
+language: "jsx"
+---
+
+# Thực hành: React Todo App
+
+```jsx
+import { useState } from 'react';
+
+function TodoApp() {
+  const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState("");
+
+  const addTodo = () => {
+    if (!input.trim()) return;
+    setTodos([...todos, { id: Date.now(), text: input, done: false }]);
+    setInput("");
+  };
+
+  const toggleTodo = (id) => {
+    setTodos(todos.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(t => t.id !== id));
+  };
+
+  return (
+    <div className="todo-app">
+      <h1>📝 Danh sách việc cần làm</h1>
+      <div className="input-group">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && addTodo()}
+          placeholder="Thêm việc mới..."
+        />
+        <button onClick={addTodo}>Thêm</button>
+      </div>
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id} className={todo.done ? "done" : ""}>
+            <span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
+            <button onClick={() => deleteTodo(todo.id)}>🗑️</button>
+          </li>
+        ))}
+      </ul>
+      <p>{todos.filter(t => !t.done).length} việc còn lại</p>
+    </div>
+  );
+}
+```

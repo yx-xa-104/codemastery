@@ -1,0 +1,67 @@
+---
+title: "Thực hành: Full API Project"
+description: "Bài tập xây dựng API hoàn chỉnh"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Thực hành: Full API Project
+
+## Cấu trúc dự án
+```
+my-api/
+├── src/
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Course.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   └── courses.js
+│   ├── middleware/
+│   │   └── auth.js
+│   └── app.js
+├── .env
+└── package.json
+```
+
+## .env
+```
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/codemastery
+JWT_SECRET=your-secret-key-here
+```
+
+## app.js
+```javascript
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/courses", require("./routes/courses"));
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({ error: err.message });
+});
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    app.listen(process.env.PORT, () =>
+      console.log("API chạy tại port " + process.env.PORT)
+    );
+  });
+```
+
+## Thử thách
+1. Thêm pagination cho GET /api/courses
+2. Thêm validation với Joi hoặc express-validator
+3. Viết unit tests với Jest
+4. Deploy lên Railway hoặc Render

@@ -1,0 +1,56 @@
+---
+title: "CSS Grid Layout"
+description: "Hệ thống lưới hai chiều với CSS Grid"
+difficulty: "beginner"
+language: "css"
+---
+
+# CSS Grid Layout
+
+Grid là mô hình bố cục hai chiều, mạnh mẽ hơn Flexbox cho layout phức tạp.
+
+## Cơ bản
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cột bằng nhau */
+  grid-template-rows: auto;
+  gap: 1rem;
+}
+```
+
+## Template Areas
+
+```css
+.layout {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
+  grid-template-columns: 250px 1fr 1fr;
+  min-height: 100vh;
+}
+.header  { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main    { grid-area: main; }
+.footer  { grid-area: footer; }
+```
+
+## Responsive Grid
+
+```css
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+```
+
+## Flexbox vs Grid
+| Tiêu chí | Flexbox | Grid |
+|----------|---------|------|
+| Chiều | 1 chiều | 2 chiều |
+| Dùng cho | Components | Page layout |
+| Kiểm soát | Nội dung quyết định | Layout quyết định |

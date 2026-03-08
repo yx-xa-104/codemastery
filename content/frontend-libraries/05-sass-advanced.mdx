@@ -1,0 +1,61 @@
+---
+title: "Functions, Operators & Partials"
+description: "Sass nâng cao: functions, imports, architecture"
+difficulty: "intermediate"
+language: "scss"
+---
+
+# Sass Nâng Cao
+
+## Functions
+```scss
+@function rem($px) {
+  @return calc($px / 16) * 1rem;
+}
+
+@function lighten-color($color, $amount) {
+  @return lighten($color, $amount);
+}
+
+h1 { font-size: rem(32); } // 2rem
+.box { background: lighten-color(#3498db, 20%); }
+```
+
+## Operators
+```scss
+.container { width: 100% - 2rem; }
+.col-half { width: calc(50% - 1rem); }
+```
+
+## Partials & Imports
+```
+styles/
+├── _variables.scss
+├── _mixins.scss
+├── _reset.scss
+├── _components.scss
+└── main.scss
+```
+```scss
+// main.scss
+@use 'variables' as v;
+@use 'mixins' as m;
+@use 'reset';
+@use 'components';
+
+body { font-family: v.$font-stack; }
+.card { @include m.flex-center; }
+```
+
+## Loops & Conditions
+```scss
+@for $i from 1 through 6 {
+  .mt-#{$i} { margin-top: $i * 0.25rem; }
+}
+
+$colors: (primary: #3498db, danger: #e74c3c, success: #2ecc71);
+@each $name, $color in $colors {
+  .text-#{$name} { color: $color; }
+  .bg-#{$name} { background-color: $color; }
+}
+```
