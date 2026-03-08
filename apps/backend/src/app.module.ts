@@ -10,6 +10,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
+import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GamificationModule } from './modules/gamification/gamification.module';
     AdminModule,
     NotificationModule,
     GamificationModule,
+    PicoclawModule,
   ],
 })
 export class AppModule { }
