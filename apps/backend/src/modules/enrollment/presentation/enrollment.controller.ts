@@ -58,6 +58,12 @@ export class EnrollmentController {
         return this.enrollmentService.getLessonProgress(userId, lessonId);
     }
 
+    @Get('courses/:courseId/completed-lessons')
+    @ApiOperation({ summary: 'Get all completed lesson IDs for a course' })
+    getCompletedLessons(@CurrentUser('id') userId: string, @Param('courseId') courseId: string) {
+        return this.enrollmentService.getCompletedLessonIds(userId, courseId);
+    }
+
     // ── Pinned Courses ───────────────────────────────────────────────
 
     @Post('pin/:courseId')

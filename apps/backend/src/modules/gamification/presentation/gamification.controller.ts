@@ -21,4 +21,18 @@ export class GamificationController {
     getMyStats(@CurrentUser('id') userId: string) {
         return this.gamificationService.getMyStats(userId);
     }
+
+    @Get('badges')
+    @ApiOperation({ summary: 'Get all available badges' })
+    getAllBadges() {
+        return this.gamificationService.getAllBadges();
+    }
+
+    @Get('my-badges')
+    @ApiOperation({ summary: 'Get my earned badges' })
+    @ApiBearerAuth()
+    @UseGuards(SupabaseAuthGuard)
+    getMyBadges(@CurrentUser('id') userId: string) {
+        return this.gamificationService.getMyBadges(userId);
+    }
 }

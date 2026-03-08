@@ -1,8 +1,10 @@
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
-import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, Trophy, BadgeCheck } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, Trophy, BadgeCheck, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EnrollButton } from "@/shared/components/enrollment/EnrollButton";
+import { createClient } from "@/shared/lib/supabase/server";
+import { CourseReviews } from "@/features/courses/components/CourseReviews";
 
 const levelMap: Record<string, string> = {
     beginner: 'Cơ bản',
@@ -13,8 +15,15 @@ const levelMap: Record<string, string> = {
 export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    let course = null;
-    let modules = [];
+    // Get auth for protected endpoints
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const authHeaders: Record<string, string> = session?.access_token
+        ? { Authorization: `Bearer ${session.access_token}` }
+        : {};
+
+    let course: any = null;
+    let modules: any[] = [];
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
     try {
@@ -39,6 +48,31 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
 
     const categoryName = course.category?.name ?? course.categories?.name ?? 'Khác';
     const totalLessons = modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length ?? 0), 0) ?? 0;
+
+    // Fetch completed lesson IDs for this course
+    let completedLessonIds: string[] = [];
+    try {
+        const resCompleted = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/completed-lessons`, {
+            headers: authHeaders,
+            cache: 'no-store'
+        });
+        if (resCompleted.ok) {
+            completedLessonIds = await resCompleted.json();
+        }
+    } catch { /* not enrolled or no session */ }
+
+    // Check enrollment status for reviews
+    let isEnrolled = false;
+    try {
+        const resEnroll = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/status`, {
+            headers: authHeaders,
+            cache: 'no-store'
+        });
+        if (resEnroll.ok) {
+            const enrollData = await resEnroll.json();
+            isEnrolled = !!enrollData?.enrollmentId;
+        }
+    } catch { /* not logged in */ }
 
     return (
         <MainLayout>
@@ -170,8 +204,14 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                                     className={`flex items-center justify-between p-4 transition-all group hover:bg-white/5 cursor-pointer ${lessonIdx !== lessons.length - 1 ? "border-b border-slate-800/50" : ""}`}
                                                                 >
                                                                     <div className="flex items-center gap-3 w-full pr-4">
-                                                                        <div className="w-8 h-8 rounded-full bg-navy-950 border border-slate-800 flex items-center justify-center shrink-0 group-hover:bg-indigo-600/20 group-hover:border-indigo-500/30 transition-colors">
-                                                                            {lesson.lesson_type === 'video' ? (
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                                                                            completedLessonIds.includes(lesson.id)
+                                                                                ? 'bg-green-500/20 border border-green-500/30'
+                                                                                : 'bg-navy-950 border border-slate-800 group-hover:bg-indigo-600/20 group-hover:border-indigo-500/30'
+                                                                        }`}>
+                                                                            {completedLessonIds.includes(lesson.id) ? (
+                                                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                                                            ) : lesson.lesson_type === 'video' ? (
                                                                                 <PlayCircle className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                                                                             ) : (
                                                                                 <Code2 className="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors" />
@@ -196,6 +236,15 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Reviews Section */}
+                                <div className="mt-12">
+                                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                                        <MessageSquare className="w-6 h-6 text-indigo-400" />
+                                        Đánh giá từ học viên
+                                    </h2>
+                                    <CourseReviews courseId={course.id} isEnrolled={isEnrolled} />
+                                </div>
                             </div>
 
                             {/* Right Sticky Sidebar (Enrollment Card) */}

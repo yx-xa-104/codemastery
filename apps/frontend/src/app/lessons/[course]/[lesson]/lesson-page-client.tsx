@@ -4,7 +4,7 @@ import { Sidebar } from "@/shared/components/layouts/Sidebar";
 import { CodeEditor } from "@/features/editor/components/CodeEditor";
 import { AiChatDrawer } from "@/features/ai/components/AiChatDrawer";
 import { useState, useTransition, useCallback, useEffect } from "react";
-import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { apiClient } from "@/shared/lib/api-client";
@@ -47,6 +47,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const [isPending, startTransition] = useTransition();
     const [codeSaved, setCodeSaved] = useState(false);
     const [currentCode, setCurrentCode] = useState<string>("");
+    const [xpToast, setXpToast] = useState<number | null>(null);
 
     const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
     const storageKey = `codemastery-code-${lesson.id}`;
@@ -64,7 +65,14 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
             try {
                 await apiClient.post(`/api/enrollments/lessons/${lesson.id}/complete`, {});
                 setIsCompleted(true);
-                router.refresh(); // Refresh to update course progress
+
+                // Show XP toast
+                const xpMap: Record<string, number> = { article: 10, code_exercise: 25, quiz: 30 };
+                const xp = xpMap[lesson.lessonType] ?? 10;
+                setXpToast(xp);
+                setTimeout(() => setXpToast(null), 3000);
+
+                router.refresh();
             } catch (err) {
                 console.error("Failed to mark lesson complete:", err);
             }
@@ -89,6 +97,15 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
 
     return (
         <div className="flex flex-col h-screen bg-[#010816] text-slate-300 overflow-hidden font-sans">
+            {/* XP Toast */}
+            {xpToast && (
+                <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="flex items-center gap-2 px-5 py-3 bg-amber-500/20 border border-amber-500/40 rounded-xl backdrop-blur-md shadow-lg shadow-amber-500/10">
+                        <Zap className="w-5 h-5 text-amber-400 fill-amber-400" />
+                        <span className="text-amber-300 font-bold text-sm">+{xpToast} XP</span>
+                    </div>
+                </div>
+            )}
             {/* Top Bar */}
             <div className="flex h-14 bg-[#010816] border-b border-slate-800 items-center justify-between px-4 shrink-0 z-50">
                 <div className="flex items-center gap-3 min-w-0">

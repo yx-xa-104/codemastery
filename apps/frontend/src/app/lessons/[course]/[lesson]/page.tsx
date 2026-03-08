@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { LessonPageClient } from "./lesson-page-client";
-import { cookies } from "next/headers";
+import { createClient } from "@/shared/lib/supabase/server";
 import { readMdxContent } from "@/shared/lib/mdx-reader";
 
 interface Props {
@@ -10,15 +10,12 @@ interface Props {
 export default async function LessonPage({ params }: Props) {
     const { course: courseSlug, lesson: lessonSlugOrId } = await params;
 
-    // Server fetch utility with Authorization cookie
-    const getAuthHeaders = async () => {
-        const cookieStore = await cookies();
-        const customSessionData = cookieStore.get('sb-auth-token');
-        // Note: For NextJS SSR passing supabase token, we might have to pass session token
-        // Wait, supabase stores tokens in cookies like sb-xxxx-auth-token.
-        // It's often simpler to forward the cookie header as is
-        return { Cookie: cookieStore.toString() };
-    };
+    // Get access token from Supabase server session
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const authHeaders: Record<string, string> = session?.access_token
+        ? { Authorization: `Bearer ${session.access_token}` }
+        : {};
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -36,29 +33,47 @@ export default async function LessonPage({ params }: Props) {
     const lesson = resLesson.ok ? await resLesson.json() : null;
     if (!lesson) notFound();
 
-    // Headers with cookies for protected endpoint
-    const authHeaders = await getAuthHeaders();
-
     // Fetch enrollment check
     let enrollmentId: string | undefined;
-    const resStatus = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/status`, {
-        headers: authHeaders,
-        cache: 'no-store'
-    });
-    if (resStatus.ok) {
-        const statusData = await resStatus.json();
-        enrollmentId = statusData.enrollmentId;
-    }
+    try {
+        const resStatus = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/status`, {
+            headers: authHeaders,
+            cache: 'no-store'
+        });
+        if (resStatus.ok) {
+            const statusData = await resStatus.json();
+            enrollmentId = statusData?.enrollmentId;
+        }
+    } catch { /* auth failed or no session */ }
 
     // Check if lesson is initially completed
     let isInitiallyCompleted = false;
-    const resProgress = await fetch(`${API_URL}/api/enrollments/lessons/${lesson.id}/progress`, {
-        headers: authHeaders,
-        cache: 'no-store'
-    });
-    if (resProgress.ok) {
-        const progressData = await resProgress.json();
-        isInitiallyCompleted = progressData?.status === 'completed';
+    try {
+        const resProgress = await fetch(`${API_URL}/api/enrollments/lessons/${lesson.id}/progress`, {
+            headers: authHeaders,
+            cache: 'no-store'
+        });
+        if (resProgress.ok) {
+            const text = await resProgress.text();
+            if (text) {
+                const progressData = JSON.parse(text);
+                isInitiallyCompleted = progressData?.status === 'completed';
+            }
+        }
+    } catch { /* auth failed or no session */ }
+
+    // Fetch completed lesson IDs for this course
+    let completedLessonIds: string[] = [];
+    if (enrollmentId) {
+        try {
+            const resCompleted = await fetch(`${API_URL}/api/enrollments/courses/${course.id}/completed-lessons`, {
+                headers: authHeaders,
+                cache: 'no-store'
+            });
+            if (resCompleted.ok) {
+                completedLessonIds = await resCompleted.json();
+            }
+        } catch { /* failed to fetch completed lessons */ }
     }
 
     // Map modules to the format Sidebar expects
@@ -73,7 +88,7 @@ export default async function LessonPage({ params }: Props) {
             title: l.title,
             slug: l.slug,
             duration: l.duration_minutes ? `${l.duration_minutes}:00` : '—',
-            isCompleted: false,
+            isCompleted: completedLessonIds.includes(l.id),
             type: (l.lesson_type === 'video' ? 'video' : 'interactive') as 'video' | 'interactive',
         })),
     }));

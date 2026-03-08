@@ -1,15 +1,15 @@
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { TrendingUp, Users, BookOpen, Star, Download } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
-async function fetchAPI(path: string, cookieStore: any) {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+async function fetchAPI(path: string, token: string) {
     try {
         const res = await fetch(`${API_URL}${path}`, {
-            headers: { Cookie: cookieStore.toString() },
+            headers: { 'Authorization': `Bearer ${token}` },
             cache: 'no-store'
         });
         if (res.ok) return await res.json();
@@ -24,12 +24,13 @@ export default async function AdminReportsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    const cookieStore = await cookies();
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token ?? '';
 
     const [stats, topCourses, chartData] = await Promise.all([
-        fetchAPI('/api/admin/reports/stats', cookieStore),
-        fetchAPI('/api/admin/reports/top-courses', cookieStore),
-        fetchAPI('/api/admin/reports/enrollments-chart', cookieStore),
+        fetchAPI('/api/admin/reports/stats', token),
+        fetchAPI('/api/admin/reports/top-courses', token),
+        fetchAPI('/api/admin/reports/enrollments-chart', token),
     ]);
 
     const enrollChart: { label: string; count: number }[] = chartData ?? [];

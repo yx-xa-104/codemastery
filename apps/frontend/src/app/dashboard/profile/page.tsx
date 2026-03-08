@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import Link from "next/link";
 import {
-    User, Mail, Shield, Camera, BookOpen, Award, TrendingUp, Calendar
+    User, Mail, Shield, Camera, BookOpen, Award, TrendingUp, Calendar, Zap, Flame, Trophy
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -65,6 +65,31 @@ export default async function DashboardProfilePage() {
         console.error("Failed to fetch enrollments", err);
     }
 
+    // Fetch gamification stats
+    type GamStats = { xp: number; streak_days: number; rank: number };
+    let gamStats: GamStats = { xp: 0, streak_days: 0, rank: 0 };
+    try {
+        const res = await fetch(`${API_URL}/api/gamification/my-stats`, {
+            headers: authHeaders, cache: 'no-store'
+        });
+        if (res.ok) gamStats = await res.json();
+    } catch { /* no stats */ }
+
+    // Fetch badges
+    type BadgeRow = { id: string; name: string; description: string; icon: string; criteria_type: string; criteria_value: number };
+    type UserBadge = { badge_id: string; earned_at: string; badges: BadgeRow };
+    let allBadges: BadgeRow[] = [];
+    let myBadges: UserBadge[] = [];
+    try {
+        const [resBadges, resMyBadges] = await Promise.all([
+            fetch(`${API_URL}/api/gamification/badges`, { cache: 'no-store' }),
+            fetch(`${API_URL}/api/gamification/my-badges`, { headers: authHeaders, cache: 'no-store' }),
+        ]);
+        if (resBadges.ok) allBadges = await resBadges.json();
+        if (resMyBadges.ok) myBadges = await resMyBadges.json();
+    } catch { /* badges fetch failed */ }
+    const earnedBadgeIds = myBadges.map(b => b.badge_id);
+
     const avgProgress = typedEnrollments.length > 0
         ? Math.round(typedEnrollments.reduce((sum, e) => sum + (e.progress_percent ?? 0), 0) / typedEnrollments.length)
         : 0;
@@ -115,9 +140,9 @@ export default async function DashboardProfilePage() {
 
                             <div className="grid grid-cols-3 gap-2 mb-5">
                                 {[
-                                    { label: 'Khóa học', value: enrollCount ?? 0, icon: BookOpen },
-                                    { label: 'Tiến độ TB', value: `${avgProgress}%`, icon: TrendingUp },
-                                    { label: 'Huy hiệu', value: 0, icon: Award },
+                                    { label: 'XP', value: gamStats.xp.toLocaleString(), icon: Zap },
+                                    { label: 'Chuỗi ngày', value: gamStats.streak_days, icon: Flame },
+                                    { label: 'Huy hiệu', value: myBadges.length, icon: Award },
                                 ].map(({ label, value, icon: Icon }) => (
                                     <div key={label} className="text-center bg-[#010816] rounded-xl p-3 border border-indigo-900/20">
                                         <Icon className="w-4 h-4 text-indigo-400 mx-auto mb-1" />
@@ -193,6 +218,56 @@ export default async function DashboardProfilePage() {
                                                         </div>
                                                     </div>
                                                 </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Badges Section */}
+                            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl p-6">
+                                <div className="flex justify-between items-center mb-5">
+                                    <h3 className="font-bold text-white flex items-center gap-2">
+                                        <Award className="w-4 h-4 text-amber-400" />
+                                        Huy hiệu ({myBadges.length}/{allBadges.length})
+                                    </h3>
+                                </div>
+                                {allBadges.length === 0 ? (
+                                    <div className="text-center py-8 text-slate-500 text-sm">
+                                        <Award className="w-10 h-10 mx-auto mb-2 text-slate-700" />
+                                        Chưa có huy hiệu nào được thiết lập
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {allBadges.map(badge => {
+                                            const earned = earnedBadgeIds.includes(badge.id);
+                                            return (
+                                                <div key={badge.id}
+                                                    className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+                                                        earned
+                                                            ? 'bg-amber-500/5 border-amber-500/20'
+                                                            : 'bg-[#010816] border-slate-800/50 opacity-50'
+                                                    }`}
+                                                >
+                                                    <div className={`size-10 rounded-lg flex items-center justify-center text-xl shrink-0 ${
+                                                        earned ? 'bg-amber-500/20' : 'bg-slate-800'
+                                                    }`}>
+                                                        {badge.icon}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className={`text-sm font-bold truncate ${earned ? 'text-white' : 'text-slate-500'}`}>
+                                                            {badge.name}
+                                                        </p>
+                                                        <p className="text-xs text-slate-500 truncate">{badge.description}</p>
+                                                    </div>
+                                                    {earned && (
+                                                        <div className="ml-auto shrink-0">
+                                                            <div className="size-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                                                                <span className="text-green-400 text-xs">✓</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             );
                                         })}
                                     </div>

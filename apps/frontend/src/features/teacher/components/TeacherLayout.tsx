@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@/shared/stores/useAuthStore";
 import {
     LayoutDashboard, BookOpen, Users, BarChart2,
-    MessageSquare, Settings, Bell, BookMarked, Plus, LogOut
+    MessageSquare, Settings, BookMarked, Plus, LogOut
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { signOut } from "@/features/auth/actions";
+import { NotificationBell } from "@/shared/components/NotificationBell";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/teacher/dashboard', icon: LayoutDashboard },
@@ -93,10 +94,7 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
                         />
                     </div>
                     <div className="flex items-center gap-3 ml-4">
-                        <Button variant="ghost" size="icon" className="relative h-9 w-9 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors border-0">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-1 right-2 size-2 rounded-full bg-red-500 ring-1 ring-[#0B1120]" />
-                        </Button>
+                        <NotificationBell />
                         <Link href="/teacher/courses/create"
                             className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-all shadow-md shrink-0">
                             <Plus className="w-4 h-4" /> Tạo khóa học

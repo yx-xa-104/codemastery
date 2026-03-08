@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/shared/stores/useAuthStore";
 import {
-    LayoutDashboard, Users, BarChart2, Settings, Bell, Shield, BookOpen, LogOut
+    LayoutDashboard, Users, BarChart2, Settings, Shield, BookOpen, LogOut
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { signOut } from "@/features/auth/actions";
+import { NotificationBell } from "@/shared/components/NotificationBell";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -91,10 +92,7 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                         />
                     </div>
                     <div className="flex items-center gap-3 ml-4">
-                        <Button variant="ghost" size="icon" className="relative h-9 w-9 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors border-0">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-1 right-2 size-2 rounded-full bg-red-500 ring-1 ring-[#0B1120]" />
-                        </Button>
+                        <NotificationBell />
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-xs font-medium text-red-300">
                             <Shield className="w-3.5 h-3.5" /> Admin Panel
                         </div>

@@ -1,9 +1,10 @@
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { Users, BookOpen, TrendingUp, Search, Mail } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 const levelMap: Record<string, string> = {
     beginner: 'Cơ bản',
@@ -16,7 +17,10 @@ export default async function AdminStudentsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
 
-    // Fetch enrollments with user profiles and course info
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token ?? '';
+    const authHeaders = { 'Authorization': `Bearer ${token}` };
+
     type EnrollRow = {
         id: string;
         progress_percent: number | null;
@@ -26,8 +30,6 @@ export default async function AdminStudentsPage() {
         profiles: { full_name: string | null; student_id: string | null; avatar_url: string | null } | null;
     };
 
-    const cookieStore = await cookies();
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     let enrollments: EnrollRow[] = [];
     let totalStudents = 0;
     let totalEnrollments = 0;
@@ -35,11 +37,11 @@ export default async function AdminStudentsPage() {
     try {
         const [resEnrollments, resStats] = await Promise.all([
             fetch(`${API_URL}/api/admin/enrollments`, {
-                headers: { Cookie: cookieStore.toString() },
+                headers: authHeaders,
                 cache: 'no-store'
             }),
             fetch(`${API_URL}/api/admin/reports/stats`, {
-                headers: { Cookie: cookieStore.toString() },
+                headers: authHeaders,
                 cache: 'no-store'
             })
         ]);

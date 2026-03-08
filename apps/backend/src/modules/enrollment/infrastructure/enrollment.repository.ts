@@ -121,6 +121,113 @@ export class EnrollmentRepository {
         return (data as any)?.lesson_type ?? null;
     }
 
+    /**
+     * Recalculate course progress_percent after a lesson is completed.
+     * Finds the course via lesson → module → course chain,
+     * then counts completed / total lessons.
+     */
+    async recalculateCourseProgress(userId: string, lessonId: string): Promise<void> {
+        try {
+            // Get module_id from lesson
+            const { data: lessonData } = await this.supabase.admin
+                .from('lessons')
+                .select('module_id')
+                .eq('id', lessonId)
+                .single();
+            if (!lessonData) return;
+
+            // Get course_id from module
+            const { data: moduleData } = await this.supabase.admin
+                .from('modules')
+                .select('course_id')
+                .eq('id', (lessonData as any).module_id)
+                .single();
+            if (!moduleData) return;
+
+            const courseId = (moduleData as any).course_id;
+
+            // Count total lessons in the course
+            const { data: allModules } = await this.supabase.admin
+                .from('modules')
+                .select('id')
+                .eq('course_id', courseId);
+
+            if (!allModules || allModules.length === 0) return;
+            const moduleIds = allModules.map((m: any) => m.id);
+
+            const { count: totalLessons } = await this.supabase.admin
+                .from('lessons')
+                .select('id', { count: 'exact', head: true })
+                .in('module_id', moduleIds);
+
+            if (!totalLessons) return;
+
+            // Count completed lessons by this user
+            const { data: allLessons } = await this.supabase.admin
+                .from('lessons')
+                .select('id')
+                .in('module_id', moduleIds);
+
+            if (!allLessons) return;
+            const lessonIds = allLessons.map((l: any) => l.id);
+
+            const { count: completedLessons } = await this.supabase.admin
+                .from('lesson_progress')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', userId)
+                .eq('status', 'completed')
+                .in('lesson_id', lessonIds);
+
+            const progressPercent = Math.round(((completedLessons ?? 0) / totalLessons) * 100);
+
+            // Update enrollment
+            await (this.supabase.admin as any)
+                .from('enrollments')
+                .update({
+                    progress_percent: progressPercent,
+                    current_lesson_id: lessonId,
+                    ...(progressPercent >= 100 ? { completed_at: new Date().toISOString() } : {}),
+                })
+                .eq('user_id', userId)
+                .eq('course_id', courseId);
+        } catch (err) {
+            console.error('Failed to recalculate course progress:', err);
+        }
+    }
+
+    /**
+     * Get all completed lesson IDs for a user within a course's modules.
+     */
+    async getCompletedLessonIds(userId: string, courseId: string): Promise<string[]> {
+        // Get all module IDs for the course
+        const { data: modules } = await this.supabase.admin
+            .from('modules')
+            .select('id')
+            .eq('course_id', courseId);
+
+        if (!modules || modules.length === 0) return [];
+        const moduleIds = modules.map((m: any) => m.id);
+
+        // Get all lesson IDs in the course
+        const { data: lessons } = await this.supabase.admin
+            .from('lessons')
+            .select('id')
+            .in('module_id', moduleIds);
+
+        if (!lessons || lessons.length === 0) return [];
+        const lessonIds = lessons.map((l: any) => l.id);
+
+        // Get completed lesson progress
+        const { data: completed } = await this.supabase.admin
+            .from('lesson_progress')
+            .select('lesson_id')
+            .eq('user_id', userId)
+            .eq('status', 'completed')
+            .in('lesson_id', lessonIds);
+
+        return (completed ?? []).map((c: any) => c.lesson_id);
+    }
+
     // ── Learning Activity ────────────────────────────────────────────
 
     async upsertLearningActivity(userId: string) {
@@ -190,14 +297,27 @@ export class EnrollmentRepository {
     }
 
     async getPinnedCourses(userId: string) {
-        const { data, error } = await this.supabase.admin
+        // First get pinned course IDs
+        const { data: pinned, error: pinError } = await this.supabase.admin
             .from('pinned_courses')
-            .select('*, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
+            .select('course_id')
             .eq('user_id', userId)
             .order('pinned_at', { ascending: false });
 
-        if (error) handleSupabaseError(error);
-        return data ?? [];
+        if (pinError) handleSupabaseError(pinError);
+        if (!pinned || pinned.length === 0) return [];
+
+        const courseIds = pinned.map((p: any) => p.course_id);
+
+        // Get enrollments for those courses (includes progress_percent)
+        const { data: enrollments, error: enrError } = await this.supabase.admin
+            .from('enrollments')
+            .select('*, courses(id, title, slug, thumbnail_url, level, total_lessons, categories(name))')
+            .eq('user_id', userId)
+            .in('course_id', courseIds);
+
+        if (enrError) handleSupabaseError(enrError);
+        return enrollments ?? [];
     }
 
     // ── Code Submission ──────────────────────────────────────────────

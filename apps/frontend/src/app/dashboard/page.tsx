@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
     BookOpen, Trophy, Flame, Clock, Bot,
-    TrendingUp, ChevronRight, Sparkles, BarChart3, Pin
+    TrendingUp, ChevronRight, Sparkles, BarChart3, Pin, Zap
 } from "lucide-react";
 
 const levelMap: Record<string, string> = {
@@ -85,6 +85,18 @@ export default async function DashboardPage() {
         console.error("Failed to fetch activity", err);
     }
 
+    // Fetch gamification stats
+    type GamificationStats = { xp: number; streak_days: number; rank: number };
+    let gamStats: GamificationStats = { xp: 0, streak_days: 0, rank: 0 };
+    try {
+        const res = await fetch(`${API_URL}/api/gamification/my-stats`, {
+            headers: authHeaders, cache: 'no-store'
+        });
+        if (res.ok) gamStats = await res.json();
+    } catch (err) {
+        console.error("Failed to fetch gamification stats", err);
+    }
+
     const totalEnrolled = enrollments.length;
     const avgProgress = enrollments.length
         ? Math.round(enrollments.reduce((s, e) => s + (e.progress_percent ?? 0), 0) / enrollments.length)
@@ -141,9 +153,9 @@ export default async function DashboardPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {[
                             { icon: BookOpen, label: 'Khóa đang học', value: totalEnrolled, color: 'text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' },
-                            { icon: TrendingUp, label: 'Tiến độ TB', value: `${avgProgress}%`, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
-                            { icon: Flame, label: 'Bài tuần này', value: totalLessonsWeek, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
-                            { icon: Trophy, label: 'Ghim', value: pinnedCourses.length, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+                            { icon: Zap, label: 'XP tích lũy', value: gamStats.xp.toLocaleString(), color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
+                            { icon: Flame, label: 'Chuỗi ngày', value: `${gamStats.streak_days} ngày`, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+                            { icon: Trophy, label: 'Xếp hạng', value: `#${gamStats.rank}`, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
                         ].map(({ icon: Icon, label, value, color, bg }) => (
                             <div key={label} className={`rounded-xl p-4 border ${bg} bg-[#111827] flex flex-col gap-2`}>
                                 <div className={`${color} p-2 rounded-lg w-fit bg-current/10`}>
@@ -272,30 +284,102 @@ export default async function DashboardPage() {
                                         <BarChart3 className="w-5 h-5 text-indigo-400" />
                                         Hoạt động học tập
                                     </h3>
-                                    <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">Tuần này</span>
+                                    <span className="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full">Tuần này</span>
                                 </div>
-                                <div className="flex items-end justify-between gap-2 h-32 px-2">
-                                    {DAY_LABELS.map((day, i) => {
-                                        const val = weekActivity[i];
-                                        const height = maxActivity > 0 ? Math.max((val / maxActivity) * 100, val > 0 ? 8 : 2) : 2;
-                                        const isToday = i === todayIdx;
-                                        return (
-                                            <div key={day} className="flex flex-col items-center gap-2 w-full group cursor-pointer">
-                                                {val > 0 && (
-                                                    <span className="text-[10px] text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">{val}</span>
-                                                )}
-                                                <div
-                                                    className={`w-full max-w-[28px] rounded-t-sm transition-all ${isToday ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.5)]' : val > 0 ? 'bg-indigo-500/60 group-hover:bg-indigo-500' : 'bg-slate-700/50'}`}
-                                                    style={{ height: `${height}%` }}
-                                                />
-                                                <span className={`text-xs ${isToday ? 'text-white font-bold' : 'text-slate-400'}`}>{day}</span>
-                                            </div>
-                                        );
-                                    })}
+
+                                {/* Chart */}
+                                <div className="relative">
+                                    {/* Grid lines */}
+                                    <div className="absolute inset-x-0 top-0 flex flex-col justify-between pointer-events-none" style={{ height: 160 }}>
+                                        {[0, 1, 2, 3].map(i => (
+                                            <div key={i} className="border-b border-slate-800/50" />
+                                        ))}
+                                    </div>
+
+                                    {/* Bars row */}
+                                    <div className="relative flex items-end justify-between gap-3 px-1" style={{ height: 160 }}>
+                                        {DAY_LABELS.map((day, i) => {
+                                            const val = weekActivity[i];
+                                            const expectedMax = Math.max(maxActivity, 10);
+                                            const barHeight = val > 0
+                                                ? Math.max(Math.round((val / expectedMax) * 148), 8)
+                                                : 4;
+                                            const isToday = i === todayIdx;
+
+                                            return (
+                                                <div key={day} className="flex flex-col items-center flex-1 group cursor-pointer">
+                                                    <div className="w-full flex justify-center">
+                                                        <div
+                                                            className={`w-full max-w-[36px] rounded-lg transition-all duration-300 ${
+                                                                isToday
+                                                                    ? 'bg-linear-to-t from-indigo-600 to-indigo-400 shadow-[0_0_16px_rgba(79,70,229,0.4)] group-hover:shadow-[0_0_24px_rgba(79,70,229,0.6)]'
+                                                                    : val > 0
+                                                                        ? 'bg-linear-to-t from-indigo-600/50 to-indigo-400/40 group-hover:from-indigo-600/70 group-hover:to-indigo-400/60'
+                                                                        : 'bg-slate-800/60 group-hover:bg-slate-700/60'
+                                                            }`}
+                                                            style={{ height: barHeight }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Values row */}
+                                    <div className="flex justify-between gap-3 px-1 mt-2">
+                                        {DAY_LABELS.map((day, i) => {
+                                            const val = weekActivity[i];
+                                            const isToday = i === todayIdx;
+                                            return (
+                                                <div key={day} className="flex-1 text-center">
+                                                    <span className={`text-xs font-bold ${
+                                                        val > 0
+                                                            ? isToday ? 'text-indigo-300' : 'text-slate-400'
+                                                            : 'text-slate-700'
+                                                    }`}>
+                                                        {val > 0 ? val : '·'}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Day labels row */}
+                                    <div className="flex justify-between gap-3 px-1 mt-1">
+                                        {DAY_LABELS.map((day, i) => {
+                                            const val = weekActivity[i];
+                                            const isToday = i === todayIdx;
+                                            return (
+                                                <div key={day} className="flex-1 text-center">
+                                                    <span className={`text-xs font-medium ${
+                                                        isToday
+                                                            ? 'text-indigo-300 font-bold'
+                                                            : val > 0
+                                                                ? 'text-slate-300'
+                                                                : 'text-slate-500'
+                                                    }`}>
+                                                        {day}
+                                                    </span>
+                                                    {isToday && (
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mx-auto mt-1" />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
-                                    <span>Bài hoàn thành: <strong className="text-white">{totalLessonsWeek}</strong></span>
-                                    <span>Hôm nay: <strong className="text-white">{weekActivity[todayIdx]}</strong></span>
+
+                                {/* Summary footer */}
+                                <div className="mt-5 pt-4 border-t border-slate-800 flex justify-between items-center">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" />
+                                            <span className="text-xs text-slate-400">Bài hoàn thành: <strong className="text-white">{totalLessonsWeek}</strong></span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-slate-400">
+                                        Hôm nay: <strong className="text-indigo-300">{weekActivity[todayIdx]}</strong> bài
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -59,6 +59,9 @@ export class EnrollmentService {
         // Track learning activity
         await this.enrollmentRepository.upsertLearningActivity(userId);
 
+        // Auto-recalculate course progress
+        await this.enrollmentRepository.recalculateCourseProgress(userId, lessonId);
+
         return result;
     }
 
@@ -68,6 +71,10 @@ export class EnrollmentService {
 
     async getLessonProgress(userId: string, lessonId: string) {
         return this.enrollmentRepository.getLessonProgress(userId, lessonId);
+    }
+
+    async getCompletedLessonIds(userId: string, courseId: string) {
+        return this.enrollmentRepository.getCompletedLessonIds(userId, courseId);
     }
 
     // ── Learning Activity ────────────────────────────────────────────

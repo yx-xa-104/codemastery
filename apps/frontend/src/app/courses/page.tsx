@@ -2,7 +2,7 @@
 
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Search, Filter, Sparkles, Code2 } from "lucide-react";
+import { Search, Sparkles, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { apiClient } from "@/shared/lib/api-client";
@@ -89,9 +89,9 @@ export default function CoursesPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="mt-12 glass rounded-2xl p-4 border border-white/10 shadow-2xl flex flex-col md:flex-row gap-4 max-w-4xl mx-auto"
+                        className="mt-12 glass rounded-2xl p-4 border border-white/10 shadow-2xl max-w-4xl mx-auto"
                     >
-                        <div className="relative grow">
+                        <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Search className="h-5 w-5 text-slate-500" />
                             </div>
@@ -100,14 +100,9 @@ export default function CoursesPage() {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Tìm kiếm khóa học (ví dụ: React, Node.js...)"
-                                className="block w-full pl-11 pr-4 py-3 bg-navy-950/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                                className="block w-full pl-12 pr-4 py-3 bg-navy-950/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                             />
                         </div>
-
-                        <Button variant="outline" className="flex items-center justify-center gap-2 px-6 py-6 bg-navy-800 hover:bg-navy-700 border-slate-700 rounded-xl text-white font-medium transition-all md:w-auto w-full group h-auto">
-                            <Filter className="w-5 h-5 group-hover:text-amber-400 transition-colors" />
-                            Bộ lọc
-                        </Button>
                     </motion.div>
 
                     {/* Categories Tab */}

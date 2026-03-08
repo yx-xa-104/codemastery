@@ -87,7 +87,7 @@ export class CourseController {
     @ApiOperation({ summary: 'Create a course (teacher/admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher')
+    @Roles('teacher', 'admin')
     create(@CurrentUser('id') userId: string, @Body() body: CreateCourseDto) {
         return this.courseService.create({ ...body, teacher_id: userId } as any);
     }
@@ -96,7 +96,7 @@ export class CourseController {
     @ApiOperation({ summary: 'Update a course (owner or admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher')
+    @Roles('teacher', 'admin')
     update(
         @Param('id') id: string,
         @Body() body: UpdateCourseDto,
@@ -109,7 +109,7 @@ export class CourseController {
     @ApiOperation({ summary: 'Delete a course (owner or admin)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher')
+    @Roles('teacher', 'admin')
     remove(
         @Param('id') id: string,
         @CurrentUser('id') userId: string,

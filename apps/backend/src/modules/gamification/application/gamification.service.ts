@@ -27,6 +27,14 @@ export class GamificationService {
         return this.gamificationRepository.getUserStats(userId);
     }
 
+    async getAllBadges() {
+        return this.gamificationRepository.getAvailableBadges();
+    }
+
+    async getMyBadges(userId: string) {
+        return this.gamificationRepository.getUserBadges(userId);
+    }
+
     @OnEvent('lesson.completed')
     async handleLessonCompleted(payload: { userId: string; lessonId: string; lessonType: string }) {
         const { userId, lessonType } = payload;
