@@ -2,6 +2,7 @@ import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, Trophy, BadgeCheck } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EnrollButton } from "@/shared/components/enrollment/EnrollButton";
 
 const levelMap: Record<string, string> = {
     beginner: 'Cơ bản',
@@ -221,18 +222,15 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                 <p className="text-sm text-slate-400">Đăng ký để học trước 1 chương</p>
                                             </div>
 
-                                            <Link
-                                                href={modules && modules.length > 0
-                                                    ? `/lessons/${slug}/${((modules[0].lessons as unknown as { slug: string | null }[])?.[0]?.slug) ?? modules[0].id}`
-                                                    : `/courses/${slug}`
+                                            <EnrollButton
+                                                courseId={course.id}
+                                                courseSlug={slug}
+                                                firstLessonSlug={
+                                                    modules && modules.length > 0
+                                                        ? ((modules[0].lessons as unknown as { slug: string | null }[])?.[0]?.slug) ?? undefined
+                                                        : undefined
                                                 }
-                                                className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center transition-all shadow-glow-indigo flex items-center justify-center gap-2 group relative overflow-hidden"
-                                            >
-                                                <span className="relative z-10 flex items-center gap-2">
-                                                    Vào học ngay
-                                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                                </span>
-                                            </Link>
+                                            />
 
                                             <div className="space-y-0 text-sm">
                                                 <div className="flex justify-between items-center py-3 border-b border-slate-800/80">

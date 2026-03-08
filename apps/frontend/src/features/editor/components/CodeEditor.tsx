@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, AlertTriangle, CheckCircle, Code2, Clock } from "lucide-react";
+import { Play, RotateCcw, AlertTriangle, CheckCircle, Code2, Clock, GripHorizontal } from "lucide-react";
 import { useCodeRunner } from "@/features/editor/hooks/useCodeRunner";
 
 const LANGUAGE_OPTIONS = [
@@ -22,29 +22,74 @@ const LANGUAGE_OPTIONS = [
     { label: "SQL Server", value: "sqlserver", ext: "sql" },
 ];
 
+const MIN_CONSOLE_H = 80;
+const DEFAULT_CONSOLE_H = 160;
+
 interface CodeEditorProps {
     initialCode?: string;
     language?: string;
     onRun?: (code: string) => void;
+    onChange?: (code: string) => void;
 }
 
 export function CodeEditor({
     initialCode = "// Code here...",
     language: defaultLang = "javascript",
     onRun,
+    onChange,
 }: CodeEditorProps) {
     const { code, setCode, result, isRunning, handleRun, handleReset } = useCodeRunner(initialCode);
     const [selectedLang, setSelectedLang] = useState(defaultLang);
+    const [consoleHeight, setConsoleHeight] = useState(DEFAULT_CONSOLE_H);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isDragging = useRef(false);
+    const startY = useRef(0);
+    const startH = useRef(DEFAULT_CONSOLE_H);
 
     const handleRunWithCallback = async () => {
         await handleRun(selectedLang);
         if (onRun) onRun(code);
     };
 
+    // Drag-to-resize handlers
+    const onMouseDown = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        isDragging.current = true;
+        startY.current = e.clientY;
+        startH.current = consoleHeight;
+        document.body.style.cursor = "ns-resize";
+        document.body.style.userSelect = "none";
+    }, [consoleHeight]);
+
+    useEffect(() => {
+        const onMouseMove = (e: MouseEvent) => {
+            if (!isDragging.current || !containerRef.current) return;
+            const delta = startY.current - e.clientY;
+            const maxH = containerRef.current.clientHeight * 0.7;
+            const newH = Math.max(MIN_CONSOLE_H, Math.min(maxH, startH.current + delta));
+            setConsoleHeight(newH);
+        };
+
+        const onMouseUp = () => {
+            if (isDragging.current) {
+                isDragging.current = false;
+                document.body.style.cursor = "";
+                document.body.style.userSelect = "";
+            }
+        };
+
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        return () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+        };
+    }, []);
+
     const langopt = LANGUAGE_OPTIONS.find(l => l.value === selectedLang) ?? LANGUAGE_OPTIONS[0];
 
     return (
-        <div className="flex flex-col h-full bg-navy-950 rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+        <div ref={containerRef} className="flex flex-col h-full bg-navy-950 rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
             {/* Toolbar */}
             <div className="flex items-center justify-between px-3 py-2.5 bg-navy-900 border-b border-slate-800 shrink-0">
                 <div className="flex items-center gap-2.5">
@@ -97,7 +142,7 @@ export function CodeEditor({
                     language={selectedLang}
                     theme="vs-dark"
                     value={code}
-                    onChange={(val) => setCode(val || "")}
+                    onChange={(val) => { setCode(val || ""); onChange?.(val || ""); }}
                     options={{
                         minimap: { enabled: false },
                         fontSize: 13,
@@ -120,8 +165,19 @@ export function CodeEditor({
                 />
             </div>
 
-            {/* Console Output */}
-            <div className="h-36 bg-[#0d1117] border-t border-slate-800 flex flex-col shrink-0">
+            {/* Resize Handle */}
+            <div
+                onMouseDown={onMouseDown}
+                className="h-2 bg-navy-900/80 border-t border-b border-slate-800/50 cursor-ns-resize flex items-center justify-center shrink-0 hover:bg-indigo-500/10 transition-colors group"
+            >
+                <GripHorizontal className="w-4 h-3 text-slate-700 group-hover:text-indigo-400 transition-colors" />
+            </div>
+
+            {/* Console Output — resizable */}
+            <div
+                style={{ height: consoleHeight }}
+                className="bg-[#0d1117] flex flex-col shrink-0"
+            >
                 <div className="flex items-center justify-between px-3 py-1.5 bg-navy-900/50 border-b border-slate-800/50 text-[11px] font-mono text-slate-500 font-medium shrink-0">
                     <span>Console</span>
                     {result?.executionTime !== undefined && (
@@ -161,3 +217,4 @@ export function CodeEditor({
         </div>
     );
 }
+

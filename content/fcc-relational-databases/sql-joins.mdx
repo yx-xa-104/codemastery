@@ -1,0 +1,46 @@
+---
+title: "WHERE, JOIN & Aggregation"
+description: "Lọc, kết bảng và hàm tổng hợp SQL"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# WHERE, JOIN & Aggregation
+
+## WHERE — Lọc dữ liệu
+```sql
+SELECT * FROM students WHERE age BETWEEN 18 AND 25;
+SELECT * FROM students WHERE name LIKE 'Nguyễn%';
+SELECT * FROM students WHERE email IN ('an@mail.com', 'binh@mail.com');
+SELECT * FROM students WHERE gpa >= 3.0 AND age < 22;
+SELECT * FROM courses WHERE title IS NOT NULL;
+```
+
+## JOIN — Kết bảng
+```sql
+-- INNER JOIN: chỉ lấy dòng khớp cả 2 bảng
+SELECT s.name, c.title, e.grade
+FROM enrollments e
+INNER JOIN students s ON e.student_id = s.id
+INNER JOIN courses c ON e.course_id = c.id;
+
+-- LEFT JOIN: lấy tất cả bên trái
+SELECT s.name, COUNT(e.course_id) AS total_courses
+FROM students s
+LEFT JOIN enrollments e ON s.id = e.student_id
+GROUP BY s.name;
+```
+
+## Aggregation — Hàm tổng hợp
+```sql
+SELECT COUNT(*) FROM students;
+SELECT AVG(gpa) FROM students;
+SELECT MAX(gpa), MIN(gpa) FROM students;
+
+-- GROUP BY
+SELECT age, COUNT(*) AS total, AVG(gpa) AS avg_gpa
+FROM students
+GROUP BY age
+HAVING AVG(gpa) >= 3.0
+ORDER BY avg_gpa DESC;
+```

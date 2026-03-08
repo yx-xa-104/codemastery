@@ -1,0 +1,49 @@
+---
+title: "Terminal & Lệnh cơ bản"
+description: "Giới thiệu terminal và các lệnh Linux cơ bản"
+difficulty: "intermediate"
+language: "bash"
+---
+
+# Terminal & Lệnh Cơ Bản
+
+## Điều hướng
+```bash
+pwd                # Thư mục hiện tại
+ls                 # Liệt kê files
+ls -la             # Chi tiết + ẩn
+cd /path/to/dir    # Chuyển thư mục
+cd ..              # Lên một cấp
+cd ~               # Về home
+```
+
+## Quản lý File & Thư mục
+```bash
+mkdir project          # Tạo thư mục
+mkdir -p a/b/c         # Tạo nested
+touch file.txt         # Tạo file
+cp file.txt backup.txt # Copy
+mv old.txt new.txt     # Đổi tên/di chuyển
+rm file.txt            # Xóa file
+rm -rf folder          # Xóa thư mục (cẩn thận!)
+```
+
+## Đọc & Tìm kiếm
+```bash
+cat file.txt           # Hiển thị nội dung
+head -n 10 file.txt    # 10 dòng đầu
+tail -n 5 file.txt     # 5 dòng cuối
+grep "error" log.txt   # Tìm pattern
+grep -r "TODO" ./src   # Tìm recursive
+find . -name "*.py"    # Tìm file
+wc -l file.txt         # Đếm dòng
+```
+
+## Pipe & Redirect
+```bash
+ls -la | grep ".txt"           # Pipe
+cat log.txt | sort | uniq -c   # Chain
+echo "data" > file.txt         # Ghi đè
+echo "more" >> file.txt        # Append
+command 2> error.log           # Redirect stderr
+```

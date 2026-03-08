@@ -64,6 +64,14 @@ export const apiClient = {
         });
     },
 
+    patch<T>(endpoint: string, body: any, options?: RequestInit) {
+        return this.fetchWithAuth<T>(endpoint, {
+            ...options,
+            method: 'PATCH',
+            body: JSON.stringify(body)
+        });
+    },
+
     delete<T>(endpoint: string, options?: RequestInit) {
         return this.fetchWithAuth<T>(endpoint, { ...options, method: 'DELETE' });
     }

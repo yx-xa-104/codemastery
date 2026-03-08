@@ -1,0 +1,64 @@
+---
+title: "Thực hành: Node.js CLI App"
+description: "Bài tập tạo ứng dụng CLI với Node.js"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Thực hành: Node.js CLI App
+
+```javascript
+const fs = require("fs/promises");
+const path = require("path");
+
+const TASKS_FILE = path.join(__dirname, "tasks.json");
+
+async function loadTasks() {
+  try {
+    const data = await fs.readFile(TASKS_FILE, "utf-8");
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+async function saveTasks(tasks) {
+  await fs.writeFile(TASKS_FILE, JSON.stringify(tasks, null, 2));
+}
+
+async function main() {
+  const [,, command, ...args] = process.argv;
+  const tasks = await loadTasks();
+
+  switch (command) {
+    case "add":
+      tasks.push({ text: args.join(" "), done: false, createdAt: new Date() });
+      await saveTasks(tasks);
+      console.log("✅ Đã thêm task!");
+      break;
+    case "list":
+      tasks.forEach((t, i) => {
+        const status = t.done ? "✅" : "⬜";
+        console.log(`${i + 1}. ${status} ${t.text}`);
+      });
+      break;
+    case "done":
+      const idx = parseInt(args[0]) - 1;
+      if (tasks[idx]) { tasks[idx].done = true; await saveTasks(tasks); }
+      console.log("✅ Đã hoàn thành!");
+      break;
+    default:
+      console.log("Cách dùng: node app.js [add|list|done] [args]");
+  }
+}
+
+main();
+```
+
+## Chạy thử
+```bash
+node app.js add Học Node.js
+node app.js add Làm bài tập Express
+node app.js list
+node app.js done 1
+```

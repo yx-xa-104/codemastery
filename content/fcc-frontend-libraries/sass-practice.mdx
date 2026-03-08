@@ -1,0 +1,51 @@
+---
+title: "Thực hành: Sass Project"
+description: "Bài tập xây dựng design system với Sass"
+difficulty: "intermediate"
+language: "scss"
+---
+
+# Thực hành: Sass Project
+
+## Bài tập: Tạo Design System
+```scss
+// _variables.scss
+$colors: (
+  primary: #667eea, secondary: #764ba2,
+  success: #2ecc71, danger: #e74c3c,
+  dark: #2c3e50, light: #ecf0f1
+);
+$font-sizes: (sm: 0.875rem, base: 1rem, lg: 1.25rem, xl: 1.5rem, xxl: 2rem);
+$spacing: (1: 0.25rem, 2: 0.5rem, 3: 1rem, 4: 1.5rem, 5: 2rem);
+
+// _mixins.scss
+@mixin button-variant($bg) {
+  background: $bg;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover { filter: brightness(1.1); transform: translateY(-1px); }
+}
+
+// _components.scss
+@each $name, $color in $colors {
+  .btn-#{$name} { @include button-variant($color); }
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: map-get($spacing, 4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  &:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+}
+
+// Utility classes
+@each $key, $val in $spacing {
+  .p-#{$key} { padding: $val; }
+  .m-#{$key} { margin: $val; }
+}
+```

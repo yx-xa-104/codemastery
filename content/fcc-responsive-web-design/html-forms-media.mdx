@@ -1,0 +1,62 @@
+---
+title: "Forms, Tables & Multimedia"
+description: "Tạo biểu mẫu, bảng dữ liệu và nhúng media"
+difficulty: "beginner"
+language: "html"
+---
+
+# Forms, Tables & Multimedia
+
+## Forms — Biểu mẫu
+
+```html
+<form action="/submit" method="POST">
+  <label for="name">Họ tên:</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email">
+
+  <label for="age">Tuổi:</label>
+  <input type="number" id="age" min="1" max="120">
+
+  <select name="course">
+    <option value="html">HTML</option>
+    <option value="css">CSS</option>
+  </select>
+
+  <textarea name="message" rows="4"></textarea>
+  <button type="submit">Gửi</button>
+</form>
+```
+
+## Tables — Bảng dữ liệu
+
+```html
+<table>
+  <thead>
+    <tr><th>Tên</th><th>Điểm</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>An</td><td>9.5</td></tr>
+    <tr><td>Bình</td><td>8.0</td></tr>
+  </tbody>
+</table>
+```
+
+## Multimedia
+
+```html
+<img src="photo.jpg" alt="Mô tả ảnh" width="400">
+<video controls width="600">
+  <source src="video.mp4" type="video/mp4">
+</video>
+<audio controls>
+  <source src="audio.mp3" type="audio/mpeg">
+</audio>
+```
+
+## Điểm chính
+- Dùng `label` với `for` để liên kết input
+- Thuộc tính `required`, `min`, `max` để validation
+- Luôn thêm `alt` cho `<img>`

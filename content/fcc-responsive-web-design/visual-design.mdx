@@ -1,0 +1,51 @@
+---
+title: "Applied Visual Design"
+description: "Nguyên tắc thiết kế trực quan"
+difficulty: "beginner"
+language: "css"
+---
+
+# Applied Visual Design
+
+## Nguyên tắc thiết kế
+
+### 1. Contrast — Tương phản
+Tạo sự khác biệt rõ ràng giữa các phần tử.
+```css
+.cta-button {
+  background: #e74c3c;
+  color: white;
+  font-size: 1.2rem;
+  padding: 12px 32px;
+}
+```
+
+### 2. Hierarchy — Thứ bậc
+Hướng dẫn mắt người đọc theo thứ tự quan trọng.
+```css
+h1 { font-size: 2.5rem; color: #1a1a2e; }
+h2 { font-size: 1.8rem; color: #16213e; }
+p  { font-size: 1rem; color: #555; }
+```
+
+### 3. Whitespace — Khoảng trống
+```css
+section { padding: 4rem 2rem; }
+.card + .card { margin-top: 2rem; }
+```
+
+### 4. Color Theory
+- **Complementary**: Hai màu đối diện trên bánh xe màu
+- **Analogous**: Các màu liền kề, hài hòa
+- **Triadic**: Ba màu cách đều, sống động
+
+## Shadows & Depth
+```css
+.card {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.1);
+}
+.card:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+```

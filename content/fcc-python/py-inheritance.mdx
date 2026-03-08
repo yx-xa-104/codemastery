@@ -1,0 +1,66 @@
+---
+title: "Inheritance & Polymorphism"
+description: "Kế thừa và đa hình trong Python"
+difficulty: "beginner"
+language: "python"
+---
+
+# Inheritance & Polymorphism
+
+## Kế thừa
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        raise NotImplementedError("Subclass phải override")
+
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name}: Gâu gâu!"
+
+class Cat(Animal):
+    def speak(self):
+        return f"{self.name}: Meo meo!"
+
+# Polymorphism
+animals = [Dog("Rex"), Cat("Mimi"), Dog("Max")]
+for animal in animals:
+    print(animal.speak())
+```
+
+## Multiple Inheritance
+```python
+class Flyable:
+    def fly(self): return "Đang bay..."
+
+class Swimmable:
+    def swim(self): return "Đang bơi..."
+
+class Duck(Animal, Flyable, Swimmable):
+    def speak(self): return f"{self.name}: Quạc quạc!"
+
+duck = Duck("Donald")
+duck.speak()  # "Donald: Quạc quạc!"
+duck.fly()    # "Đang bay..."
+duck.swim()   # "Đang bơi..."
+```
+
+## Abstract Base Class
+```python
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self): pass
+
+    @abstractmethod
+    def perimeter(self): pass
+
+class Rectangle(Shape):
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+    def area(self): return self.w * self.h
+    def perimeter(self): return 2 * (self.w + self.h)
+```

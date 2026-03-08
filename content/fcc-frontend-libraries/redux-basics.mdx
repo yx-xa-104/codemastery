@@ -1,0 +1,55 @@
+---
+title: "Store, Actions & Reducers"
+description: "Quản lý state toàn cục với Redux"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Redux: Store, Actions & Reducers
+
+## Nguyên tắc Redux
+1. **Single source of truth**: Toàn bộ state trong 1 store
+2. **State is read-only**: Chỉ thay đổi qua actions
+3. **Pure reducers**: Reducer là pure functions
+
+## Actions
+```javascript
+// Action types
+const ADD_TODO = "ADD_TODO";
+const TOGGLE_TODO = "TOGGLE_TODO";
+
+// Action creators
+const addTodo = (text) => ({ type: ADD_TODO, payload: { id: Date.now(), text, done: false } });
+const toggleTodo = (id) => ({ type: TOGGLE_TODO, payload: id });
+```
+
+## Reducer
+```javascript
+const initialState = { todos: [], filter: "all" };
+
+function todoReducer(state = initialState, action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return { ...state, todos: [...state.todos, action.payload] };
+    case TOGGLE_TODO:
+      return {
+        ...state,
+        todos: state.todos.map(t =>
+          t.id === action.payload ? { ...t, done: !t.done } : t
+        )
+      };
+    default:
+      return state;
+  }
+}
+```
+
+## Store
+```javascript
+import { createStore } from 'redux';
+const store = createStore(todoReducer);
+
+store.subscribe(() => console.log(store.getState()));
+store.dispatch(addTodo("Học Redux"));
+store.dispatch(toggleTodo(1));
+```

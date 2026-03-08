@@ -1,0 +1,57 @@
+---
+title: "Lists & Tuples"
+description: "Danh sách và bộ giá trị trong Python"
+difficulty: "beginner"
+language: "python"
+---
+
+# Lists & Tuples
+
+## List — Danh sách (mutable)
+```python
+fruits = ["Táo", "Cam", "Xoài"]
+
+# Truy cập
+fruits[0]    # "Táo"
+fruits[-1]   # "Xoài"
+fruits[1:3]  # ["Cam", "Xoài"] - slicing
+
+# Thao tác
+fruits.append("Dưa")
+fruits.insert(1, "Lê")
+fruits.remove("Cam")
+popped = fruits.pop()
+fruits.sort()
+fruits.reverse()
+
+# List methods
+len(fruits)           # Độ dài
+"Táo" in fruits       # Kiểm tra tồn tại
+fruits.index("Xoài") # Vị trí
+fruits.count("Táo")   # Đếm
+```
+
+## Tuple — Bộ giá trị (immutable)
+```python
+point = (10, 20)
+rgb = (255, 128, 0)
+x, y = point  # Unpacking
+
+# Named tuple
+from collections import namedtuple
+Student = namedtuple("Student", ["name", "score"])
+s = Student("An", 95)
+print(s.name)  # "An"
+```
+
+## List Comprehension
+```python
+squares = [x**2 for x in range(10)]
+evens = [x for x in range(20) if x % 2 == 0]
+matrix = [[i*j for j in range(5)] for i in range(5)]
+
+# Với điều kiện
+grades = [90, 65, 78, 92, 55]
+passed = [g for g in grades if g >= 70]
+labels = ["Đậu" if g >= 50 else "Trượt" for g in grades]
+```

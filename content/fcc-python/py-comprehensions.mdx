@@ -1,0 +1,45 @@
+---
+title: "Comprehensions & Generators"
+description: "List/dict comprehension và generator"
+difficulty: "beginner"
+language: "python"
+---
+
+# Comprehensions & Generators
+
+## Generator — Lười tạo giá trị
+```python
+# Generator expression (tiết kiệm bộ nhớ)
+squares_gen = (x**2 for x in range(1000000))
+next(squares_gen)  # 0
+next(squares_gen)  # 1
+
+# Generator function
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+for num in fibonacci(10):
+    print(num)  # 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+```
+
+## Bài tập
+```python
+# 1. Lọc số nguyên tố
+primes = [n for n in range(2, 100)
+          if all(n % i != 0 for i in range(2, int(n**0.5)+1))]
+
+# 2. Đảo dict
+original = {"a": 1, "b": 2, "c": 3}
+inverted = {v: k for k, v in original.items()}
+
+# 3. Flatten nested list
+nested = [[1,2], [3,4], [5,6]]
+flat = [x for sublist in nested for x in sublist]
+
+# 4. Word frequency
+text = "python là ngôn ngữ python rất hay"
+freq = {w: text.split().count(w) for w in set(text.split())}
+```

@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@/shared/stores/useAuthStore";
 import {
     LayoutDashboard, BookOpen, Users, BarChart2,
-    MessageSquare, Settings, Bell, BookMarked, Plus
+    MessageSquare, Settings, Bell, BookMarked, Plus, LogOut
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import { signOut } from "@/features/auth/actions";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/teacher/dashboard', icon: LayoutDashboard },
@@ -69,10 +70,14 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
                                 <div className="size-full rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-white">{initials}</div>
                             </div>
                         )}
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium text-white truncate">{displayName}</p>
                             <p className="text-xs text-slate-500">Giảng viên</p>
                         </div>
+                        <button onClick={() => signOut()} title="Đăng xuất"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0">
+                            <LogOut className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </aside>

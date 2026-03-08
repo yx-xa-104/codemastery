@@ -1,0 +1,64 @@
+---
+title: "CSS Selectors, Colors & Typography"
+description: "Chọn phần tử, màu sắc và font chữ trong CSS"
+difficulty: "beginner"
+language: "css"
+---
+
+# CSS Selectors, Colors & Typography
+
+## Selectors — Bộ chọn
+
+```css
+/* Element selector */
+p { color: #333; }
+
+/* Class selector */
+.highlight { background: yellow; }
+
+/* ID selector */
+#header { font-size: 2rem; }
+
+/* Descendant */
+nav a { text-decoration: none; }
+
+/* Pseudo-class */
+a:hover { color: #e74c3c; }
+button:focus { outline: 2px solid blue; }
+
+/* Pseudo-element */
+p::first-line { font-weight: bold; }
+
+/* Attribute selector */
+input[type="email"] { border: 1px solid #3498db; }
+```
+
+## Colors — Màu sắc
+
+```css
+.box {
+  color: #2c3e50;            /* Hex */
+  background: rgb(52,152,219); /* RGB */
+  border-color: hsl(210,80%,50%); /* HSL — dễ điều chỉnh nhất */
+  opacity: 0.9;
+}
+```
+
+## Typography — Kiểu chữ
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+h1 { font-size: 2.5rem; font-weight: 700; }
+h2 { font-size: 2rem; font-weight: 600; }
+```
+
+## Độ ưu tiên (Specificity)
+`!important` > inline style > `#id` > `.class` > `element`

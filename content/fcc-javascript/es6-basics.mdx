@@ -1,0 +1,65 @@
+---
+title: "let/const, Arrow Functions & Template Literals"
+description: "Cú pháp hiện đại ES6+"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# ES6+ Cơ bản
+
+## let & const
+```javascript
+// Block scope
+if (true) {
+  let x = 10;
+  const y = 20;
+}
+// x và y không tồn tại ở đây
+
+// const với objects — có thể thay đổi thuộc tính
+const user = { name: "An" };
+user.name = "Bình"; // ✅ OK
+// user = {};       // ❌ Error
+```
+
+## Arrow Functions
+```javascript
+// Cú pháp ngắn gọn
+const add = (a, b) => a + b;
+const square = x => x * x;
+const greet = () => "Xin chào!";
+
+// Multi-line
+const processUser = (user) => {
+  const name = user.name.toUpperCase();
+  return `Chào ${name}`;
+};
+
+// ⚠️ Arrow function không có this riêng
+const obj = {
+  name: "An",
+  greet: function() { return this.name; },  // ✅ "An"
+  greetArrow: () => this.name,              // ❌ undefined
+};
+```
+
+## Template Literals
+```javascript
+const name = "An";
+const age = 20;
+
+// String interpolation
+const msg = `Xin chào, ${name}! Bạn ${age} tuổi.`;
+
+// Multi-line
+const html = `
+  <div class="card">
+    <h2>${name}</h2>
+    <p>Tuổi: ${age}</p>
+  </div>
+`;
+
+// Tagged templates
+const highlight = (strings, ...values) =>
+  strings.reduce((r, s, i) => `${r}${s}<b>${values[i]||''}</b>`, '');
+```

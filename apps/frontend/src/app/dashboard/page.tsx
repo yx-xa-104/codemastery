@@ -1,11 +1,12 @@
+export const dynamic = 'force-dynamic';
+
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import {
     BookOpen, Trophy, Flame, Clock, Bot,
-    TrendingUp, ChevronRight, Sparkles, BarChart3
+    TrendingUp, ChevronRight, Sparkles, BarChart3, Pin
 } from "lucide-react";
 
 const levelMap: Record<string, string> = {
@@ -15,12 +16,14 @@ const levelMap: Record<string, string> = {
 };
 
 const DAY_LABELS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-const MOCK_ACTIVITY = [30, 45, 70, 50, 60, 20, 10];
 
 export default async function DashboardPage() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect('/auth/login');
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
 
     const displayName = user.user_metadata?.full_name
         || user.email?.split('@')[0]
@@ -28,10 +31,18 @@ export default async function DashboardPage() {
     const initials = displayName.charAt(0).toUpperCase();
     const avatarUrl = user.user_metadata?.avatar_url;
 
-    // Fetch enrollments with course info
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const authHeaders: Record<string, string> = {};
+    if (accessToken) {
+        authHeaders['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    // Fetch enrollments
     type EnrollmentRow = {
         id: string;
+        course_id: string;
         progress_percent: number | null;
+        is_pinned?: boolean;
         last_accessed_at: string | null;
         courses: {
             id: string; title: string; slug: string;
@@ -43,24 +54,57 @@ export default async function DashboardPage() {
 
     let enrollments: EnrollmentRow[] = [];
     try {
-        const cookieStore = await cookies();
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
         const res = await fetch(`${API_URL}/api/enrollments`, {
-            headers: { Cookie: cookieStore.toString() },
-            cache: 'no-store'
+            headers: authHeaders, cache: 'no-store'
         });
-        if (res.ok) {
-            const data = await res.json();
-            enrollments = data.slice(0, 5); // display only recent 5
-        }
+        if (res.ok) enrollments = await res.json();
     } catch (err) {
-        console.error("Failed to fetch enrollments on dashboard", err);
+        console.error("Failed to fetch enrollments", err);
+    }
+
+    // Fetch pinned courses
+    let pinnedCourses: EnrollmentRow[] = [];
+    try {
+        const res = await fetch(`${API_URL}/api/enrollments/pinned`, {
+            headers: authHeaders, cache: 'no-store'
+        });
+        if (res.ok) pinnedCourses = await res.json();
+    } catch (err) {
+        console.error("Failed to fetch pinned courses", err);
+    }
+
+    // Fetch learning activity
+    type ActivityRow = { activity_date: string; lessons_completed: number; duration_minutes: number };
+    let activityData: ActivityRow[] = [];
+    try {
+        const res = await fetch(`${API_URL}/api/enrollments/activity?days=7`, {
+            headers: authHeaders, cache: 'no-store'
+        });
+        if (res.ok) activityData = await res.json();
+    } catch (err) {
+        console.error("Failed to fetch activity", err);
     }
 
     const totalEnrolled = enrollments.length;
     const avgProgress = enrollments.length
         ? Math.round(enrollments.reduce((s, e) => s + (e.progress_percent ?? 0), 0) / enrollments.length)
         : 0;
+    const recentEnrollments = enrollments.slice(0, 5);
+
+    // Map activity to week chart
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Sun
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const weekActivity = DAY_LABELS.map((_, i) => {
+        const d = new Date(today);
+        d.setDate(today.getDate() + mondayOffset + i);
+        const dateStr = d.toISOString().split('T')[0];
+        const match = activityData.find(a => a.activity_date === dateStr);
+        return match?.lessons_completed ?? 0;
+    });
+    const maxActivity = Math.max(...weekActivity, 1);
+    const totalLessonsWeek = weekActivity.reduce((s, v) => s + v, 0);
+    const todayIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
     return (
         <MainLayout>
@@ -98,8 +142,8 @@ export default async function DashboardPage() {
                         {[
                             { icon: BookOpen, label: 'Khóa đang học', value: totalEnrolled, color: 'text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' },
                             { icon: TrendingUp, label: 'Tiến độ TB', value: `${avgProgress}%`, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
-                            { icon: Flame, label: 'Streak', value: '7 ngày', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
-                            { icon: Trophy, label: 'Huy hiệu', value: '4', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+                            { icon: Flame, label: 'Bài tuần này', value: totalLessonsWeek, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+                            { icon: Trophy, label: 'Ghim', value: pinnedCourses.length, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
                         ].map(({ icon: Icon, label, value, color, bg }) => (
                             <div key={label} className={`rounded-xl p-4 border ${bg} bg-[#111827] flex flex-col gap-2`}>
                                 <div className={`${color} p-2 rounded-lg w-fit bg-current/10`}>
@@ -110,6 +154,46 @@ export default async function DashboardPage() {
                             </div>
                         ))}
                     </div>
+
+                    {/* Pinned Courses */}
+                    {pinnedCourses.length > 0 && (
+                        <div className="bg-[#111827] rounded-xl border border-amber-500/20 overflow-hidden">
+                            <div className="flex justify-between items-center p-5 border-b border-amber-500/10">
+                                <h3 className="text-white text-lg font-bold flex items-center gap-2">
+                                    <Pin className="w-5 h-5 text-amber-400" />
+                                    Khóa học đã ghim
+                                </h3>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+                                {pinnedCourses.map((enrollment) => {
+                                    const course = enrollment.courses as any;
+                                    if (!course) return null;
+                                    const progress = enrollment.progress_percent ?? 0;
+                                    return (
+                                        <Link key={enrollment.id} href={`/courses/${course.slug}`}
+                                            className="flex items-center gap-4 p-4 bg-[#010816] rounded-xl border border-amber-500/10 hover:border-amber-500/30 transition-all group">
+                                            {course.thumbnail_url ? (
+                                                <img src={course.thumbnail_url} alt="" className="size-14 rounded-lg object-cover shrink-0" />
+                                            ) : (
+                                                <div className="size-14 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                                                    <BookOpen className="w-6 h-6 text-amber-400" />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-white font-bold text-sm truncate group-hover:text-amber-300 transition-colors">{course.title}</p>
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <div className="flex-1 h-1.5 bg-[#111827] rounded-full overflow-hidden">
+                                                        <div className="h-full bg-amber-500 rounded-full" style={{ width: `${progress}%` }} />
+                                                    </div>
+                                                    <span className="text-xs text-slate-400 shrink-0">{progress}%</span>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Left Column */}
@@ -127,7 +211,7 @@ export default async function DashboardPage() {
                                     </Link>
                                 </div>
                                 <div className="divide-y divide-indigo-900/30">
-                                    {enrollments && enrollments.length > 0 ? enrollments.map((enrollment) => {
+                                    {recentEnrollments && recentEnrollments.length > 0 ? recentEnrollments.map((enrollment) => {
                                         const course = enrollment.courses as unknown as {
                                             id: string; title: string; slug: string;
                                             thumbnail_url: string | null; level: string;
@@ -181,7 +265,7 @@ export default async function DashboardPage() {
                                 </div>
                             </div>
 
-                            {/* Activity Chart */}
+                            {/* Activity Chart — Real Data */}
                             <div className="bg-[#111827] rounded-xl p-6 border border-indigo-900/50">
                                 <div className="flex justify-between items-center mb-6">
                                     <h3 className="text-white text-lg font-bold flex items-center gap-2">
@@ -192,12 +276,16 @@ export default async function DashboardPage() {
                                 </div>
                                 <div className="flex items-end justify-between gap-2 h-32 px-2">
                                     {DAY_LABELS.map((day, i) => {
-                                        const height = MOCK_ACTIVITY[i];
-                                        const isToday = i === 2;
+                                        const val = weekActivity[i];
+                                        const height = maxActivity > 0 ? Math.max((val / maxActivity) * 100, val > 0 ? 8 : 2) : 2;
+                                        const isToday = i === todayIdx;
                                         return (
                                             <div key={day} className="flex flex-col items-center gap-2 w-full group cursor-pointer">
+                                                {val > 0 && (
+                                                    <span className="text-[10px] text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">{val}</span>
+                                                )}
                                                 <div
-                                                    className={`w-full max-w-[28px] rounded-t-sm transition-all ${isToday ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.5)]' : 'bg-slate-700 group-hover:bg-indigo-500/50'}`}
+                                                    className={`w-full max-w-[28px] rounded-t-sm transition-all ${isToday ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.5)]' : val > 0 ? 'bg-indigo-500/60 group-hover:bg-indigo-500' : 'bg-slate-700/50'}`}
                                                     style={{ height: `${height}%` }}
                                                 />
                                                 <span className={`text-xs ${isToday ? 'text-white font-bold' : 'text-slate-400'}`}>{day}</span>
@@ -206,33 +294,8 @@ export default async function DashboardPage() {
                                     })}
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
-                                    <span>Tổng giờ: <strong className="text-white">12.5h</strong></span>
-                                    <span>Mục tiêu: <strong className="text-white">15h</strong></span>
-                                </div>
-                            </div>
-
-                            {/* Badges */}
-                            <div className="bg-[#111827] rounded-xl p-6 border border-indigo-900/50">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-white text-lg font-bold flex items-center gap-2">
-                                        <Trophy className="w-5 h-5 text-amber-400" />
-                                        Huy hiệu đạt được
-                                    </h3>
-                                    <button className="text-sm text-indigo-400 hover:text-amber-400 transition-colors">Xem tất cả</button>
-                                </div>
-                                <div className="flex gap-3 overflow-x-auto pb-1">
-                                    {[
-                                        { icon: '🔥', label: '7 Ngày Streak', earned: true },
-                                        { icon: '🐛', label: 'Bug Hunter', earned: true },
-                                        { icon: '⚔️', label: 'Code Warrior', earned: true },
-                                        { icon: '🎓', label: 'Học bá', earned: true },
-                                        { icon: '⚛️', label: 'React Master', earned: false },
-                                    ].map(({ icon, label, earned }) => (
-                                        <div key={label} className={`min-w-[90px] bg-[#010816] border rounded-lg p-3 flex flex-col items-center gap-2 cursor-pointer transition-colors ${earned ? 'border-indigo-500/20 hover:border-amber-500/50' : 'border-slate-800/50 opacity-40 grayscale'}`}>
-                                            <div className={`text-2xl p-2 rounded-full ${earned ? 'bg-amber-500/10' : 'bg-slate-700'}`}>{icon}</div>
-                                            <span className="text-xs font-medium text-center text-slate-300 line-clamp-1">{label}</span>
-                                        </div>
-                                    ))}
+                                    <span>Bài hoàn thành: <strong className="text-white">{totalLessonsWeek}</strong></span>
+                                    <span>Hôm nay: <strong className="text-white">{weekActivity[todayIdx]}</strong></span>
                                 </div>
                             </div>
                         </div>

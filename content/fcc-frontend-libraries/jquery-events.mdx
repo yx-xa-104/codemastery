@@ -1,0 +1,57 @@
+---
+title: "jQuery Events & AJAX"
+description: "Xử lý sự kiện và gọi API với jQuery"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# jQuery Events & AJAX
+
+## Events
+```javascript
+// Click
+$(".btn").on("click", function() {
+  $(this).toggleClass("active");
+});
+
+// Form submit
+$("form").on("submit", function(e) {
+  e.preventDefault();
+  const data = $(this).serialize();
+  console.log(data);
+});
+
+// Keyboard
+$(document).on("keydown", function(e) {
+  if (e.key === "Escape") $(".modal").fadeOut();
+});
+
+// Event delegation (cho phần tử động)
+$("ul").on("click", "li", function() {
+  $(this).toggleClass("done");
+});
+```
+
+## AJAX
+```javascript
+// GET request
+$.get("/api/users", function(data) {
+  data.forEach(user => {
+    $("ul").append(`<li>${user.name}</li>`);
+  });
+});
+
+// POST request
+$.ajax({
+  url: "/api/users",
+  method: "POST",
+  contentType: "application/json",
+  data: JSON.stringify({ name: "An", email: "an@mail.com" }),
+  success: (res) => console.log("Thành công:", res),
+  error: (err) => console.error("Lỗi:", err)
+});
+
+// Modern: fetch API (không cần jQuery)
+const res = await fetch("/api/users");
+const users = await res.json();
+```

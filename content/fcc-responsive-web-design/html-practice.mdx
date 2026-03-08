@@ -1,0 +1,67 @@
+---
+title: "Thực hành: Trang web đầu tiên"
+description: "Bài tập tạo trang web hoàn chỉnh với HTML5"
+difficulty: "beginner"
+language: "html"
+---
+
+# Thực hành: Trang Web Đầu Tiên
+
+## Yêu cầu
+Tạo một trang portfolio cá nhân sử dụng HTML5 semantic elements.
+
+## Bài tập
+
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - Tên của bạn</title>
+</head>
+<body>
+  <header>
+    <h1>Tên của bạn</h1>
+    <nav>
+      <a href="#about">Giới thiệu</a>
+      <a href="#projects">Dự án</a>
+      <a href="#contact">Liên hệ</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>Giới thiệu</h2>
+      <p>Mô tả bản thân bạn ở đây.</p>
+    </section>
+
+    <section id="projects">
+      <h2>Dự án</h2>
+      <article>
+        <h3>Dự án 1</h3>
+        <p>Mô tả dự án</p>
+      </article>
+    </section>
+
+    <section id="contact">
+      <h2>Liên hệ</h2>
+      <form>
+        <label for="msg">Tin nhắn:</label>
+        <textarea id="msg" required></textarea>
+        <button type="submit">Gửi</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 - Tên của bạn</p>
+  </footer>
+</body>
+</html>
+```
+
+## Thử thách thêm
+1. Thêm bảng kỹ năng với rating
+2. Thêm ảnh đại diện với `alt` text
+3. Thêm links đến mạng xã hội

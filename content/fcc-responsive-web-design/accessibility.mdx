@@ -1,0 +1,45 @@
+---
+title: "Web Accessibility (a11y)"
+description: "Thiết kế web dễ tiếp cận cho mọi người"
+difficulty: "beginner"
+language: "html"
+---
+
+# Web Accessibility (a11y)
+
+Accessibility đảm bảo mọi người đều có thể sử dụng website, bao gồm người khuyết tật.
+
+## ARIA Attributes
+
+```html
+<button aria-label="Đóng menu" aria-expanded="false">✕</button>
+
+<div role="alert">Lưu thành công!</div>
+
+<nav aria-label="Menu chính">
+  <a href="/" aria-current="page">Trang chủ</a>
+  <a href="/about">Giới thiệu</a>
+</nav>
+```
+
+## Nguyên tắc chính
+
+1. **Perceivable**: Thêm `alt` cho ảnh, caption cho video
+2. **Operable**: Điều hướng bằng keyboard (Tab, Enter, Escape)
+3. **Understandable**: Ngôn ngữ rõ ràng, lỗi dễ hiểu
+4. **Robust**: Hoạt động trên nhiều thiết bị và trình duyệt
+
+## Checklist nhanh
+```html
+<!-- ✅ Tốt -->
+<img src="cat.jpg" alt="Mèo cam đang ngủ trên sofa">
+<button>Gửi đơn đăng ký</button>
+
+<!-- ❌ Tránh -->
+<img src="cat.jpg">
+<div onclick="submit()">Gửi</div>
+```
+
+## Contrast ratio
+- Text bình thường: tối thiểu **4.5:1**
+- Text lớn (≥18px bold): tối thiểu **3:1**

@@ -1,0 +1,58 @@
+---
+title: "Giới thiệu Node.js & npm"
+description: "Node.js runtime và quản lý packages với npm"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Giới thiệu Node.js & npm
+
+Node.js là runtime cho phép chạy JavaScript bên ngoài trình duyệt.
+
+## Cài đặt & Kiểm tra
+```bash
+node --version
+npm --version
+```
+
+## REPL
+```bash
+node
+> 2 + 3
+5
+> console.log("Xin chào Node!")
+```
+
+## npm — Node Package Manager
+```bash
+npm init -y              # Tạo package.json
+npm install express      # Cài package
+npm install -D nodemon   # Dev dependency
+npm install -g typescript # Global
+```
+
+## package.json
+```json
+{
+  "name": "my-api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
+```
+
+## Chạy file JS
+```javascript
+// index.js
+console.log("Hello from Node.js!");
+console.log("Platform:", process.platform);
+console.log("Node version:", process.version);
+```
+```bash
+node index.js
+```

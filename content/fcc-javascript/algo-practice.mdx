@@ -1,0 +1,46 @@
+---
+title: "Thực hành: Giải thuật toán"
+description: "Bài tập thuật toán JavaScript"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Thực hành: Giải Thuật Toán
+
+## Bài 1: Tìm phần tử xuất hiện nhiều nhất
+```javascript
+function mostFrequent(arr) {
+  const freq = {};
+  for (const item of arr) freq[item] = (freq[item] || 0) + 1;
+  return Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
+}
+mostFrequent([1,2,3,2,2,3,1,2]); // "2"
+```
+
+## Bài 2: Two Sum
+```javascript
+function twoSum(nums, target) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) return [map.get(complement), i];
+    map.set(nums[i], i);
+  }
+  return [];
+}
+twoSum([2, 7, 11, 15], 9); // [0, 1]
+```
+
+## Bài 3: Flatten Array
+```javascript
+function flatten(arr) {
+  return arr.reduce((flat, item) =>
+    flat.concat(Array.isArray(item) ? flatten(item) : item), []);
+}
+flatten([1, [2, [3, [4]]]]); // [1, 2, 3, 4]
+```
+
+## Thử thách
+1. Viết hàm tìm chuỗi con chung dài nhất (Longest Common Substring)
+2. Viết hàm kiểm tra anagram (cùng ký tự khác thứ tự)
+3. Viết hàm nén chuỗi: "aaabbc" → "a3b2c1"

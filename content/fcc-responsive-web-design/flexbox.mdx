@@ -1,0 +1,57 @@
+---
+title: "CSS Flexbox Layout"
+description: "Bố cục linh hoạt với Flexbox"
+difficulty: "beginner"
+language: "css"
+---
+
+# CSS Flexbox Layout
+
+Flexbox là mô hình bố cục một chiều, giúp sắp xếp phần tử theo hàng hoặc cột.
+
+## Container Properties
+
+```css
+.flex-container {
+  display: flex;
+  flex-direction: row;      /* row | column | row-reverse | column-reverse */
+  justify-content: center;  /* flex-start | flex-end | center | space-between | space-around | space-evenly */
+  align-items: center;      /* flex-start | flex-end | center | stretch | baseline */
+  flex-wrap: wrap;           /* nowrap | wrap | wrap-reverse */
+  gap: 1rem;
+}
+```
+
+## Item Properties
+
+```css
+.flex-item {
+  flex: 1;              /* flex-grow: 1, flex-shrink: 1, flex-basis: 0% */
+  align-self: flex-end; /* Ghi đè align-items cho item cụ thể */
+  order: 2;             /* Thay đổi thứ tự hiển thị */
+}
+```
+
+## Ví dụ: Navbar
+
+```css
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+.navbar .logo { flex-shrink: 0; }
+.navbar .links { display: flex; gap: 1.5rem; }
+```
+
+## Ví dụ: Card Grid
+
+```css
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.card { flex: 1 1 300px; /* Tối thiểu 300px, co giãn đều */ }
+```

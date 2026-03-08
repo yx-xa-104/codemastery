@@ -30,8 +30,16 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // Routes shared by all authenticated users
+  const sharedPaths = ['/account', '/auth/callback'];
+  const isShared = sharedPaths.some((p) => pathname.startsWith(p));
+
+  // Auth pages (login, register, forgot, reset)
+  const authPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+  const isAuthPage = authPaths.some((p) => pathname.startsWith(p));
+
   // Protected routes — redirect to login if not authenticated
-  const protectedPaths = ['/dashboard', '/account', '/admin', '/teacher'];
+  const protectedPaths = ['/dashboard', '/account', '/admin', '/teacher', '/courses', '/lessons', '/roadmap'];
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
   if (isProtected && !user) {
@@ -41,8 +49,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Role-based access control for /admin and /teacher
-  if (user && (pathname.startsWith('/admin') || pathname.startsWith('/teacher'))) {
+  // For authenticated users, apply role-based routing
+  if (user && !isShared) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -51,52 +59,37 @@ export async function updateSession(request: NextRequest) {
 
     const role = profile?.role || 'student';
 
-    // /admin/* — only admin can access
-    if (pathname.startsWith('/admin') && role !== 'admin') {
+    // Redirect logged-in users away from auth pages
+    if (isAuthPage) {
       const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
+      if (role === 'admin') url.pathname = '/admin/dashboard';
+      else if (role === 'teacher') url.pathname = '/teacher/dashboard';
+      else url.pathname = '/dashboard';
       return NextResponse.redirect(url);
     }
 
-    // /teacher/* — only teacher can access
-    if (pathname.startsWith('/teacher') && role !== 'teacher') {
+    // Admin: can only access /admin/* and /account/*
+    if (role === 'admin' && !pathname.startsWith('/admin')) {
       const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
+      url.pathname = '/admin/dashboard';
       return NextResponse.redirect(url);
     }
 
-    // /dashboard — redirect to role-specific panel
-    if (pathname === '/dashboard') {
-      if (role === 'admin') {
+    // Teacher: can only access /teacher/* and /account/*
+    if (role === 'teacher' && !pathname.startsWith('/teacher')) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/teacher/dashboard';
+      return NextResponse.redirect(url);
+    }
+
+    // Student: cannot access /admin/* or /teacher/*
+    if (role === 'student' || !role) {
+      if (pathname.startsWith('/admin') || pathname.startsWith('/teacher')) {
         const url = request.nextUrl.clone();
-        url.pathname = '/admin/dashboard';
-        return NextResponse.redirect(url);
-      }
-      if (role === 'teacher') {
-        const url = request.nextUrl.clone();
-        url.pathname = '/teacher/dashboard';
+        url.pathname = '/dashboard';
         return NextResponse.redirect(url);
       }
     }
-  }
-
-  // Redirect logged-in users away from auth pages
-  const authPaths = ['/auth/login', '/auth/register'];
-  const isAuthPage = authPaths.some((p) => pathname.startsWith(p));
-
-  if (isAuthPage && user) {
-    // Redirect to role-specific dashboard
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-    const role = (profile as any)?.role || 'student';
-    const url = request.nextUrl.clone();
-    if (role === 'admin') url.pathname = '/admin/dashboard';
-    else if (role === 'teacher') url.pathname = '/teacher/dashboard';
-    else url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;

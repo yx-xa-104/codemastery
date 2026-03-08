@@ -1,0 +1,61 @@
+---
+title: "Điều kiện & Vòng lặp"
+description: "if/else, switch, for, while và các cấu trúc điều khiển"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Điều kiện & Vòng lặp
+
+## If / Else
+
+```javascript
+const score = 85;
+
+if (score >= 90) {
+  console.log("Xuất sắc");
+} else if (score >= 70) {
+  console.log("Khá");
+} else {
+  console.log("Cần cố gắng");
+}
+
+// Ternary operator
+const result = score >= 50 ? "Đậu" : "Trượt";
+```
+
+## Switch
+
+```javascript
+const day = "T2";
+switch (day) {
+  case "T2": case "T3": case "T4": case "T5": case "T6":
+    console.log("Ngày làm việc");
+    break;
+  case "T7": case "CN":
+    console.log("Cuối tuần");
+    break;
+  default:
+    console.log("Không hợp lệ");
+}
+```
+
+## Vòng lặp
+
+```javascript
+// for
+for (let i = 0; i < 5; i++) { console.log(i); }
+
+// for...of (duyệt giá trị)
+for (const item of ["An", "Bình", "Chi"]) { console.log(item); }
+
+// for...in (duyệt key)
+for (const key in { name: "An", age: 20 }) { console.log(key); }
+
+// while
+let count = 0;
+while (count < 3) { console.log(count++); }
+
+// do...while (chạy ít nhất 1 lần)
+do { console.log("Chạy!"); } while (false);
+```

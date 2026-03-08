@@ -1,0 +1,70 @@
+---
+title: "Bash Scripting cơ bản"
+description: "Viết script tự động hóa với Bash"
+difficulty: "intermediate"
+language: "bash"
+---
+
+# Bash Scripting
+
+## Script cơ bản
+```bash
+#!/bin/bash
+# setup.sh - Script cài đặt dự án
+
+echo "🚀 Bắt đầu cài đặt..."
+
+# Biến
+PROJECT="my-app"
+VERSION="1.0.0"
+
+# Điều kiện
+if [ -d "$PROJECT" ]; then
+    echo "Thư mục $PROJECT đã tồn tại"
+else
+    mkdir -p "$PROJECT"
+    echo "Đã tạo $PROJECT"
+fi
+
+# Vòng lặp
+for file in *.txt; do
+    echo "Xử lý: $file"
+    cp "$file" "$PROJECT/"
+done
+
+echo "✅ Hoàn tất v$VERSION!"
+```
+
+## Hàm
+```bash
+#!/bin/bash
+log() {
+    echo "[$(date '+%H:%M:%S')] $1"
+}
+
+check_command() {
+    if command -v "$1" &> /dev/null; then
+        log "✅ $1 đã cài đặt"
+    else
+        log "❌ $1 chưa cài đặt"
+        return 1
+    fi
+}
+
+check_command "node"
+check_command "python3"
+check_command "git"
+```
+
+## Input & Arguments
+```bash
+#!/bin/bash
+# deploy.sh <env> <version>
+ENV=${1:-"staging"}     # Argument 1, default "staging"
+VER=${2:-"latest"}      # Argument 2, default "latest"
+
+read -p "Deploy $VER to $ENV? (y/n): " confirm
+if [ "$confirm" = "y" ]; then
+    echo "Deploying..."
+fi
+```

@@ -1,0 +1,57 @@
+---
+title: "Dictionaries & Sets"
+description: "Dict và set: tập hợp dữ liệu trong Python"
+difficulty: "beginner"
+language: "python"
+---
+
+# Dictionaries & Sets
+
+## Dictionary — Từ điển
+```python
+student = {
+    "name": "An",
+    "age": 20,
+    "courses": ["HTML", "Python"]
+}
+
+# Truy cập
+student["name"]           # "An"
+student.get("email", "N/A")  # "N/A" (default nếu không có)
+
+# Thao tác
+student["email"] = "an@mail.com"  # Thêm/sửa
+del student["age"]                 # Xóa
+student.update({"age": 21, "city": "HCM"})
+
+# Duyệt
+for key, value in student.items():
+    print(f"{key}: {value}")
+```
+
+## Dict Comprehension
+```python
+squares = {x: x**2 for x in range(6)}
+# {0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+
+word_count = {}
+for word in text.split():
+    word_count[word] = word_count.get(word, 0) + 1
+```
+
+## Set — Tập hợp (giá trị duy nhất)
+```python
+colors = {"đỏ", "xanh", "vàng"}
+colors.add("tím")
+colors.discard("đỏ")
+
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+a | b   # Union:        {1,2,3,4,5,6}
+a & b   # Intersection:  {3,4}
+a - b   # Difference:    {1,2}
+a ^ b   # Symmetric:     {1,2,5,6}
+
+# Loại bỏ trùng lặp
+unique = list(set([1, 2, 2, 3, 3, 3]))
+```

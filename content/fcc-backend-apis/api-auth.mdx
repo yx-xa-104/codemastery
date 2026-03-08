@@ -1,0 +1,76 @@
+---
+title: "Authentication & Security"
+description: "Xác thực người dùng và bảo mật API"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Authentication & Security
+
+## JWT (JSON Web Token)
+```javascript
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.JWT_SECRET || "my-secret-key";
+
+// Tạo token
+function generateToken(user) {
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    SECRET,
+    { expiresIn: "7d" }
+  );
+}
+
+// Middleware xác thực
+function authenticate(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Token không tồn tại" });
+  try {
+    req.user = jwt.verify(token, SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: "Token không hợp lệ" });
+  }
+}
+
+// Middleware phân quyền
+function authorize(...roles) {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: "Không có quyền" });
+    }
+    next();
+  };
+}
+```
+
+## Đăng ký & Đăng nhập
+```javascript
+const bcrypt = require("bcrypt");
+
+app.post("/api/register", async (req, res) => {
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  const user = await User.create({ ...req.body, password: hashedPassword });
+  const token = generateToken(user);
+  res.status(201).json({ user, token });
+});
+
+app.post("/api/login", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+    return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
+  }
+  res.json({ token: generateToken(user) });
+});
+```
+
+## Bảo mật cơ bản
+```javascript
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const cors = require("cors");
+
+app.use(helmet());          // Security headers
+app.use(cors());            // CORS
+app.use(rateLimit({ windowMs: 15*60*1000, max: 100 }));
+```

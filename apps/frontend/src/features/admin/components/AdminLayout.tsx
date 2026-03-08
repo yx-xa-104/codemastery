@@ -4,12 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/shared/stores/useAuthStore";
 import {
-    LayoutDashboard, Users, BarChart2, Settings, Bell, Shield
+    LayoutDashboard, Users, BarChart2, Settings, Bell, Shield, BookOpen, LogOut
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import { signOut } from "@/features/auth/actions";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/admin/dashboard', icon: LayoutDashboard },
+    { label: 'Khóa học', href: '/admin/courses', icon: BookOpen },
     { label: 'Tài khoản', href: '/admin/users', icon: Users },
     { label: 'Báo cáo', href: '/admin/reports', icon: BarChart2 },
     { label: 'Cài đặt', href: '/admin/settings', icon: Settings },
@@ -66,10 +68,14 @@ export function AdminLayout({ children, title, subtitle, action }: AdminLayoutPr
                                 <div className="size-full rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-white">{initials}</div>
                             </div>
                         )}
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium text-white truncate">{displayName}</p>
                             <p className="text-xs text-slate-500">Quản trị viên</p>
                         </div>
+                        <button onClick={() => signOut()} title="Đăng xuất"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0">
+                            <LogOut className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </aside>

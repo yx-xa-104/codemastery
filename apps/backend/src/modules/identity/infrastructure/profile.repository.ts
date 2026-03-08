@@ -28,6 +28,7 @@ export class ProfileRepository {
             date_of_birth?: string;
             student_id?: string;
             class_code?: string;
+            gender?: string;
         },
     ): Promise<Tables<'profiles'>> {
         const { data, error } = await (this.supabase.admin as any)
@@ -43,7 +44,14 @@ export class ProfileRepository {
 
     async uploadAvatar(userId: string, file: any): Promise<string> {
         const ext = file.originalname.split('.').pop() || 'jpg';
-        const path = `avatars/${userId}.${ext}`;
+        const path = `${userId}.${ext}`;
+
+        // Ensure bucket exists (idempotent)
+        await this.supabase.admin.storage.createBucket('avatars', {
+            public: true,
+            fileSizeLimit: 2 * 1024 * 1024,
+            allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+        }).catch(() => { /* bucket already exists — ignore */ });
 
         // Upload to Supabase Storage (upsert to overwrite old avatar)
         const { error } = await this.supabase.admin.storage
