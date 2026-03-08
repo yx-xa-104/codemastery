@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Bot, X, Send, User, Sparkles, Minimize2, ExternalLink } from "lucide-react";
+import { Bot, X, Send, Sparkles, Minimize2, ExternalLink } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { ChatMessage } from "@/features/ai-chat/ui/ChatMessage";
 
 const QUICK_PROMPTS = ["Closure là gì?", "Debug lỗi TypeScript", "Giải thích async/await"];
 
@@ -154,30 +154,17 @@ export function GlobalAiChat() {
                             )}
 
                             {/* Messages */}
-                            <div ref={containerRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
-                                {messages.map(msg => (
-                                    <div
+                            <div ref={containerRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3 scrollbar-none">
+                                {messages.map((msg, index) => (
+                                    <ChatMessage
                                         key={msg.id}
-                                        className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                                    >
-                                        <div className={`size-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${msg.role === "user" ? "bg-amber-500" : "bg-indigo-600"}`}>
-                                            {msg.role === "user"
-                                                ? <User className="w-3 h-3 text-white" />
-                                                : <Bot className="w-3 h-3 text-white" />
-                                            }
-                                        </div>
-                                        <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed break-words overflow-hidden ${msg.role === "user"
-                                            ? "bg-indigo-600 text-white rounded-tr-sm"
-                                            : "bg-[#1a2744] border border-slate-700/40 text-slate-200 rounded-tl-sm"
-                                            }`}>
-                                            <div className="prose prose-invert prose-xs max-w-none [&_pre]:text-[11px] [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-all [&_code]:text-[11px] [&_code]:break-all [&_p]:my-0.5 [&_p]:break-words">
-                                                <ReactMarkdown>{msg.content}</ReactMarkdown>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        message={msg}
+                                        isTyping={isTyping}
+                                        isLast={index === messages.length - 1}
+                                    />
                                 ))}
 
-                                {isTyping && messages[messages.length -1]?.role === 'assistant' && messages[messages.length -1]?.content === '' && (
+                                {isTyping && messages[messages.length -1]?.role !== 'assistant' && (
                                     <div className="flex gap-2">
                                         <div className="size-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
                                             <Bot className="w-3 h-3 text-white" />

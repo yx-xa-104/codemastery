@@ -7,8 +7,8 @@ export interface Message {
   content: string;
 }
 
-export function useAiChat() {
-  const [messages, setMessages] = useState<Message[]>([
+export function useAiChat(initialMessage?: Message) {
+  const [messages, setMessages] = useState<Message[]>(initialMessage ? [initialMessage] : [
     {
       id: 'greeting',
       role: 'assistant',
@@ -136,5 +136,19 @@ export function useAiChat() {
     };
   }, []);
 
-  return { messages, isLoading, sendMessage, abortStream };
+  const clearMessages = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setMessages(initialMessage ? [initialMessage] : [
+      {
+        id: 'greeting',
+        role: 'assistant',
+        content: 'Xin chào! Tôi là PicoClaw AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
+      }
+    ]);
+    setIsLoading(false);
+  }, [initialMessage]);
+
+  return { messages, isLoading, sendMessage, abortStream, clearMessages };
 }

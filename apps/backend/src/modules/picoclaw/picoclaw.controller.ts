@@ -3,8 +3,15 @@ import { PicoclawService } from './picoclaw.service';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 
+import { IsString, IsNotEmpty } from 'class-validator';
+
 export class ChatDto {
+  @IsString()
+  @IsNotEmpty()
   user_id: string;
+
+  @IsString()
+  @IsNotEmpty()
   prompt: string;
 }
 

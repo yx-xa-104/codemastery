@@ -2,16 +2,9 @@
 
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, User, Sparkles, MessageSquare, Code2, BookOpen, Zap, RotateCcw } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-
-interface Message {
-    id: string;
-    role: "user" | "assistant";
-    content: string;
-}
+import { Bot, Send, Sparkles, MessageSquare, Code2, BookOpen, Zap, RotateCcw } from "lucide-react";
+import { useAiChat } from "@/features/ai-chat/model/useAiChat";
+import { ChatMessage, Message } from "@/features/ai-chat/ui/ChatMessage";
 
 const INITIAL_MESSAGE: Message = {
     id: "init",
@@ -26,17 +19,10 @@ const SUGGESTIONS = [
     "Giải thích Big O notation",
 ];
 
-const FALLBACKS = [
-    "Đó là câu hỏi hay! Hãy phân tích từng bước:\n\nKhái niệm này hoạt động dựa trên nguyên tắc **scope chain** — khi một function được tạo ra, nó lưu lại reference đến scope bên ngoài. Thử ví dụ:\n\n```js\nfunction outer() {\n  const count = 0;\n  return function inner() {\n    return count + 1;\n  };\n}\n```\n\n_Mình đang ở chế độ offline. Phase 6 AI thực sẽ sớm ra mắt!_ 🚀",
-    "Tốt lắm! Để hiểu rõ hơn, hãy nhớ quy tắc vàng:\n\n> **Chia để trị** — mỗi function chỉ làm một việc.\n\n```python\ndef solve(n):\n    if n <= 1:\n        return n\n    return solve(n-1) + solve(n-2)\n```\n\n_Đang dùng fallback response. Phase 6 sẽ kết nối Gemini AI thật!_ ✨",
-    "Câu hỏi thú vị! Trong lập trình, đây là một pattern rất phổ biến:\n\n```ts\nconst result = data\n  .filter(x => x.active)\n  .map(x => x.value)\n  .reduce((sum, v) => sum + v, 0);\n```\n\nChaining method như vậy giúp code **ngắn gọn và dễ đọc** hơn nhiều!\n\n_Đang chạy offline. Kết nối AI thật khi Phase 6 hoàn thành!_ 🔌",
-];
 
 export default function AiChatPage() {
-    const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+    const { messages, isLoading: isTyping, sendMessage, clearMessages, abortStream } = useAiChat(INITIAL_MESSAGE as any);
     const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const [fallbackIdx, setFallbackIdx] = useState(0);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -57,46 +43,13 @@ export default function AiChatPage() {
         const content = (text ?? input).trim();
         if (!content || isTyping) return;
 
-        const userMsg: Message = { id: Date.now().toString(), role: "user", content };
-        setMessages(prev => [...prev, userMsg]);
         setInput("");
         resetTextarea();
-        setIsTyping(true);
 
         // Refocus textarea after state update
         setTimeout(() => textareaRef.current?.focus(), 0);
 
-        try {
-            const res = await fetch("/api/ai/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: content }),
-                signal: AbortSignal.timeout(8000),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setMessages(prev => [...prev, {
-                    id: (Date.now() + 1).toString(),
-                    role: "assistant",
-                    content: data.reply ?? data.content,
-                }]);
-                setIsTyping(false);
-                setTimeout(() => textareaRef.current?.focus(), 0);
-                return;
-            }
-        } catch { /* fallback below */ }
-
-        // Offline fallback
-        setTimeout(() => {
-            setMessages(prev => [...prev, {
-                id: (Date.now() + 1).toString(),
-                role: "assistant",
-                content: FALLBACKS[fallbackIdx % FALLBACKS.length],
-            }]);
-            setFallbackIdx(i => i + 1);
-            setIsTyping(false);
-            textareaRef.current?.focus();
-        }, 1200);
+        sendMessage(content);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -107,8 +60,8 @@ export default function AiChatPage() {
     };
 
     const handleReset = () => {
-        setMessages([INITIAL_MESSAGE]);
-        setFallbackIdx(0);
+        abortStream();
+        clearMessages();
         resetTextarea();
         setTimeout(() => textareaRef.current?.focus(), 0);
     };
@@ -194,56 +147,16 @@ export default function AiChatPage() {
 
                     {/* Messages */}
                     <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
-                        {messages.map(msg => (
-                            <div
+                        {messages.map((msg, index) => (
+                            <ChatMessage
                                 key={msg.id}
-                                className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                            >
-                                <div className={`size-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === "user" ? "bg-amber-500" : "bg-indigo-600"}`}>
-                                    {msg.role === "user"
-                                        ? <User className="w-4 h-4 text-white" />
-                                        : <Bot className="w-4 h-4 text-white" />
-                                    }
-                                </div>
-                                <div className={`max-w-[80%] xl:max-w-[70%] rounded-2xl px-4 py-3 text-sm ${
-                                    msg.role === "user"
-                                        ? "bg-indigo-600 text-white rounded-tr-sm"
-                                        : "bg-[#0B1120] border border-slate-700/50 text-slate-200 rounded-tl-sm"
-                                }`}>
-                                    <div className="prose prose-invert prose-sm max-w-none prose-p:my-1 prose-pre:my-2">
-                                        <ReactMarkdown
-                                            components={{
-                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                                code({ node, inline, className, children, ...props }: any) {
-                                                    const match = /language-(\w+)/.exec(className || "");
-                                                    return !inline && match ? (
-                                                        <div className="rounded-lg overflow-hidden my-2 border border-slate-700">
-                                                            <SyntaxHighlighter
-                                                                style={vscDarkPlus as any}
-                                                                language={match[1]}
-                                                                PreTag="div"
-                                                                customStyle={{ margin: 0, background: '#050d1f', padding: '0.75rem', fontSize: '12px' }}
-                                                                {...props}
-                                                            >
-                                                                {String(children).replace(/\n$/, "")}
-                                                            </SyntaxHighlighter>
-                                                        </div>
-                                                    ) : (
-                                                        <code className="px-1.5 py-0.5 rounded bg-slate-800 font-mono text-xs text-amber-300 border border-slate-700" {...props}>
-                                                            {children}
-                                                        </code>
-                                                    );
-                                                },
-                                            }}
-                                        >
-                                            {msg.content}
-                                        </ReactMarkdown>
-                                    </div>
-                                </div>
-                            </div>
+                                message={msg}
+                                isTyping={isTyping}
+                                isLast={index === messages.length - 1}
+                            />
                         ))}
 
-                        {isTyping && (
+                        {isTyping && messages[messages.length - 1]?.role !== 'assistant' && (
                             <div className="flex gap-3">
                                 <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
                                     <Bot className="w-4 h-4 text-white" />

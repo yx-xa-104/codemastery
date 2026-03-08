@@ -1,11 +1,9 @@
 "use client";
 
-import { Send, Bot, User, Sparkles } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Send, Bot, Sparkles } from "lucide-react";
 import { useAiChat } from "@/features/ai-chat/model/useAiChat";
 import { useState, useRef, useEffect } from "react";
+import { ChatMessage } from "@/features/ai-chat/ui/ChatMessage";
 
 import { Button } from "@/shared/components/ui/button";
 
@@ -48,67 +46,22 @@ export function AiChat({ embedded = false }: AiChatProps) {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-5">
-                {messages.map((msg) => (
-                    <div
+                {messages.map((msg, index) => (
+                    <ChatMessage
                         key={msg.id}
-                        className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                    >
-                        <div
-                            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${msg.role === "user" ? "bg-amber-500" : "bg-indigo-600"
-                                }`}
-                        >
-                            {msg.role === "user" ? (
-                                <User className="w-3.5 h-3.5 text-white" />
-                            ) : (
-                                <Bot className="w-3.5 h-3.5 text-white" />
-                            )}
-                        </div>
-                        <div
-                            className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${msg.role === "user"
-                                ? "bg-indigo-600 text-white rounded-tr-sm"
-                                : "bg-navy-800 border border-slate-700/50 text-slate-200 rounded-tl-sm"
-                                }`}
-                        >
-                            <div className="prose prose-invert prose-sm max-w-none">
-                                <ReactMarkdown
-                                    components={{
-                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                        code({ inline, className, children, ...props }: any) {
-                                            const match = /language-(\w+)/.exec(className || "");
-                                            return !inline && match ? (
-                                                <div className="rounded-lg overflow-hidden my-2 border border-slate-800">
-                                                    <SyntaxHighlighter
-                                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                                        style={vscDarkPlus as any}
-                                                        language={match[1]}
-                                                        PreTag="div"
-                                                        customStyle={{ margin: 0, background: '#0a192f', padding: '0.75rem', fontSize: '13px' }}
-                                                        {...props}
-                                                    >
-                                                        {String(children).replace(/\n$/, "")}
-                                                    </SyntaxHighlighter>
-                                                </div>
-                                            ) : (
-                                                <code className="px-1.5 py-0.5 rounded bg-navy-900 border border-slate-700 font-mono text-xs text-amber-300" {...props}>
-                                                    {children}
-                                                </code>
-                                            );
-                                        },
-                                    }}
-                                >
-                                    {msg.content}
-                                </ReactMarkdown>
-                            </div>
-                        </div>
-                    </div>
+                        message={msg}
+                        isTyping={isTyping}
+                        isLast={index === messages.length - 1}
+                    />
                 ))}
-                {isTyping && messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.content === '' && (
+
+                {isTyping && messages[messages.length - 1]?.role !== 'assistant' && (
                     <div className="flex gap-3">
-                        <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
                             <Bot className="w-3.5 h-3.5 text-white" />
                         </div>
                         <div className="bg-navy-800 border border-slate-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 items-center h-4">
                                 <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "0ms" }}></span>
                                 <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "150ms" }}></span>
                                 <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "300ms" }}></span>
