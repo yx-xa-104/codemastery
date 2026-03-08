@@ -3,12 +3,14 @@
 import { Sidebar } from "@/shared/components/layouts/Sidebar";
 import { CodeEditor } from "@/features/editor/components/CodeEditor";
 import { AiChatDrawer } from "@/features/ai/components/AiChatDrawer";
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition, useCallback, useEffect } from "react";
 import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save } from "lucide-react";
-import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 import { apiClient } from "@/shared/lib/api-client";
 import { Button } from "@/shared/components/ui/button";
+import { useRouter } from "next/navigation";
+import { LessonContent } from "@/features/lessons/components/LessonContent";
 
 interface LessonModule {
     id: string;
@@ -39,6 +41,7 @@ interface LessonPageClientProps {
 }
 
 export function LessonPageClient({ course, lesson, modules, enrollmentId, isInitiallyCompleted = false }: LessonPageClientProps) {
+    const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isCompleted, setIsCompleted] = useState(isInitiallyCompleted);
     const [isPending, startTransition] = useTransition();
@@ -46,7 +49,12 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const [currentCode, setCurrentCode] = useState<string>("");
 
     const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
-    const initialCode = lesson.exerciseConfig?.starterCode as string
+    const storageKey = `codemastery-code-${lesson.id}`;
+
+    // Load saved code from localStorage on mount
+    const savedCode = typeof window !== "undefined" ? localStorage.getItem(storageKey) : null;
+    const initialCode = savedCode
+        ?? (lesson.exerciseConfig?.starterCode as string)
         ?? `// ${lesson.title}\n// Bắt đầu code tại đây\n`;
 
     const handleMarkComplete = () => {
@@ -56,6 +64,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
             try {
                 await apiClient.post(`/api/enrollments/lessons/${lesson.id}/complete`, {});
                 setIsCompleted(true);
+                router.refresh(); // Refresh to update course progress
             } catch (err) {
                 console.error("Failed to mark lesson complete:", err);
             }
@@ -64,18 +73,13 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
 
     const handleSaveCode = () => {
         if (!currentCode.trim()) return;
-
-        startTransition(async () => {
-            try {
-                await apiClient.patch(`/api/enrollments/lessons/${lesson.id}/submission`, {
-                    code: currentCode,
-                });
-                setCodeSaved(true);
-                setTimeout(() => setCodeSaved(false), 2000);
-            } catch (err) {
-                console.error("Failed to save code:", err);
-            }
-        });
+        try {
+            localStorage.setItem(storageKey, currentCode);
+            setCodeSaved(true);
+            setTimeout(() => setCodeSaved(false), 2000);
+        } catch (err) {
+            console.error("Failed to save code:", err);
+        }
     };
 
     const handleCodeChange = useCallback((code: string) => {
@@ -163,19 +167,13 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                 <div className="flex-1 flex flex-col lg:ml-80 h-full min-w-0">
                     <div className="flex-1 overflow-hidden flex flex-row">
                         {/* Left: Lesson content */}
-                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 shrink-0">
+                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 shrink-0 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                             <div className="p-5 lg:p-6">
-                                <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+                                <div className="flex items-center gap-2 mb-5 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
                                     <BookOpen className="w-4 h-4" />
                                     Nội dung bài học
                                 </div>
-                                {lesson.content ? (
-                                    <div className="prose prose-invert prose-sm max-w-none prose-headings:text-slate-100 prose-p:text-slate-400 prose-p:leading-relaxed prose-pre:bg-[#0B1120] prose-pre:border prose-pre:border-slate-700">
-                                        <ReactMarkdown>{lesson.content}</ReactMarkdown>
-                                    </div>
-                                ) : (
-                                    <p className="text-slate-500 italic text-sm">Nội dung bài học đang được cập nhật...</p>
-                                )}
+                                <LessonContent content={lesson.content} />
                             </div>
                         </div>
 

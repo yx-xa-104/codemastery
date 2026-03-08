@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { LessonPageClient } from "./lesson-page-client";
 import { cookies } from "next/headers";
+import { readMdxContent } from "@/shared/lib/mdx-reader";
 
 interface Props {
     params: Promise<{ course: string; lesson: string }>;
@@ -77,18 +78,22 @@ export default async function LessonPage({ params }: Props) {
         })),
     }));
 
+    // Try to load content from MDX file first, fallback to DB content_html
+    const mdxContent = readMdxContent(courseSlug, lesson.slug);
+    const lessonContent = mdxContent ?? lesson.content_html ?? lesson.content ?? null;
+
     return (
         <LessonPageClient
             course={{ title: course.title, slug: course.slug }}
             lesson={{
                 id: lesson.id,
                 title: lesson.title,
-                content: lesson.content,
+                content: lessonContent,
                 lessonType: lesson.lesson_type,
                 exerciseConfig: lesson.exercise_config,
             }}
             modules={sidebarModules}
-            userId={undefined} // Handled implicitly by API token downstream if needed
+            userId={undefined}
             enrollmentId={enrollmentId}
             isInitiallyCompleted={isInitiallyCompleted}
         />
