@@ -175,9 +175,9 @@ export default function CourseCreatePage() {
                 }
                 const course = await res.json();
                 setSavedCourseId(course.id);
-                setSuccess('Đã tạo khóa học thành công!');
 
-                // Create modules & lessons
+                // Create modules & lessons, collect lesson data for MDX generation
+                const allLessons: { slug: string; title: string; content: string }[] = [];
                 for (const mod of modules) {
                     const modRes = await fetch(`${API_URL}/api/courses/${course.id}/modules`, {
                         method: 'POST',
@@ -187,14 +187,40 @@ export default function CourseCreatePage() {
                     if (modRes.ok) {
                         const savedMod = await modRes.json();
                         for (const lesson of mod.lessons) {
-                            await fetch(`${API_URL}/api/modules/${savedMod.id}/lessons`, {
+                            const lessonRes = await fetch(`${API_URL}/api/modules/${savedMod.id}/lessons`, {
                                 method: 'POST',
                                 headers,
                                 body: JSON.stringify({ title: lesson.title, type: lesson.type, sort_order: mod.lessons.indexOf(lesson) }),
                             });
+                            if (lessonRes.ok) {
+                                const savedLesson = await lessonRes.json();
+                                allLessons.push({
+                                    slug: savedLesson.slug || lesson.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                                    title: lesson.title,
+                                    content: `# ${lesson.title}\n\nNội dung bài học sẽ được cập nhật...`,
+                                });
+                            }
                         }
                     }
                 }
+
+                // Generate MDX files
+                if (allLessons.length > 0) {
+                    await fetch('/api/generate-mdx', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            courseSlug: course.slug,
+                            lessons: allLessons.map(l => ({
+                                ...l,
+                                difficulty: level || 'beginner',
+                                language: selectedLang.toLowerCase(),
+                            })),
+                        }),
+                    });
+                }
+
+                setSuccess('Đã tạo khóa học + MDX thành công!');
             }
         } catch (err: any) {
             setError(err.message || 'Lỗi khi lưu');
