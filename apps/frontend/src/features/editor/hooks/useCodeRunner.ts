@@ -16,6 +16,7 @@ export interface RunResult {
 
 export function useCodeRunner(initialCode: string = "// Code here...") {
     const [code, setCode] = useState(initialCode);
+    const [stdinValue, setStdinValue] = useState("");
     const [activeRunnerResult, setActiveRunnerResult] = useState<RunResult | null>(null);
     const [isRunning, setIsRunning] = useState(false);
 
@@ -26,7 +27,8 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
     const htmlRunner = useHtmlPreviewRunner();
     const serverRunner = useServerRunner();
 
-    const handleRun = useCallback(async (language: string = "javascript") => {
+    const handleRun = useCallback(async (language: string = "javascript", stdinOverride?: string) => {
+        const stdin = stdinOverride ?? stdinValue;
         if (!code.trim()) return;
         setIsRunning(true);
         setActiveRunnerResult(null);
@@ -34,11 +36,11 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
         try {
             switch (language) {
                 case 'python':
-                    await pythonRunner.handleRun(code);
+                    await pythonRunner.handleRun(code, stdin);
                     break;
                 case 'javascript':
-                case 'typescript': // We'll run TS as JS in browser if possible, BUT since we specified TS -> Piston, we route TS to ServerRunner. However, let's strictly follow plan: TS -> Piston. Wait, Pyodide doesn't run TS. Let's send TS to serverRunner. But if user selects JS it goes to jsRunner.
-                    await jsRunner.handleRun(code);
+                case 'typescript':
+                    await jsRunner.handleRun(code, stdin);
                     break;
                 case 'sql':
                 case 'sqlite':
@@ -69,7 +71,7 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
         } finally {
             setIsRunning(false);
         }
-    }, [code, pythonRunner, jsRunner, sqlRunner, htmlRunner, serverRunner]);
+    }, [code, stdinValue, pythonRunner, jsRunner, sqlRunner, htmlRunner, serverRunner]);
 
     // Use an effect to sync the result from the active runner to the main router state
     // We could do this implicitly but since the hooks have their own states, we need to map them back.
@@ -115,6 +117,8 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
     return {
         code,
         setCode,
+        stdinValue,
+        setStdinValue,
         output,
         result,
         isRunning: isRunning || pythonRunner.isRunning || jsRunner.isRunning || sqlRunner.isRunning || htmlRunner.isRunning || serverRunner.isRunning,

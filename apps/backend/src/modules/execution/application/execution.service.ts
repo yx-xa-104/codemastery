@@ -5,14 +5,15 @@ import { ExecutionResult } from '../domain/execution-result.interface';
 export class ExecutionService {
     private readonly logger = new Logger(ExecutionService.name);
 
-    async executeCode(code: string, language: string): Promise<ExecutionResult> {
+    async executeCode(code: string, language: string, stdin?: string): Promise<ExecutionResult> {
         const startTime = Date.now();
 
         try {
             this.validateCode(code, language);
 
-            // Map user-friendly language names to Piston language identifiers
             const languageMap: Record<string, string> = {
+                'javascript': 'javascript',
+                'python': 'python',
                 'java': 'java',
                 'cpp': 'cpp',
                 'csharp': 'csharp',
@@ -33,22 +34,22 @@ export class ExecutionService {
                 };
             }
 
+            const payload: Record<string, unknown> = {
+                language: pistonLang,
+                version: '*',
+                files: [{ content: code }],
+                compile_timeout: 10000,
+                run_timeout: 10000,
+            };
+
+            if (stdin) {
+                payload.stdin = stdin;
+            }
+
             const response = await fetch('https://emkc.org/api/v2/piston/execute', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    language: pistonLang,
-                    version: '*', // Sử dụng phiên bản mới nhất khả dụng
-                    files: [
-                        {
-                            content: code,
-                        }
-                    ],
-                    compile_timeout: 10000,
-                    run_timeout: 10000,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
@@ -61,7 +62,6 @@ export class ExecutionService {
             let runOutput = data.run?.output || '';
             let runError = data.run?.stderr || '';
 
-            // Nếu vòng compile bị lỗi
             if (data.compile?.code !== 0 && data.compile?.stderr) {
                 runError = `Compilation Error:\n${data.compile.stderr}\n\n${runError}`;
             }
@@ -85,6 +85,5 @@ export class ExecutionService {
         if (!code || code.length > 20000) {
             throw new Error('Code is too long or empty (max 20KB)');
         }
-
     }
 }

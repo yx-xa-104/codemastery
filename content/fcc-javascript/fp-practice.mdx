@@ -1,54 +1,39 @@
 ---
 title: "Thực hành: Composition & Currying"
-description: "Bài tập kết hợp hàm và currying"
+description: "Bài tập kết hợp hàm (function composition)"
 difficulty: "beginner"
 language: "javascript"
 ---
 
-# Thực hành: Composition & Currying
+# 📝 Bài tập: Function Composition
 
-## Function Composition
+## Yêu cầu
+
+Cho hai hàm:
+
+- `double(x)` — nhân x với 2
+- `add1(x)` — cộng x với 1
+
+Viết hàm `compose(f, g)` nhận hai hàm `f` và `g`, trả về một hàm mới thực hiện `f(g(x))`.
+
+Đọc số `n` từ đầu vào, in ra kết quả `compose(double, add1)(n)`.
+
+## Ví dụ
+
+| Input | Cách tính                             | Output |
+| ----- | ------------------------------------- | ------ |
+| `3`   | `double(add1(3))` = `double(4)` = `8` | `8`    |
+| `0`   | `double(add1(0))` = `double(1)` = `2` | `2`    |
+
+## Kiến thức cần nhớ
+
 ```javascript
-const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x);
-const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
+// Function composition: f(g(x))
+const compose = (f, g) => (x) => f(g(x));
 
-const processName = pipe(
-  str => str.trim(),
-  str => str.toLowerCase(),
-  str => str.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")
-);
-processName("  nguyễn văn an  "); // "Nguyễn Văn An"
+// Sử dụng
+const addAndDouble = compose(double, add1);
+addAndDouble(3); // double(add1(3)) = double(4) = 8
 ```
 
-## Currying
-```javascript
-// Chuyển hàm nhiều tham số thành chuỗi hàm 1 tham số
-const curry = fn => {
-  const arity = fn.length;
-  return function curried(...args) {
-    if (args.length >= arity) return fn(...args);
-    return (...more) => curried(...args, ...more);
-  };
-};
-
-const add = curry((a, b, c) => a + b + c);
-add(1)(2)(3);    // 6
-add(1, 2)(3);    // 6
-add(1)(2, 3);    // 6
-```
-
-## Bài tập: Data Pipeline
-```javascript
-const users = [
-  { name: "An", age: 20, active: true },
-  { name: "Bình", age: 17, active: true },
-  { name: "Chi", age: 22, active: false },
-];
-
-const getActiveAdults = pipe(
-  users => users.filter(u => u.active),
-  users => users.filter(u => u.age >= 18),
-  users => users.map(u => u.name)
-);
-getActiveAdults(users); // ["An"]
-```
+> ⚡ **Lưu ý:** Đọc input bằng `prompt()` và in kết quả bằng `console.log()`.

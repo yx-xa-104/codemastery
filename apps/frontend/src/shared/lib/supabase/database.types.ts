@@ -566,49 +566,7 @@ export interface Database {
         };
         Relationships: [];
       };
-      ai_conversations: {
-        Row: {
-          id: string;
-          user_id: string;
-          title: string | null;
-          context_lesson_id: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          title?: string | null;
-          context_lesson_id?: string | null;
-        };
-        Update: {
-          title?: string | null;
-          context_lesson_id?: string | null;
-        };
-        Relationships: [];
-      };
-      ai_messages: {
-        Row: {
-          id: string;
-          conversation_id: string;
-          role: string;
-          content: string;
-          code_snippet: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          conversation_id: string;
-          role: string;
-          content: string;
-          code_snippet?: string | null;
-        };
-        Update: {
-          content?: string;
-          code_snippet?: string | null;
-        };
-        Relationships: [];
-      };
+
       badges: {
         Row: {
           id: string;

@@ -18,6 +18,7 @@ export class ExecutionController {
             const result = await this.executionService.executeCode(
                 dto.code,
                 dto.language,
+                dto.stdin,
             );
             return result;
         } catch (error) {

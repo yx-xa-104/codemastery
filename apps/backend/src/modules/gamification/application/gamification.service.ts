@@ -52,4 +52,20 @@ export class GamificationService {
 
         return result;
     }
+
+    @OnEvent('practice.accepted')
+    async handlePracticeAccepted(payload: { userId: string; problemId: string }) {
+        const { userId } = payload;
+        const xpAmount = 20; // XP for solving a practice problem
+
+        const result = await this.gamificationRepository.awardXp(userId, xpAmount);
+        this.logger.log(`Awarded ${xpAmount} XP to user ${userId} for practice problem`);
+
+        const newBadges = await this.gamificationRepository.checkAndAwardBadges(userId);
+        if (newBadges.length > 0) {
+            this.logger.log(`User ${userId} earned ${newBadges.length} new badge(s)`);
+        }
+
+        return result;
+    }
 }

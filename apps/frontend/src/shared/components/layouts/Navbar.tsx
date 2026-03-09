@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, Shield, GraduationCap } from "lucide-react";
+import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, Shield, GraduationCap, Code2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
@@ -37,6 +37,7 @@ export function Navbar() {
 
     const navLinks = [
         { name: "Khóa học", href: "/courses", icon: BookOpen },
+        { name: "Luyện tập", href: "/practice", icon: Code2 },
         { name: "Lộ trình", href: "/roadmap", icon: Compass },
         { name: "Xếp hạng", href: "/leaderboard", icon: Trophy },
     ];

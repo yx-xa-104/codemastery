@@ -105,7 +105,10 @@ export default async function LessonPage({ params }: Props) {
                 title: lesson.title,
                 content: lessonContent,
                 lessonType: lesson.lesson_type,
-                exerciseConfig: lesson.exercise_config,
+                exerciseConfig: lesson.exercise_config ?? (lesson.programming_language ? {
+                    language: lesson.programming_language,
+                    starterCode: lesson.starter_code ?? null,
+                } : null),
             }}
             modules={sidebarModules}
             userId={undefined}

@@ -31,7 +31,7 @@ export function usePythonRunner() {
         };
     }, [initWorker]);
 
-    const handleRun = useCallback(async (code: string) => {
+    const handleRun = useCallback(async (code: string, stdin?: string) => {
         if (!code.trim() || !workerRef.current) return;
 
         setIsRunning(true);
@@ -75,7 +75,7 @@ export function usePythonRunner() {
                 resolve();
             };
 
-            const input: WorkerInput = { code };
+            const input: WorkerInput = { code, stdin: stdin || "" };
             worker.postMessage(input);
         });
     }, [initWorker]);

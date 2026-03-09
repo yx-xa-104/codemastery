@@ -3,11 +3,12 @@
 
 // ============================================================
 // JavaScript Worker - Sandboxed JS execution via Function()
-// Override console.log to capture output
+// Supports stdin via prompt() override
 // ============================================================
 
 export interface WorkerInput {
     code: string;
+    stdin?: string;
 }
 
 export interface WorkerOutput {
@@ -18,12 +19,11 @@ export interface WorkerOutput {
 }
 
 self.onmessage = function (event: MessageEvent<WorkerInput>) {
-    const { code } = event.data;
+    const { code, stdin } = event.data;
     const startTime = performance.now();
     const logs: string[] = [];
 
     try {
-        // Create a sandboxed console that captures output
         const sandboxConsole = {
             log: (...args: any[]) => logs.push(args.map(formatArg).join(" ")),
             error: (...args: any[]) => logs.push("[ERROR] " + args.map(formatArg).join(" ")),
@@ -32,12 +32,20 @@ self.onmessage = function (event: MessageEvent<WorkerInput>) {
             table: (data: any) => logs.push(JSON.stringify(data, null, 2)),
         };
 
-        // Execute code with sandboxed console using Function() constructor
-        // By passing 'console' as an argument, we override the global console for this execution
-        const fn = new Function("console", code);
-        const result = fn(sandboxConsole);
+        // Build stdin queue from input lines for prompt() override
+        const stdinLines = stdin ? stdin.split("\n").filter(l => l !== "") : [];
+        let stdinIndex = 0;
+        const sandboxPrompt = () => {
+            if (stdinIndex < stdinLines.length) {
+                return stdinLines[stdinIndex++];
+            }
+            return "";
+        };
 
-        // If function returns a value and nothing was logged, show the return value
+        // Execute code with sandboxed console and prompt
+        const fn = new Function("console", "prompt", code);
+        const result = fn(sandboxConsole, sandboxPrompt);
+
         if (result !== undefined && logs.length === 0) {
             logs.push(formatArg(result));
         }
@@ -61,7 +69,6 @@ self.onmessage = function (event: MessageEvent<WorkerInput>) {
     }
 };
 
-/** Format any JS value to a readable string */
 function formatArg(arg: any): string {
     if (arg === null) return "null";
     if (arg === undefined) return "undefined";
@@ -69,7 +76,7 @@ function formatArg(arg: any): string {
         try {
             return JSON.stringify(arg, null, 2);
         } catch {
-            return String(arg); // Fallback for circular references or big objects
+            return String(arg);
         }
     }
     return String(arg);

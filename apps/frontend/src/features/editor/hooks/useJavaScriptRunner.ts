@@ -29,7 +29,7 @@ export function useJavaScriptRunner() {
         };
     }, [initWorker]);
 
-    const handleRun = useCallback(async (code: string) => {
+    const handleRun = useCallback(async (code: string, stdin?: string) => {
         if (!code.trim() || !workerRef.current) return;
 
         setIsRunning(true);
@@ -73,7 +73,7 @@ export function useJavaScriptRunner() {
                 resolve();
             };
 
-            worker.postMessage({ code } as WorkerInput);
+            worker.postMessage({ code, stdin: stdin || "" } as WorkerInput);
         });
     }, [initWorker]);
 

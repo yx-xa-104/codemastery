@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsIn } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ExecuteCodeDto {
     @ApiProperty({
@@ -13,9 +13,16 @@ export class ExecuteCodeDto {
     @ApiProperty({
         description: 'Programming language',
         example: 'python',
-        enum: ['python', 'javascript', 'java', 'cpp'],
     })
     @IsString()
-    @IsIn(['python', 'javascript', 'java', 'cpp'])
+    @IsNotEmpty()
     language: string;
+
+    @ApiPropertyOptional({
+        description: 'Standard input for the program',
+        example: '42',
+    })
+    @IsString()
+    @IsOptional()
+    stdin?: string;
 }

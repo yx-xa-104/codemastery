@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsArray, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsArray, IsUUID, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCourseDto {
@@ -18,6 +18,7 @@ export class CreateCourseDto {
 
     @ApiPropertyOptional()
     @IsOptional()
+    @ValidateIf((o) => o.category_id !== '' && o.category_id != null)
     @IsUUID()
     category_id?: string;
 

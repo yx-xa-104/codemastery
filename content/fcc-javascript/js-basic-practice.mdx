@@ -1,49 +1,42 @@
 ---
 title: "Thực hành: Logic cơ bản"
-description: "Bài tập về biến, điều kiện và vòng lặp"
+description: "Bài tập kiểm tra số chẵn/lẻ"
 difficulty: "beginner"
 language: "javascript"
 ---
 
-# Thực hành: Logic Cơ Bản
+# 📝 Bài tập: Kiểm tra số chẵn hay lẻ
 
-## Bài 1: FizzBuzz
+## Yêu cầu
+
+Viết chương trình đọc một số nguyên `n` từ đầu vào, sau đó:
+
+- Nếu `n` là **số chẵn**, in ra `even`
+- Nếu `n` là **số lẻ**, in ra `odd`
+
+## Ví dụ
+
+| Input | Output |
+| ----- | ------ |
+| `4`   | `even` |
+| `7`   | `odd`  |
+| `0`   | `even` |
+
+## Gợi ý
+
+- Sử dụng toán tử `%` (modulo) để kiểm tra số chẵn lẻ
+- Đọc input bằng `prompt()` trong JavaScript
+- Dùng `parseInt()` để chuyển chuỗi sang số
+
+## Kiến thức cần nhớ
+
 ```javascript
-for (let i = 1; i <= 100; i++) {
-  if (i % 15 === 0) console.log("FizzBuzz");
-  else if (i % 3 === 0) console.log("Fizz");
-  else if (i % 5 === 0) console.log("Buzz");
-  else console.log(i);
-}
+// Toán tử modulo
+console.log(10 % 2); // 0 (chẵn)
+console.log(7 % 2); // 1 (lẻ)
+
+// Đọc input
+const n = parseInt(prompt());
 ```
 
-## Bài 2: Tìm số lớn nhất
-```javascript
-function findMax(arr) {
-  let max = arr[0];
-  for (const num of arr) {
-    if (num > max) max = num;
-  }
-  return max;
-}
-console.log(findMax([3, 7, 2, 9, 1])); // 9
-```
-
-## Bài 3: Đếm ký tự
-```javascript
-function countChars(str) {
-  const result = {};
-  for (const char of str.toLowerCase()) {
-    if (char !== " ") {
-      result[char] = (result[char] || 0) + 1;
-    }
-  }
-  return result;
-}
-console.log(countChars("hello")); // { h:1, e:1, l:2, o:1 }
-```
-
-## Thử thách
-1. Viết hàm kiểm tra số nguyên tố
-2. Viết hàm đảo ngược chuỗi mà không dùng `.reverse()`
-3. Viết hàm tìm số Fibonacci thứ n
+> ⚡ **Lưu ý:** Bạn cần pass tất cả test cases trước khi đánh dấu hoàn thành bài học.

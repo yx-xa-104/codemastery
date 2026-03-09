@@ -3,11 +3,12 @@
 
 // ============================================================
 // Python Worker - Runs Python code via Pyodide (WebAssembly)
-// Cache Pyodide instance across invocations for performance
+// Supports stdin via sys.stdin override
 // ============================================================
 
 export interface WorkerInput {
     code: string;
+    stdin?: string;
 }
 
 export interface WorkerOutput {
@@ -22,16 +23,11 @@ const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js";
 let pyodideInstance: any = null;
 let pyodideLoading: Promise<any> | null = null;
 
-/**
- * Load Pyodide only once, return cached instance for subsequent calls.
- * This prevents re-downloading the ~10MB WASM bundle on every run.
- */
 async function getPyodide(): Promise<any> {
     if (pyodideInstance) return pyodideInstance;
 
     if (!pyodideLoading) {
         pyodideLoading = (async () => {
-            // Import Pyodide CDN script into worker scope
             importScripts(PYODIDE_CDN);
             const pyodide = await (self as any).loadPyodide();
             pyodideInstance = pyodide;
@@ -43,23 +39,26 @@ async function getPyodide(): Promise<any> {
 }
 
 self.onmessage = async function (event: MessageEvent<WorkerInput>) {
-    const { code } = event.data;
+    const { code, stdin } = event.data;
     const startTime = performance.now();
 
     try {
         const pyodide = await getPyodide();
 
-        // Redirect stdout and stderr to capture output
+        // Redirect stdout, stderr, and optionally stdin
+        const stdinSetup = stdin
+            ? `sys.stdin = io.StringIO(${JSON.stringify(stdin)})`
+            : `sys.stdin = io.StringIO("")`;
+
         pyodide.runPython(`
 import sys, io
 sys.stdout = io.StringIO()
 sys.stderr = io.StringIO()
+${stdinSetup}
 `);
 
-        // Execute user code
         pyodide.runPython(code);
 
-        // Collect captured output
         const stdout: string = pyodide.runPython("sys.stdout.getvalue()");
         const stderr: string = pyodide.runPython("sys.stderr.getvalue()");
 
