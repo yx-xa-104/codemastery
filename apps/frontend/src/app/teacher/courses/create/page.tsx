@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { createClient } from "@/shared/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -118,18 +118,22 @@ function MdToolbar({ textareaRef, onUpdate }: { textareaRef: React.RefObject<HTM
 
 export default function CourseCreatePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editCourseId = searchParams.get('id');
 
   // ── Course state ──────────────────────────────────────────────
   const [courseTitle, setCourseTitle] = useState('');
   const [description, setDescription] = useState('');
   const [level, setLevel] = useState('beginner');
   const [categoryId, setCategoryId] = useState('');
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
 
   // ── UI state ──────────────────────────────────────────────────
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [savedCourseId, setSavedCourseId] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(!!editCourseId);
+  const [savedCourseId, setSavedCourseId] = useState<string | null>(editCourseId);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showCourseSettings, setShowCourseSettings] = useState(false);
@@ -163,6 +167,94 @@ export default function CourseCreatePage() {
       } catch { /* */ }
     })();
   }, []);
+
+  // ── Load existing course for edit mode ────────────────────────
+  useEffect(() => {
+    if (!editCourseId) return;
+    
+    (async () => {
+      try {
+        setInitialLoading(true);
+        // 1. Fetch course details
+        const courseRes = await fetch(`${API_URL}/api/courses/${editCourseId}`);
+        if (!courseRes.ok) throw new Error('Không thể tải thông tin khóa học');
+        const course = await courseRes.json();
+        
+        setCourseTitle(course.title || '');
+        setDescription(course.description || '');
+        setLevel(course.level || 'beginner');
+        setCategoryId(course.category_id || '');
+        setThumbnailUrl(course.thumbnail_url || '');
+        
+        // 2. Fetch modules and lessons
+        const modulesRes = await fetch(`${API_URL}/api/courses/${editCourseId}/modules`);
+        if (modulesRes.ok) {
+          const fetchedModules = await modulesRes.json();
+          if (fetchedModules && fetchedModules.length > 0) {
+            
+            // Format modules for UI
+            const formattedModules: ModuleData[] = await Promise.all(fetchedModules.map(async (m: any) => {
+              const formattedLessons: LessonData[] = await Promise.all((m.lessons || []).map(async (l: any) => {
+                
+                // Fetch quiz strictly for this lesson if quiz questions aren't joined
+                let quizQuestions: QuizQuestion[] = [];
+                try {
+                  const qRes = await fetch(`${API_URL}/api/lessons/${l.id}/quiz`);
+                  if (qRes.ok) {
+                    const questions = await qRes.json();
+                    quizQuestions = questions.map((q: any) => ({
+                      id: q.id,
+                      question: q.question_text,
+                      options: (q.options || []).map((o: any) => ({
+                        text: o.option_text,
+                        isCorrect: o.is_correct
+                      }))
+                    }));
+                  }
+                } catch (e) { console.error('Error fetching quiz for lesson', l.id, e); }
+                
+                return {
+                  id: l.id,
+                  title: l.title,
+                  type: l.lesson_type || 'article',
+                  content: l.content_html || '',
+                  starterCode: l.starter_code || '',
+                  solutionCode: l.solution_code || '',
+                  programmingLanguage: l.programming_language || 'Python',
+                  quizQuestions
+                };
+              }));
+              
+              return {
+                id: m.id,
+                title: m.title,
+                expanded: true,
+                lessons: formattedLessons
+              };
+            }));
+            
+            setModules(formattedModules);
+            // Select first lesson of first module if exists
+            if (formattedModules[0] && formattedModules[0].lessons.length > 0) {
+              setSelectedModuleIdx(0);
+              setSelectedLessonIdx(0);
+              setShowCourseSettings(false);
+            } else {
+               setShowCourseSettings(true);
+            }
+          } else {
+             setShowCourseSettings(true);
+          }
+        } else {
+          setShowCourseSettings(true);
+        }
+      } catch (err: any) {
+        setError(err.message || 'Lỗi khi tải dữ liệu khóa học');
+      } finally {
+        setInitialLoading(false);
+      }
+    })();
+  }, [editCourseId]);
 
   // ── Auto-select first lesson ──────────────────────────────────
   useEffect(() => {
@@ -256,9 +348,47 @@ export default function CourseCreatePage() {
     ) ?? [],
   });
 
+  // ── VALIDATION ────────────────────────────────────────────────
+  const validateCourse = (isPublishing: boolean) => {
+    const errors: string[] = [];
+    if (!courseTitle.trim()) errors.push('Tiêu đề khóa học không được để trống.');
+
+    if (isPublishing) {
+      if (!description.trim()) errors.push('Mô tả khóa học không được để trống.');
+      if (!categoryId) errors.push('Vui lòng chọn danh mục khóa học.');
+      if (modules.length === 0) errors.push('Khóa học phải có ít nhất 1 chương.');
+      
+      modules.forEach((mod, mi) => {
+        if (!mod.title.trim()) errors.push(`Chương ${mi + 1} cần có tiêu đề.`);
+        if (mod.lessons.length === 0) errors.push(`Chương "${mod.title || mi+1}" phải có ít nhất 1 bài học.`);
+        
+        mod.lessons.forEach((les, li) => {
+          if (!les.title.trim()) errors.push(`Bài học ${li + 1} (Chương ${mi + 1}) cần có tiêu đề.`);
+          
+          if (les.type === 'article' && !les.content?.trim()) {
+            errors.push(`Bài "${les.title || li+1}" thiếu nội dung văn bản.`);
+          }
+          if (les.type === 'code_exercise' && !les.solutionCode?.trim()) {
+            errors.push(`Bài code "${les.title || li+1}" thiếu mã giải (Solution Code).`);
+          }
+          if (les.type === 'quiz' && les.quizQuestions.length === 0) {
+             errors.push(`Bài trắc nghiệm "${les.title || li+1}" cần ít nhất 1 câu hỏi.`);
+          }
+        });
+      });
+    }
+
+    if (errors.length > 0) {
+      setError(errors.join('\n'));
+      return false;
+    }
+    return true;
+  };
+
   // ── SAVE ──────────────────────────────────────────────────────
-  const handleSave = async () => {
-    if (!courseTitle.trim()) { setError('Nhập tiêu đề khóa học'); return; }
+  const handleSave = async (isPublishingAction: boolean = false) => {
+    if (!validateCourse(isPublishingAction)) return false;
+
     setSaving(true); setError(null); setSuccess(null);
 
     try {
@@ -269,6 +399,7 @@ export default function CourseCreatePage() {
       if (description.trim()) coursePayload.description = description;
       if (level) coursePayload.level = level;
       if (categoryId && categoryId.length > 0 && categoryId !== '') coursePayload.category_id = categoryId;
+      if (thumbnailUrl.trim()) coursePayload.thumbnail_url = thumbnailUrl;
 
       let courseId = savedCourseId;
       let courseSlug = '';
@@ -278,7 +409,6 @@ export default function CourseCreatePage() {
         if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Lỗi ${res.status}`); }
         const c = await res.json();
         courseSlug = c.slug;
-        setSuccess('Đã cập nhật!');
       } else {
         const res = await fetch(`${API_URL}/api/courses`, { method: 'POST', headers, body: JSON.stringify(coursePayload) });
         if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `Lỗi ${res.status}`); }
@@ -286,97 +416,158 @@ export default function CourseCreatePage() {
         courseId = course.id;
         courseSlug = course.slug;
         setSavedCourseId(courseId);
+      }
 
-        // Create modules → lessons → quiz
-        const allLessonsForMdx: any[] = [];
+      // Create or Update modules → lessons → quiz
+      const allLessonsForMdx: any[] = [];
 
-        for (let mi = 0; mi < modules.length; mi++) {
-          const mod = modules[mi];
+      for (let mi = 0; mi < modules.length; mi++) {
+        const mod = modules[mi];
+        let savedModId = mod.id;
+        
+        // If module ID is temporary (starts with 'm' + timestamp), it's new
+        const isNewMod = savedModId.startsWith('m');
+        
+        if (isNewMod) {
           const modRes = await fetch(`${API_URL}/api/courses/${courseId}/modules`, {
             method: 'POST', headers,
             body: JSON.stringify({ title: mod.title, sort_order: mi }),
           });
           if (!modRes.ok) continue;
           const savedMod = await modRes.json();
+          savedModId = savedMod.id;
+          // Update local state ID to avoid re-creating on next save
+          mod.id = savedModId;
+        } else {
+          // Update existing module
+          await fetch(`${API_URL}/api/courses/modules/${savedModId}`, {
+            method: 'PATCH', headers,
+            body: JSON.stringify({ title: mod.title, sort_order: mi }),
+          });
+        }
 
-          for (let li = 0; li < mod.lessons.length; li++) {
-            const lesson = mod.lessons[li];
-            const lessonBody: Record<string, any> = {
-              title: lesson.title,
-              lesson_type: lesson.type,
-              sort_order: li,
-            };
-            if (lesson.content.trim()) lessonBody.content_html = lesson.content;
-            if (lesson.starterCode.trim()) lessonBody.starter_code = lesson.starterCode;
-            if (lesson.solutionCode.trim()) lessonBody.solution_code = lesson.solutionCode;
-            if (lesson.programmingLanguage) lessonBody.programming_language = lesson.programmingLanguage;
+        for (let li = 0; li < mod.lessons.length; li++) {
+          const lesson = mod.lessons[li];
+          let savedLessonId = lesson.id;
+          const isNewLesson = savedLessonId.startsWith('l');
+          
+          const lessonBody: Record<string, any> = {
+            title: lesson.title,
+            lesson_type: lesson.type,
+            sort_order: li,
+          };
+          
+          if (lesson.content?.trim()) lessonBody.content_html = lesson.content;
+          if (lesson.starterCode?.trim()) lessonBody.starter_code = lesson.starterCode;
+          if (lesson.solutionCode?.trim()) lessonBody.solution_code = lesson.solutionCode;
+          if (lesson.programmingLanguage) lessonBody.programming_language = lesson.programmingLanguage;
 
-            const lessonRes = await fetch(`${API_URL}/api/modules/${savedMod.id}/lessons`, {
+          let savedLessonSlug = '';
+          
+          if (isNewLesson) {
+            const lessonRes = await fetch(`${API_URL}/api/modules/${savedModId}/lessons`, {
               method: 'POST', headers, body: JSON.stringify(lessonBody),
             });
             if (!lessonRes.ok) continue;
             const savedLesson = await lessonRes.json();
+            savedLessonId = savedLesson.id;
+            savedLessonSlug = savedLesson.slug;
+            lesson.id = savedLessonId; // Update local state
+          } else {
+            const lessonRes = await fetch(`${API_URL}/api/lessons/${savedLessonId}`, {
+              method: 'PATCH', headers, body: JSON.stringify(lessonBody),
+            });
+            if (lessonRes.ok) {
+               const savedLesson = await lessonRes.json();
+               savedLessonSlug = savedLesson.slug;
+            }
+          }
 
-            // Save quiz questions
-            for (let qi = 0; qi < lesson.quizQuestions.length; qi++) {
-              const q = lesson.quizQuestions[qi];
-              if (!q.question.trim()) continue;
-              await fetch(`${API_URL}/api/lessons/${savedLesson.id}/quiz`, {
-                method: 'POST', headers,
-                body: JSON.stringify({
-                  question_text: q.question,
-                  sort_order: qi,
-                  options: q.options.filter(o => o.text.trim()).map((o, oi) => ({
-                    option_text: o.text,
-                    is_correct: o.isCorrect,
-                    sort_order: oi,
-                  })),
-                }),
+          // Save quiz questions
+          for (let qi = 0; qi < lesson.quizQuestions.length; qi++) {
+            const q = lesson.quizQuestions[qi];
+            if (!q.question.trim()) continue;
+            
+            const qBody = {
+                question_text: q.question,
+                sort_order: qi,
+                options: q.options.filter(o => o.text.trim()).map((o, oi) => ({
+                  option_text: o.text,
+                  is_correct: o.isCorrect,
+                  sort_order: oi,
+                })),
+            };
+            
+            if (q.id.startsWith('q')) {
+              // New question
+              const qRes = await fetch(`${API_URL}/api/lessons/${savedLessonId}/quiz`, {
+                method: 'POST', headers, body: JSON.stringify(qBody),
+              });
+              if(qRes.ok) {
+                 const newQ = await qRes.json();
+                 q.id = newQ.id;
+              }
+            } else {
+              // Existing question
+              await fetch(`${API_URL}/api/quiz/${q.id}`, {
+                method: 'PATCH', headers, body: JSON.stringify(qBody),
               });
             }
-
-            // Collect for MDX
-            allLessonsForMdx.push({
-              slug: savedLesson.slug || lesson.title.toLowerCase().replace(/[^a-z0-9\s]+/g, '').replace(/\s+/g, '-'),
-              title: lesson.title,
-              content: lesson.content || `# ${lesson.title}\n\nNội dung sẽ được cập nhật...`,
-              difficulty: level || 'beginner',
-              language: lesson.programmingLanguage?.toLowerCase() || 'python',
-            });
           }
-        }
 
-        // Generate MDX files
-        if (allLessonsForMdx.length > 0 && courseSlug) {
-          await fetch('/api/generate-mdx', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ courseSlug, lessons: allLessonsForMdx }),
+          // Collect for MDX
+          allLessonsForMdx.push({
+            slug: savedLessonSlug || lesson.title.toLowerCase().replace(/[^a-z0-9\s]+/g, '').replace(/\s+/g, '-'),
+            title: lesson.title,
+            content: lesson.content || `# ${lesson.title}\n\nNội dung sẽ được cập nhật...`,
+            difficulty: level || 'beginner',
+            language: lesson.programmingLanguage?.toLowerCase() || 'python',
           });
         }
-
-        setSuccess('Tạo khóa học thành công!');
       }
+
+      // Re-render layout to force state update with new IDs
+      setModules([...modules]);
+
+      // Generate MDX files
+      if (allLessonsForMdx.length > 0 && courseSlug) {
+        await fetch('/api/generate-mdx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ courseSlug, lessons: allLessonsForMdx }),
+        });
+      }
+
+      setSuccess('Đã lưu thành công!');
+      return true;
     } catch (err: any) {
       setError(err.message || 'Lỗi khi lưu');
+      return false;
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handlePublish = async () => {
-    if (!savedCourseId) await handleSave();
+    if (!validateCourse(true)) return;
+    
+    // Save first with publishing validation on
+    const saveOk = await handleSave(true);
+    if (!saveOk) return;
+    
     const id = savedCourseId;
     if (!id) return;
+    
     setPublishing(true); setError(null);
     try {
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/courses/${id}`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'published' }),
+        body: JSON.stringify({ status: 'pending_review' }),
       });
-      if (!res.ok) throw new Error('Không thể xuất bản');
-      setSuccess('Đã xuất bản!');
+      if (!res.ok) throw new Error('Không thể gửi duyệt');
+      setSuccess('Đã gửi duyệt!');
       setTimeout(() => router.push('/teacher/courses'), 1500);
     } catch (err: any) { setError(err.message); }
     setPublishing(false);
@@ -385,6 +576,15 @@ export default function CourseCreatePage() {
   // ═══════════════════════════════════════════════════════════════
   // RENDER
   // ═══════════════════════════════════════════════════════════════
+
+  if (initialLoading) {
+    return (
+      <div className="flex flex-col h-screen bg-[#010816] items-center justify-center text-slate-400">
+        <Loader2 className="w-8 h-8 animate-spin mb-4 text-indigo-500" />
+        <p>Đang tải dữ liệu khóa học...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-[#010816] text-slate-100 overflow-hidden font-sans">
@@ -405,13 +605,13 @@ export default function CourseCreatePage() {
         <div className="flex items-center gap-2">
           {error && <span className="text-xs text-red-400 flex items-center gap-1 max-w-[200px] truncate"><AlertCircle className="w-3.5 h-3.5 shrink-0" /> {error}</span>}
           {success && <span className="text-xs text-green-400 flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {success}</span>}
-          <Button onClick={handleSave} disabled={saving} variant="ghost"
+          <Button onClick={() => handleSave(false)} disabled={saving} variant="ghost"
             className="px-3 py-1.5 text-xs text-slate-300 hover:text-white border border-slate-700 rounded-lg">
             {saving ? <><Loader2 className="w-3 h-3 animate-spin mr-1" /> Đang lưu...</> : <><Save className="w-3 h-3 mr-1" /> Lưu nháp</>}
           </Button>
           <Button onClick={handlePublish} disabled={publishing || saving}
             className="px-3 py-1.5 text-xs font-bold text-white bg-amber-500 hover:bg-amber-400 rounded-lg disabled:opacity-50">
-            <Globe className="w-3 h-3 mr-1" /> {publishing ? 'Đang xuất bản...' : 'Xuất bản'}
+            <Globe className="w-3 h-3 mr-1" /> {publishing ? 'Đang gửi...' : 'Gửi kiểm duyệt'}
           </Button>
         </div>
       </nav>
@@ -443,6 +643,7 @@ export default function CourseCreatePage() {
                     <input value={mod.title} onClick={e => e.stopPropagation()}
                       onChange={e => setModules(prev => prev.map((m, i) => i === mi ? { ...m, title: e.target.value } : m))}
                       className="bg-transparent border-none text-xs font-semibold text-slate-300 focus:outline-none focus:text-white flex-1 min-w-0" />
+                    {mod.lessons.length === 0 && <span title="Chương trống"><AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" /></span>}
                   </button>
                   <button onClick={() => removeModule(mi)}
                     className="p-1 rounded text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all" title="Xóa chương">
@@ -466,6 +667,11 @@ export default function CourseCreatePage() {
                           <input value={lesson.title} onClick={e => e.stopPropagation()}
                             onChange={e => setModules(prev => prev.map((m, i) => i === mi ? { ...m, lessons: m.lessons.map((l, j) => j === li ? { ...l, title: e.target.value } : l) } : m))}
                             className="bg-transparent border-none text-[11px] text-inherit focus:outline-none flex-1 min-w-0" />
+                          {((lesson.type === 'article' && !lesson.content?.trim()) ||
+                             (lesson.type === 'code_exercise' && !lesson.solutionCode?.trim()) ||
+                             (lesson.type === 'quiz' && lesson.quizQuestions.length === 0)) && 
+                             <span title="Thiếu nội dung"><AlertCircle className="w-3 h-3 text-red-400 shrink-0 ml-1" /></span>
+                          }
                         </button>
                         <button onClick={() => removeLesson(mi, li)}
                           className="p-0.5 rounded text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
@@ -517,6 +723,19 @@ export default function CourseCreatePage() {
                     <option value="intermediate">Trung cấp</option>
                     <option value="advanced">Nâng cao</option>
                   </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Ảnh bìa (URL)</label>
+                <div className="flex gap-2">
+                  <input value={thumbnailUrl} onChange={e => setThumbnailUrl(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg text-white text-sm px-3 py-2 focus:border-indigo-500 focus:outline-none placeholder-slate-600"
+                    placeholder="https://example.com/image.png" />
+                  {thumbnailUrl && (
+                    <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-slate-800 border border-slate-700">
+                      <img src={thumbnailUrl} alt="Thumbnail preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

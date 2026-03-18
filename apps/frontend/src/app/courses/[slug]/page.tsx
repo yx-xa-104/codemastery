@@ -1,5 +1,5 @@
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
-import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, Trophy, BadgeCheck, MessageSquare } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, PlayCircle, Star, Users, ArrowRight, Code2, ShieldCheck, BadgeCheck, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EnrollButton } from "@/shared/components/enrollment/EnrollButton";
@@ -284,15 +284,11 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                             <div className="space-y-0 text-sm">
                                                 <div className="flex justify-between items-center py-3 border-b border-slate-800/80">
                                                     <span className="text-slate-400 flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> Cam kết</span>
-                                                    <span className="font-medium text-slate-200">Hoàn tiền 100% 14 ngày</span>
+                                                    <span className="font-medium text-emerald-400">Miễn phí 100%</span>
                                                 </div>
                                                 <div className="flex justify-between items-center py-3 border-b border-slate-800/80">
                                                     <span className="text-slate-400 flex items-center gap-2"><Clock className="w-4 h-4" /> Truy cập</span>
                                                     <span className="font-medium text-slate-200">Trọn đời</span>
-                                                </div>
-                                                <div className="flex justify-between items-center py-3 border-b border-slate-800/80">
-                                                    <span className="text-slate-400 flex items-center gap-2"><Trophy className="w-4 h-4" /> Chứng chỉ</span>
-                                                    <span className="font-medium text-slate-200">Có, khi hoàn thành</span>
                                                 </div>
                                             </div>
                                         </div>

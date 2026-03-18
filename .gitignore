@@ -145,3 +145,4 @@ ERRORS.md
 SUPABASE.txt
 /supabase
 /scripts
+*.statusCode

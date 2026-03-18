@@ -8,6 +8,12 @@ const levelMap: Record<CourseLevel, string> = {
     advanced: 'Nâng cao',
 };
 
+const levelStyles: Record<CourseLevel, string> = {
+    beginner: 'text-emerald-300 bg-emerald-500/15 border-emerald-500/30',
+    intermediate: 'text-amber-300 bg-amber-500/15 border-amber-500/30',
+    advanced: 'text-rose-300 bg-rose-500/15 border-rose-500/30',
+};
+
 interface CourseCardProps {
     title: string;
     category: string;
@@ -62,7 +68,7 @@ export function CourseCard({
                     <span className="text-[10px] font-bold tracking-wider text-indigo-300 uppercase bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">
                         {category}
                     </span>
-                    <span className="text-[10px] font-bold tracking-wider text-amber-300 uppercase bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+                    <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded border ${levelStyles[level]}`}>
                         {levelMap[level]}
                     </span>
                 </div>

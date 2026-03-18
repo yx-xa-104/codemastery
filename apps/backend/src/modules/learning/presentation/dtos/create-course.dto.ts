@@ -18,8 +18,7 @@ export class CreateCourseDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    @ValidateIf((o) => o.category_id !== '' && o.category_id != null)
-    @IsUUID()
+    @IsString()
     category_id?: string;
 
     @ApiPropertyOptional({ enum: ['beginner', 'intermediate', 'advanced'] })

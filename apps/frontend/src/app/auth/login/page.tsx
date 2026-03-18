@@ -47,9 +47,8 @@ export default function LoginPage() {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-            <div className="w-full max-w-[480px] bg-gray-900 rounded-2xl shadow-2xl border border-indigo-900/50 relative overflow-hidden z-10">
-                {/* Top gradient bar */}
-                <div className="h-1 w-full bg-linear-to-r from-indigo-700 via-indigo-600 to-amber-500" />
+            <div className="w-full max-w-[480px] neon-border relative z-10">
+                <div className="bg-gray-900 rounded-2xl overflow-hidden">
 
                 {/* Header */}
                 <div className="pt-10 pb-6 text-center px-6">
@@ -153,6 +152,7 @@ export default function LoginPage() {
                         </div>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     );

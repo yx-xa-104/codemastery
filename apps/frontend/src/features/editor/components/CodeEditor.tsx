@@ -273,6 +273,7 @@ export function CodeEditor({
                                 results={testRunner.results}
                                 totalTests={testCases.length}
                                 isRunning={testRunner.isRunning}
+                                testCases={testCases}
                             />
                         )}
                     </>

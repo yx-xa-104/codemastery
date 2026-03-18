@@ -97,6 +97,18 @@ export default async function LessonPage({ params }: Props) {
     const mdxContent = readMdxContent(courseSlug, lesson.slug);
     const lessonContent = mdxContent ?? lesson.content_html ?? lesson.content ?? null;
 
+    // Fetch quiz questions directly from Supabase (avoids API route conflict)
+    let quizQuestions: any[] = [];
+    try {
+        const { data: quizData } = await supabase
+            .from('quiz_questions')
+            .select('*, quiz_options(*)')
+            .eq('lesson_id', lesson.id)
+            .order('sort_order')
+            .order('sort_order', { referencedTable: 'quiz_options' });
+        quizQuestions = quizData ?? [];
+    } catch { /* no quiz */ }
+
     return (
         <LessonPageClient
             course={{ title: course.title, slug: course.slug }}
@@ -114,6 +126,7 @@ export default async function LessonPage({ params }: Props) {
             userId={undefined}
             enrollmentId={enrollmentId}
             isInitiallyCompleted={isInitiallyCompleted}
+            quizQuestions={quizQuestions}
         />
     );
 }

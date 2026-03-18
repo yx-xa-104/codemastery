@@ -19,6 +19,10 @@ export class CourseService {
         return this.courseRepository.findBySlug(slug);
     }
 
+    async findById(id: string): Promise<CourseWithCategory> {
+        return this.courseRepository.findById(id);
+    }
+
     async findModulesWithLessons(courseId: string): Promise<ModuleWithLessons[]> {
         return this.courseRepository.findModulesWithLessons(courseId);
     }

@@ -31,7 +31,7 @@ export function Footer() {
                             <div className="w-9 h-9 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-glow-indigo transition-transform group-hover:scale-105">
                                 <span className="text-white font-bold text-lg">✦</span>
                             </div>
-                            <span className="text-lg font-bold text-white tracking-tight">
+                            <span className="text-lg font-bold text-white tracking-tight font-heading">
                                 Code<span className="text-amber-500">Mastery</span>
                             </span>
                         </Link>

@@ -70,10 +70,15 @@ export class CourseController {
         return this.courseService.deleteCategory(id);
     }
 
-    @Get(':slug')
-    @ApiOperation({ summary: 'Get course by slug' })
-    findBySlug(@Param('slug') slug: string) {
-        return this.courseService.findBySlug(slug);
+    @Get(':id')
+    @ApiOperation({ summary: 'Get course by ID' })
+    findById(@Param('id') id: string) {
+        // Simple check if it's a UUID to differentiate from slug
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        if (isUuid) {
+            return this.courseService.findById(id);
+        }
+        return this.courseService.findBySlug(id);
     }
 
     @Get(':slug/modules')

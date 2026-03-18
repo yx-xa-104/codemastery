@@ -39,7 +39,7 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
             {/* Sidebar */}
             <aside className="w-60 bg-[#0B1120] border-r border-indigo-900/30 flex-col hidden md:flex shrink-0">
                 <div className="h-16 flex items-center px-5 border-b border-indigo-900/30 gap-2">
-                    <Link href="/" className="text-xl font-bold tracking-tighter text-white">
+                    <Link href="/" className="text-xl font-bold tracking-tighter text-white font-heading">
                         Code<span className="text-indigo-500">Mastery</span>
                     </Link>
                     <span className="text-[10px] uppercase tracking-wide bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">Teacher</span>

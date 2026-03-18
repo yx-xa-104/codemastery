@@ -3,8 +3,9 @@
 import { Sidebar } from "@/shared/components/layouts/Sidebar";
 import { CodeEditor } from "@/features/editor/components/CodeEditor";
 import { AiChatDrawer } from "@/features/ai/components/AiChatDrawer";
+import { QuizPanel } from "@/features/lessons/components/QuizPanel";
 import type { TestCase } from "@/features/editor/hooks/useTestRunner";
-import { useState, useTransition, useCallback, useEffect } from "react";
+import { useState, useTransition, useCallback } from "react";
 import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
@@ -39,9 +40,10 @@ interface LessonPageClientProps {
     userId?: string;
     enrollmentId?: string;
     isInitiallyCompleted?: boolean;
+    quizQuestions?: any[];
 }
 
-export function LessonPageClient({ course, lesson, modules, enrollmentId, isInitiallyCompleted = false }: LessonPageClientProps) {
+export function LessonPageClient({ course, lesson, modules, enrollmentId, isInitiallyCompleted = false, quizQuestions = [] }: LessonPageClientProps) {
     const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isCompleted, setIsCompleted] = useState(isInitiallyCompleted);
@@ -50,6 +52,8 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const [currentCode, setCurrentCode] = useState<string>("");
     const [xpToast, setXpToast] = useState<number | null>(null);
     const [testsPassed, setTestsPassed] = useState(false);
+    const [quizPassed, setQuizPassed] = useState(false);
+    const hasQuiz = quizQuestions.length > 0;
 
     const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
     const storageKey = `codemastery-code-${lesson.id}`;
@@ -58,6 +62,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const testCases: TestCase[] = (lesson.exerciseConfig?.testCases as TestCase[]) ?? [];
     const hasTests = testCases.length > 0;
     const isCodeExercise = lesson.lessonType === 'code_exercise';
+    const needsQuizPass = hasQuiz && !quizPassed;
 
     // Load saved code from localStorage on mount
     const savedCode = typeof window !== "undefined" ? localStorage.getItem(storageKey) : null;
@@ -69,6 +74,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
         if (isCompleted) return;
         // For code_exercise with tests, must pass all tests first
         if (isCodeExercise && hasTests && !testsPassed) return;
+        if (hasQuiz && !quizPassed) return;
 
         startTransition(async () => {
             try {
@@ -159,11 +165,11 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                     {/* Mark complete button */}
                     <Button
                         onClick={handleMarkComplete}
-                        disabled={isCompleted || isPending || (isCodeExercise && hasTests && !testsPassed)}
-                        title={isCodeExercise && hasTests && !testsPassed ? 'Vượt qua tất cả bài kiểm tra trước' : ''}
+                        disabled={isCompleted || isPending || (isCodeExercise && hasTests && !testsPassed) || needsQuizPass}
+                        title={needsQuizPass ? 'Trả lời đúng tất cả câu hỏi trước' : isCodeExercise && hasTests && !testsPassed ? 'Vượt qua tất cả bài kiểm tra trước' : ''}
                         className={`h-auto px-3 lg:px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-xs lg:text-sm font-semibold ${isCompleted
                             ? 'bg-green-600/20 text-green-400 border border-green-500/30 cursor-default hover:bg-green-600/20'
-                            : testsPassed || !hasTests || !isCodeExercise
+                            : (testsPassed || !hasTests || !isCodeExercise) && !needsQuizPass
                                 ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600 hover:text-white'
                                 : 'bg-slate-800/50 text-slate-500 border border-slate-700 cursor-not-allowed'
                             } disabled:opacity-50`}
@@ -206,15 +212,24 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                             </div>
                         </div>
 
-                        {/* Right: Code editor */}
-                        <div className="flex-1 min-h-0 min-w-0 p-3 lg:p-4">
-                            <CodeEditor
-                                initialCode={initialCode}
-                                language={language}
-                                onChange={handleCodeChange}
-                                testCases={hasTests ? testCases : undefined}
-                                onTestResults={(allPassed) => setTestsPassed(allPassed)}
-                            />
+                        {/* Right: Code editor or Quiz */}
+                        <div className="flex-1 min-h-0 min-w-0">
+                            {hasQuiz ? (
+                                <QuizPanel
+                                    questions={quizQuestions}
+                                    onQuizComplete={(allCorrect) => setQuizPassed(allCorrect)}
+                                />
+                            ) : (
+                                <div className="p-3 lg:p-4 h-full">
+                                    <CodeEditor
+                                        initialCode={initialCode}
+                                        language={language}
+                                        onChange={handleCodeChange}
+                                        testCases={hasTests ? testCases : undefined}
+                                        onTestResults={(allPassed) => setTestsPassed(allPassed)}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

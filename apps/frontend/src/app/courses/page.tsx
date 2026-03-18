@@ -2,7 +2,7 @@
 
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Search, Sparkles, Code2 } from "lucide-react";
+import { Search, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { apiClient } from "@/shared/lib/api-client";
@@ -22,8 +22,15 @@ type CourseWithCategory = {
     categories: { name: string } | null;
 };
 
+const levelKeyMap: Record<string, string> = {
+    "Cơ bản": "beginner",
+    "Trung bình": "intermediate",
+    "Nâng cao": "advanced",
+};
+
 export default function CoursesPage() {
     const [activeFilter, setActiveFilter] = useState("Tất cả");
+    const [activeLevel, setActiveLevel] = useState("Tất cả");
     const [searchQuery, setSearchQuery] = useState("");
     const [courses, setCourses] = useState<CourseWithCategory[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -50,17 +57,27 @@ export default function CoursesPage() {
         fetchData();
     }, []);
 
-    // Filter by category and search
+    // Filter by category, level, and search
     const filteredCourses = courses.filter(c => {
         const matchesCategory = activeFilter === "Tất cả"
             || c.categories?.name === activeFilter;
+        const matchesLevel = activeLevel === "Tất cả"
+            || c.level === levelKeyMap[activeLevel];
         const matchesSearch = searchQuery === ""
             || c.title.toLowerCase().includes(searchQuery.toLowerCase())
             || c.short_description?.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
+        return matchesCategory && matchesLevel && matchesSearch;
     });
 
     const categoryNames = ["Tất cả", ...categories.map(c => c.name)];
+    const levelNames = ["Tất cả", "Cơ bản", "Trung bình", "Nâng cao"];
+
+    const levelButtonStyles: Record<string, { active: string; inactive: string }> = {
+        "Tất cả": { active: "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[#4f46e5_0_0_15px_-3px] border-indigo-500", inactive: "bg-white/5 backdrop-blur-md text-slate-400 hover:text-white hover:bg-white/10 border-slate-700/50" },
+        "Cơ bản": { active: "bg-emerald-600 hover:bg-emerald-500 text-white shadow-[#059669_0_0_15px_-3px] border-emerald-500", inactive: "bg-white/5 backdrop-blur-md text-emerald-400/70 hover:text-emerald-300 hover:bg-emerald-500/10 border-emerald-500/20" },
+        "Trung bình": { active: "bg-amber-600 hover:bg-amber-500 text-white shadow-[#d97706_0_0_15px_-3px] border-amber-500", inactive: "bg-white/5 backdrop-blur-md text-amber-400/70 hover:text-amber-300 hover:bg-amber-500/10 border-amber-500/20" },
+        "Nâng cao": { active: "bg-rose-600 hover:bg-rose-500 text-white shadow-[#e11d48_0_0_15px_-3px] border-rose-500", inactive: "bg-white/5 backdrop-blur-md text-rose-400/70 hover:text-rose-300 hover:bg-rose-500/10 border-rose-500/20" },
+    };
 
     return (
         <MainLayout>
@@ -72,10 +89,7 @@ export default function CoursesPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center max-w-3xl mx-auto"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-amber-500/30 font-medium text-sm text-amber-300 mb-6 shadow-glow">
-                            <Sparkles className="w-4 h-4" />
-                            <span>Hơn {courses.length}+ khóa học chất lượng cao</span>
-                        </div>
+
                         <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
                             Khám phá <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-amber-400">Khóa Học</span>
                         </h1>
@@ -105,26 +119,46 @@ export default function CoursesPage() {
                         </div>
                     </motion.div>
 
-                    {/* Categories Tab */}
+                    {/* Filter Groups */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="mt-8 flex flex-wrap justify-center gap-2 max-w-4xl mx-auto"
+                        className="mt-8 max-w-4xl mx-auto space-y-4"
                     >
-                        {categoryNames.map((cat) => (
-                            <Button
-                                key={cat}
-                                variant={activeFilter === cat ? "default" : "outline"}
-                                onClick={() => setActiveFilter(cat)}
-                                className={`px-5 py-2 h-auto rounded-full text-sm font-medium transition-all ${activeFilter === cat
-                                    ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[#4f46e5_0_0_15px_-3px] border-indigo-500"
-                                    : "bg-white/5 backdrop-blur-md text-slate-400 hover:text-white hover:bg-white/10 border-slate-700/50"
-                                    }`}
+                        {/* Category Filter */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1 min-w-[60px]">Danh mục</span>
+                            <select
+                                value={activeFilter}
+                                onChange={(e) => setActiveFilter(e.target.value)}
+                                className="px-4 py-1.5 h-auto rounded-full text-xs font-medium bg-white/5 backdrop-blur-md text-slate-300 border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer appearance-none pr-8 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[position:right_10px_center] bg-no-repeat"
                             >
-                                {cat}
-                            </Button>
-                        ))}
+                                {categoryNames.map((cat) => (
+                                    <option key={cat} value={cat} className="bg-navy-900 text-slate-200">
+                                        {cat}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Level Filter */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1 min-w-[60px]">Mức độ</span>
+                            {levelNames.map((lvl) => (
+                                <Button
+                                    key={lvl}
+                                    variant={activeLevel === lvl ? "default" : "outline"}
+                                    onClick={() => setActiveLevel(lvl)}
+                                    className={`px-4 py-1.5 h-auto rounded-full text-xs font-medium transition-all ${activeLevel === lvl
+                                        ? levelButtonStyles[lvl].active
+                                        : levelButtonStyles[lvl].inactive
+                                        }`}
+                                >
+                                    {lvl}
+                                </Button>
+                            ))}
+                        </div>
                     </motion.div>
                 </div>
 

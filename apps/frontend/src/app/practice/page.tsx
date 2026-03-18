@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  Code2, Search, Filter, Trophy, ChevronRight,
-  Flame, Zap, Target, ArrowUpRight, BookOpen
+  Code2, Search, Trophy, ChevronRight,
+  Flame, Zap, Target, ArrowUpRight, BookOpen,
+  Home
 } from "lucide-react";
+import { MainLayout } from "@/shared/components/layouts/MainLayout";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -39,6 +42,7 @@ const CATEGORIES = [
 ];
 
 export default function PracticePage() {
+  const router = useRouter();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -66,7 +70,8 @@ export default function PracticePage() {
     p.total_submissions > 0 ? Math.round((p.total_accepted / p.total_submissions) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-[#010816] text-white font-sans">
+    <MainLayout>
+    <div className="text-white font-sans">
       {/* Hero */}
       <div className="relative overflow-hidden border-b border-slate-800">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-transparent to-amber-600/5" />
@@ -187,5 +192,6 @@ export default function PracticePage() {
         )}
       </div>
     </div>
+    </MainLayout>
   );
 }

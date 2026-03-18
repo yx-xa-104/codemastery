@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Source_Code_Pro, Geist } from "next/font/google";
+import { Chakra_Petch, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/shared/providers/AuthProvider";
 import "./globals.css";
 import { cn } from "@/shared/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const chakraPetch = Chakra_Petch({
+  variable: "--font-heading",
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const sourceCodePro = Source_Code_Pro({
-  variable: "--font-source-code-pro",
-  subsets: ["latin"],
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-sans",
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -27,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={cn("dark scroll-smooth", "font-sans", geist.variable)}>
+    <html lang="vi" className={cn("dark scroll-smooth", chakraPetch.variable, ibmPlexMono.variable)}>
       <head>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
       </head>
-      <body className={`${inter.variable} ${sourceCodePro.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <AuthProvider>
           {children}
         </AuthProvider>

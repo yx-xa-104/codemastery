@@ -10,12 +10,12 @@ class RejectCourseDto {
 }
 
 class TransferOwnershipDto {
-    @IsUUID()
+    @IsString()
     new_teacher_id!: string;
 }
 
 class AssignCategoryDto {
-    @IsUUID()
+    @IsString()
     category_id!: string;
 }
 
