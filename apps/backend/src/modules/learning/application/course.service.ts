@@ -3,6 +3,8 @@ import { Tables } from '@infra/database/database.types';
 import { CourseRepository } from '../infrastructure/course.repository';
 import { CourseWithCategory, ModuleWithLessons } from '../domain/course.interface';
 
+const TEACHER_ALLOWED_STATUSES = ['draft', 'pending_review'];
+
 @Injectable()
 export class CourseService {
     constructor(private courseRepository: CourseRepository) { }
@@ -41,17 +43,30 @@ export class CourseService {
         return this.courseRepository.create(courseData);
     }
 
-    async update(id: string, courseData: Partial<Tables<'courses'>>, userId: string) {
+    async update(id: string, courseData: Partial<Tables<'courses'>>, userId: string, userRole?: string) {
         const course = await this.courseRepository.findById(id);
-        if ((course as any).teacher_id !== userId) {
+        const isAdmin = userRole === 'admin';
+        const isOwner = (course as any).teacher_id === userId;
+
+        if (!isOwner && !isAdmin) {
             throw new ForbiddenException('Bạn không có quyền chỉnh sửa khóa học này');
         }
+
+        // Teachers can only change status to draft or pending_review
+        const newStatus = (courseData as any).status;
+        if (newStatus && !isAdmin && !TEACHER_ALLOWED_STATUSES.includes(newStatus)) {
+            throw new ForbiddenException('Giảng viên chỉ được phép lưu nháp hoặc gửi kiểm duyệt');
+        }
+
         return this.courseRepository.update(id, courseData);
     }
 
-    async delete(id: string, userId: string) {
+    async delete(id: string, userId: string, userRole?: string) {
         const course = await this.courseRepository.findById(id);
-        if ((course as any).teacher_id !== userId) {
+        const isAdmin = userRole === 'admin';
+        const isOwner = (course as any).teacher_id === userId;
+
+        if (!isOwner && !isAdmin) {
             throw new ForbiddenException('Bạn không có quyền xóa khóa học này');
         }
         return this.courseRepository.delete(id);

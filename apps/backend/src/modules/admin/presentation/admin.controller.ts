@@ -1,11 +1,12 @@
 import { Controller, Get, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { SupabaseAuthGuard } from '@common/index';
+import { SupabaseAuthGuard, RolesGuard, Roles } from '@common/index';
 import { AdminService } from '../application/admin.service';
 
 @ApiTags('admin')
 @ApiBearerAuth()
-@UseGuards(SupabaseAuthGuard)
+@UseGuards(SupabaseAuthGuard, RolesGuard)
+@Roles('admin')
 @Controller('admin')
 export class AdminController {
     constructor(private adminService: AdminService) { }

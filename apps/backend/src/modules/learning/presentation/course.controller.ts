@@ -106,8 +106,9 @@ export class CourseController {
         @Param('id') id: string,
         @Body() body: UpdateCourseDto,
         @CurrentUser('id') userId: string,
+        @CurrentUser('role') userRole: string,
     ) {
-        return this.courseService.update(id, body as any, userId);
+        return this.courseService.update(id, body as any, userId, userRole);
     }
 
     @Delete(':id')
@@ -118,8 +119,9 @@ export class CourseController {
     remove(
         @Param('id') id: string,
         @CurrentUser('id') userId: string,
+        @CurrentUser('role') userRole: string,
     ) {
-        return this.courseService.delete(id, userId);
+        return this.courseService.delete(id, userId, userRole);
     }
 }
 

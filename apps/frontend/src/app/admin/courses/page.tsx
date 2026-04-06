@@ -75,14 +75,26 @@ export default function AdminCoursesPage() {
         Promise.all([fetchCourses(), fetchCategories()]).finally(() => setLoading(false));
     }, [filter]);
 
+    const [error, setError] = useState('');
+
     const doAction = async (courseId: string, action: string, body?: any) => {
         setActionLoading(courseId);
-        const token = await getToken();
-        await fetch(`${API_URL}/api/admin/courses/${courseId}/${action}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            ...(body ? { body: JSON.stringify(body) } : {}),
-        });
+        try {
+            const token = await getToken();
+            const res = await fetch(`${API_URL}/api/admin/courses/${courseId}/${action}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                ...(body ? { body: JSON.stringify(body) } : {}),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                setError(err.message || `Thao tác thất bại (${res.status})`);
+                setTimeout(() => setError(''), 4000);
+            }
+        } catch (e: any) {
+            setError(e.message || 'Lỗi kết nối server');
+            setTimeout(() => setError(''), 4000);
+        }
         await fetchCourses();
         setActionLoading(null);
     };
@@ -92,6 +104,12 @@ export default function AdminCoursesPage() {
 
     return (
         <AdminLayout title="Quản lý khóa học" subtitle="Kiểm duyệt, đình chỉ và quản trị khóa học">
+            {/* Error toast */}
+            {error && (
+                <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" /> {error}
+                </div>
+            )}
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
                 {[
