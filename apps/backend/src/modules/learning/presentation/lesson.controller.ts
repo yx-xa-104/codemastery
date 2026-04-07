@@ -29,28 +29,28 @@ export class LessonController {
     // ── CRUD ─────────────────────────────────────────────────────────
 
     @Post('modules/:moduleId/lessons')
-    @ApiOperation({ summary: 'Create a lesson in a module (teacher/admin)' })
+    @ApiOperation({ summary: 'Create a lesson in a module (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     create(@Param('moduleId') moduleId: string, @Body() body: CreateLessonDto) {
         return this.lessonService.create(moduleId, body as any);
     }
 
     @Patch('lessons/:id')
-    @ApiOperation({ summary: 'Update a lesson (teacher/admin)' })
+    @ApiOperation({ summary: 'Update a lesson (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     update(@Param('id') id: string, @Body() body: UpdateLessonDto) {
         return this.lessonService.update(id, body as any);
     }
 
     @Delete('lessons/:id')
-    @ApiOperation({ summary: 'Delete a lesson (teacher/admin)' })
+    @ApiOperation({ summary: 'Delete a lesson (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     remove(@Param('id') id: string) {
         return this.lessonService.delete(id);
     }

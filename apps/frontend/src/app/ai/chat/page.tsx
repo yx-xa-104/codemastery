@@ -2,8 +2,9 @@
 
 import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, Sparkles, MessageSquare, Code2, BookOpen, Zap, RotateCcw } from "lucide-react";
+import { Bot, Send, Sparkles, MessageSquare, Code2, BookOpen, Zap, RotateCcw, X, History } from "lucide-react";
 import { useAiChat } from "@/features/ai-chat/model/useAiChat";
+import { useUser } from "@/shared/stores/useAuthStore";
 import { ChatMessage, Message } from "@/features/ai-chat/ui/ChatMessage";
 
 const INITIAL_MESSAGE: Message = {
@@ -21,7 +22,8 @@ const SUGGESTIONS = [
 
 
 export default function AiChatPage() {
-    const { messages, isLoading: isTyping, sendMessage, clearMessages, abortStream } = useAiChat(INITIAL_MESSAGE as any);
+    const { user } = useUser();
+    const { messages, isLoading: isTyping, sendMessage, clearMessages, abortStream, sessions, isSessionsLoading, fetchSessions, loadSession, currentSessionId, deleteSession } = useAiChat(INITIAL_MESSAGE as any);
     const [input, setInput] = useState("");
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -32,6 +34,12 @@ export default function AiChatPage() {
             container.scrollTop = container.scrollHeight;
         }
     }, [messages]);
+
+    useEffect(() => {
+        if (user?.id) {
+            fetchSessions(user.id);
+        }
+    }, [user?.id, fetchSessions]);
 
     const resetTextarea = () => {
         if (textareaRef.current) {
@@ -49,7 +57,7 @@ export default function AiChatPage() {
         // Refocus textarea after state update
         setTimeout(() => textareaRef.current?.focus(), 0);
 
-        sendMessage(content);
+        sendMessage(content, user?.id);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -102,21 +110,41 @@ export default function AiChatPage() {
                         ))}
                     </div>
 
-                    {/* Suggestions */}
-                    <div className="space-y-2 flex-1 overflow-y-auto">
-                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                            <MessageSquare className="w-3 h-3" /> Câu hỏi gợi ý
+                    {/* Recent Sessions */}
+                    <div className="space-y-2 flex-1 overflow-y-auto scrollbar-none">
+                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between mb-3">
+                            <span className="flex items-center gap-1.5"><History className="w-3 h-3" /> Lịch sử chat</span>
                         </p>
-                        {SUGGESTIONS.map(s => (
-                            <button
-                                key={s}
-                                onClick={() => handleSend(s)}
-                                disabled={isTyping}
-                                className="w-full text-left text-xs text-slate-400 hover:text-white bg-[#0B1120] hover:bg-indigo-500/10 border border-indigo-900/30 hover:border-indigo-500/40 rounded-xl px-3 py-2.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                            >
-                                <span className="text-indigo-500 mr-1.5">✦</span>{s}
-                            </button>
-                        ))}
+                        
+                        {isSessionsLoading ? (
+                            <p className="text-[11px] text-slate-500 italic text-center py-4">Đang tải...</p>
+                        ) : sessions.length === 0 ? (
+                            <p className="text-[11px] text-slate-500 italic text-center py-4">Chưa có phiên trò chuyện nào.</p>
+                        ) : (
+                            sessions.map(s => (
+                                <button
+                                    key={s.id}
+                                    onClick={() => loadSession(s.id)}
+                                    className={`w-full text-left text-xs text-slate-400 group hover:text-white bg-[#0B1120] border rounded-xl px-3 py-2.5 transition-all outline-none flex items-start justify-between gap-2 ${
+                                        currentSessionId === s.id 
+                                            ? "border-indigo-500/80 bg-indigo-500/10 text-white" 
+                                            : "border-indigo-900/30 hover:border-indigo-500/40 hover:bg-indigo-500/5"
+                                    }`}
+                                >
+                                    <div className="flex-1 min-w-0">
+                                        <p className="truncate font-medium">{s.title}</p>
+                                        <p className="text-[9px] text-slate-600 mt-1">{new Date(s.created_at).toLocaleDateString('vi-VN')}</p>
+                                    </div>
+                                    <div
+                                        onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}
+                                        className="shrink-0 opacity-0 group-hover:opacity-100 p-1 text-red-500/70 hover:text-red-400 hover:bg-red-500/20 rounded-md transition-all self-center"
+                                        title="Xóa phiên"
+                                    >
+                                        <X className="w-3 h-3" />
+                                    </div>
+                                </button>
+                            ))
+                        )}
                     </div>
 
                     {/* Reset */}

@@ -81,7 +81,7 @@ export default function CoursesPage() {
 
     return (
         <MainLayout>
-            <div className="relative pt-12 pb-24">
+            <div className="relative pt-12 pb-24 z-10">
                 {/* Page Header */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-10">
                     <motion.div
@@ -90,10 +90,10 @@ export default function CoursesPage() {
                         className="text-center max-w-3xl mx-auto"
                     >
 
-                        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
-                            Khám phá <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-amber-400">Khóa Học</span>
+                        <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight mb-6">
+                            Khám phá <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-400">Khóa Học</span>
                         </h1>
-                        <p className="text-lg text-slate-400">
+                        <p className="text-lg text-slate-400 font-light">
                             Cập nhật những công nghệ mới nhất. Học qua các dự án thực tế với sự đồng hành của AI Tutor.
                         </p>
                     </motion.div>
@@ -103,18 +103,18 @@ export default function CoursesPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="mt-12 glass rounded-2xl p-4 border border-white/10 shadow-2xl max-w-4xl mx-auto"
+                        className="mt-12 bg-[#0B1120]/60 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl max-w-4xl mx-auto"
                     >
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search className="h-5 w-5 text-slate-500" />
+                                <Search className="h-5 w-5 text-indigo-400" />
                             </div>
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Tìm kiếm khóa học (ví dụ: React, Node.js...)"
-                                className="block w-full pl-12 pr-4 py-3 bg-navy-950/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                                className="block w-full pl-12 pr-4 py-4 bg-black/20 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-medium"
                             />
                         </div>
                     </motion.div>
@@ -132,10 +132,10 @@ export default function CoursesPage() {
                             <select
                                 value={activeFilter}
                                 onChange={(e) => setActiveFilter(e.target.value)}
-                                className="px-4 py-1.5 h-auto rounded-full text-xs font-medium bg-white/5 backdrop-blur-md text-slate-300 border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer appearance-none pr-8 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[position:right_10px_center] bg-no-repeat"
+                                className="px-5 py-2 h-auto rounded-full text-sm font-medium bg-[#0B1120]/50 backdrop-blur-md text-slate-300 border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer appearance-none pr-10 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[position:right_15px_center] bg-no-repeat shadow-lg"
                             >
                                 {categoryNames.map((cat) => (
-                                    <option key={cat} value={cat} className="bg-navy-900 text-slate-200">
+                                    <option key={cat} value={cat} className="bg-[#0B1120] text-slate-200">
                                         {cat}
                                     </option>
                                 ))}
@@ -150,7 +150,7 @@ export default function CoursesPage() {
                                     key={lvl}
                                     variant={activeLevel === lvl ? "default" : "outline"}
                                     onClick={() => setActiveLevel(lvl)}
-                                    className={`px-4 py-1.5 h-auto rounded-full text-xs font-medium transition-all ${activeLevel === lvl
+                                    className={`px-5 py-2 h-auto rounded-full text-sm font-medium transition-all shadow-lg ${activeLevel === lvl
                                         ? levelButtonStyles[lvl].active
                                         : levelButtonStyles[lvl].inactive
                                         }`}
@@ -167,7 +167,7 @@ export default function CoursesPage() {
                     {loading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {[...Array(6)].map((_, i) => (
-                                <div key={i} className="rounded-2xl bg-navy-900/50 border border-white/5 h-96 animate-pulse" />
+                                <div key={i} className="rounded-2xl bg-white/5 border border-white/5 h-[400px] animate-pulse" />
                             ))}
                         </div>
                     ) : (
@@ -200,11 +200,15 @@ export default function CoursesPage() {
                     )}
 
                     {!loading && filteredCourses.length === 0 && (
-                        <div className="text-center py-20">
-                            <Code2 className="w-16 h-16 text-slate-700 mx-auto mb-4" />
-                            <h3 className="text-xl font-bold text-white mb-2">Không tìm thấy khóa học</h3>
-                            <p className="text-slate-400">Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
-                        </div>
+                        <motion.div 
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            className="text-center py-20 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md max-w-2xl mx-auto"
+                        >
+                            <Code2 className="w-16 h-16 text-indigo-400 mx-auto mb-4 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                            <h3 className="text-2xl font-black text-white mb-2">Không tìm thấy khóa học</h3>
+                            <p className="text-slate-400 font-light">Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
+                        </motion.div>
                     )}
                 </div>
             </div>

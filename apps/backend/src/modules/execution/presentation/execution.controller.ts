@@ -1,5 +1,6 @@
 import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { ExecutionService } from '../application/execution.service';
 import { ExecuteCodeDto } from './dtos/execute-code.dto';
 
@@ -9,6 +10,7 @@ export class ExecutionController {
     constructor(private readonly executionService: ExecutionService) { }
 
     @Post()
+    @Throttle({ default: { limit: 1, ttl: 5000 } })
     @ApiOperation({ summary: 'Execute code in a sandboxed environment' })
     @ApiResponse({ status: 200, description: 'Code executed successfully' })
     @ApiResponse({ status: 400, description: 'Invalid input' })

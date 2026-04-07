@@ -1,139 +1,152 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { SupabaseService } from "../../infrastructure/database/supabase.service";
+
+interface PicoclawResponse {
+  status: string;
+  reply: string;
+}
 
 @Injectable()
 export class PicoclawService {
   private readonly logger = new Logger(PicoclawService.name);
 
-  chatStream(
-    userId: string,
-    prompt: string,
-    signal: AbortSignal,
-  ): Observable<{ data: any }> {
-    return new Observable((subscriber) => {
-      const abortController = new AbortController();
-      const apiUrl = process.env.PICOCLAW_API_URL;
-      const apiKey = process.env.PICOCLAW_API_KEY;
+  constructor(private readonly supabase: SupabaseService) {}
 
-      if (!apiUrl || !apiKey) {
-        subscriber.error(
-          new Error("PICOCLAW API credentials are not configured."),
-        );
-        return;
-      }
-
-      const abortHandler = () => {
-        this.logger.log("Client disconnected, aborting fetch to PicoClaw API.");
-        abortController.abort();
-      };
-
-      signal.addEventListener("abort", abortHandler);
-
-      fetch(apiUrl, {
+  async generateTitle(prompt: string): Promise<string> {
+    try {
+      const summaryPrompt = `Tóm tắt nội dung sau thành 1 tiêu đề thật ngắn gọn (dưới 8 chữ, không dùng dấu ngoặc kép): ${prompt}`;
+      const apiUrl = process.env.CODING_API_URL || process.env.PICOCLAW_API_URL;
+      const apiKey = process.env.CODING_API_KEY || process.env.PICOCLAW_API_KEY;
+      
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": apiKey,
+          Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ user_id: userId, prompt: prompt }),
-        signal: abortController.signal,
-      })
-        .then(async (response) => {
-          if (!response.ok) {
-            throw new Error(
-              `PicoClaw API error: ${response.status} ${response.statusText}`,
-            );
-          }
-          if (!response.body) {
-            throw new Error("No response body from PicoClaw API.");
-          }
+        body: JSON.stringify({
+          message: summaryPrompt,
+          session_id: `summary-${Date.now()}`,
+          user_id: "system-summarizer",
+          data: {},
+        }),
+      });
 
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder("utf-8");
-          let buffer = "";
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === "success" && data.reply) {
+          return data.reply.trim().replace(/^"|"$/g, ""); // Dọn dẹp ngoặc kép
+        }
+      }
+    } catch (err) {
+      this.logger.error("Failed to generate title from AI", err);
+    }
+    // Fallback if AI summarization fails
+    return prompt.length > 30 ? prompt.substring(0, 30) + "..." : prompt;
+  }
 
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
+  async getSessions(userId: string) {
+    const { data, error } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
 
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split("\n");
-              buffer = lines.pop() || ""; // keep the last incomplete part in the buffer
+    if (error) {
+      this.logger.error("Error fetching sessions", error);
+      throw new Error("Không thể tải danh sách phiên.");
+    }
+    return data;
+  }
 
-              for (const line of lines) {
-                const trimmed = line.trim();
-                if (!trimmed) continue;
+  async getMessages(sessionId: string) {
+    const { data, error } = await (this.supabase.admin.from("ai_chat_messages" as any) as any)
+      .select("*")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: true });
 
-                if (trimmed.startsWith("data: ")) {
-                  const dataStr = trimmed.slice(6).trim();
+    if (error) {
+      this.logger.error("Error fetching messages", error);
+      throw new Error("Không thể tải tin nhắn.");
+    }
+    return data;
+  }
 
-                  if (dataStr === "[DONE]") {
-                    subscriber.next({ data: "[DONE]" });
-                  } else {
-                    try {
-                      const parsed = JSON.parse(dataStr);
-                      subscriber.next({ data: parsed });
-                    } catch (e) {
-                      this.logger.warn(
-                        `Failed to parse JSON from chunk: ${dataStr}`,
-                      );
-                    }
-                  }
-                }
-              }
-            }
+  async deleteSession(sessionId: string) {
+    const { error } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
+      .delete()
+      .eq("id", sessionId);
 
-            if (buffer.trim()) {
-              const trimmed = buffer.trim();
-              if (trimmed.startsWith("data: ")) {
-                const dataStr = trimmed.slice(6).trim();
-                if (dataStr === "[DONE]") {
-                  subscriber.next({ data: "[DONE]" });
-                } else {
-                  try {
-                    subscriber.next({ data: JSON.parse(dataStr) });
-                  } catch (e) {}
-                }
-              }
-            }
+    if (error) {
+      this.logger.error("Error deleting session", error);
+      throw new Error("Không thể xóa phiên.");
+    }
+    return { success: true };
+  }
 
-            subscriber.complete();
-          } catch (err: any) {
-            if (err.name === "AbortError") {
-              this.logger.log("PicoClaw stream reading aborted by client.");
-              subscriber.complete();
-            } else {
-              this.logger.error(
-                "Error reading PicoClaw stream",
-                err?.stack || err,
-              );
-              subscriber.error(err);
-            }
-          } finally {
-            reader.releaseLock();
-            signal.removeEventListener("abort", abortHandler);
-          }
-        })
-        .catch((err) => {
-          if (err.name === "AbortError") {
-            this.logger.log("PicoClaw fetch request aborted by client.");
-            subscriber.complete();
-          } else {
-            this.logger.error(
-              "PicoClaw fetch request failed",
-              err?.stack || err,
-            );
-            subscriber.error(err);
-          }
-          signal.removeEventListener("abort", abortHandler);
-        });
+  async chat(userId: string, prompt: string, sessionId?: string): Promise<{ reply: string; session_id: string }> {
+    const apiUrl = process.env.CODING_API_URL || process.env.PICOCLAW_API_URL;
+    const apiKey = process.env.CODING_API_KEY || process.env.PICOCLAW_API_KEY;
 
-      // Cleanup when subscriber unsubscribes early
-      return () => {
-        abortController.abort();
-        signal.removeEventListener("abort", abortHandler);
-      };
+    if (!apiUrl || !apiKey) {
+      throw new Error("PICOCLAW API credentials are not configured.");
+    }
+
+    let activeSessionId = sessionId;
+
+    // Create session if not exists
+    if (!activeSessionId) {
+      const title = await this.generateTitle(prompt);
+      const { data: sessionData, error: sessionErr } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
+        .insert({ user_id: userId, title })
+        .select()
+        .single();
+
+      if (sessionErr || !sessionData) {
+        this.logger.error("Error creating session", sessionErr);
+        throw new Error("Không thể khởi tạo phiên trò chuyện.");
+      }
+      activeSessionId = sessionData.id;
+    }
+
+    // Save user message
+    await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
+      session_id: activeSessionId,
+      role: "user",
+      content: prompt,
     });
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        message: prompt,
+        session_id: activeSessionId,
+        user_id: userId,
+        data: {},
+      }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`PicoClaw API error: ${response.status}`);
+    }
+
+    const data: PicoclawResponse = await response.json();
+
+    if (data.status !== "success") {
+      this.logger.warn(`PicoClaw returned non-success status: ${data.status}`);
+      throw new Error("PicoClaw AI không thể xử lý yêu cầu.");
+    }
+
+    // Save AI reply
+    await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
+      session_id: activeSessionId,
+      role: "assistant",
+      content: data.reply,
+    });
+
+    return { reply: data.reply, session_id: activeSessionId };
   }
 }

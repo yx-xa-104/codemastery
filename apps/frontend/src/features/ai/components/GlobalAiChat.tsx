@@ -9,6 +9,8 @@ import { ChatMessage } from "@/features/ai-chat/ui/ChatMessage";
 const QUICK_PROMPTS = ["Closure là gì?", "Debug lỗi TypeScript", "Giải thích async/await"];
 
 import { useAiChat } from "@/features/ai-chat/model/useAiChat";
+import { useUser } from "@/shared/stores/useAuthStore";
+import { History, MessageSquarePlus } from "lucide-react";
 
 export function GlobalAiChat() {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,14 +19,23 @@ export function GlobalAiChat() {
     const containerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const { messages, isLoading: isTyping, sendMessage, abortStream } = useAiChat();
+    const [view, setView] = useState<'chat' | 'history'>('chat');
+    const { user } = useUser();
+
+    const { messages, isLoading: isTyping, sendMessage, abortStream, clearMessages, sessions, isSessionsLoading, fetchSessions, loadSession, currentSessionId, deleteSession } = useAiChat();
 
     // Scroll messages container (not window)
     useEffect(() => {
-        if (containerRef.current) {
+        if (containerRef.current && view === 'chat') {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, view]);
+
+    useEffect(() => {
+        if (user?.id && isOpen) {
+            fetchSessions(user.id);
+        }
+    }, [user?.id, isOpen, fetchSessions]);
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -47,8 +58,8 @@ export function GlobalAiChat() {
         resetTextarea();
         setTimeout(() => textareaRef.current?.focus(), 0);
 
-        sendMessage(content);
-    }, [input, isTyping, sendMessage]);
+        sendMessage(content, user?.id);
+    }, [input, isTyping, sendMessage, user?.id]);
 
     return (
         <>
@@ -137,9 +148,42 @@ export function GlobalAiChat() {
                         </Button>
                     ) : (
                         <>
-                            {/* Quick prompts (initial state only) */}
-                            {messages.length <= 1 && (
-                                <div className="flex gap-1.5 flex-wrap px-3 pt-2.5 pb-0 shrink-0">
+                            {view === 'history' ? (
+                                <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2 scrollbar-none">
+                                    <div className="flex items-center justify-between mb-3 px-1">
+                                        <h4 className="text-xs font-bold text-slate-400 uppercase">Lịch sử chat</h4>
+                                        <button 
+                                            onClick={() => { setView('chat'); clearMessages(); }}
+                                            className="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                                        >
+                                            <MessageSquarePlus className="w-3 h-3" /> Phiên mới
+                                        </button>
+                                    </div>
+                                    {isSessionsLoading ? (
+                                        <p className="text-xs text-slate-500 text-center py-4">Đang tải...</p>
+                                    ) : sessions.length === 0 ? (
+                                        <p className="text-xs text-slate-500 text-center py-4">Chưa có lịch sử</p>
+                                    ) : (
+                                        sessions.map(s => (
+                                            <div key={s.id} className="flex flex-col group p-2.5 rounded-lg bg-[#0d1526] hover:bg-white/5 border border-slate-800 transition-colors cursor-pointer" onClick={() => { loadSession(s.id); setView('chat'); }}>
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <p className="text-xs text-slate-300 font-medium line-clamp-2 leading-relaxed">{s.title}</p>
+                                                </div>
+                                                <div className="flex items-center justify-between mt-1.5">
+                                                    <p className="text-[10px] text-slate-600">{new Date(s.created_at).toLocaleDateString('vi-VN')}</p>
+                                                    <button onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }} className="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:bg-red-500/10 rounded">
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            ) : (
+                            <>
+                                {/* Quick prompts (initial state only) */}
+                                {messages.length <= 1 && !currentSessionId && (
+                                    <div className="flex gap-1.5 flex-wrap px-3 pt-2.5 pb-0 shrink-0">
                                     {QUICK_PROMPTS.map(p => (
                                         <Button
                                             key={p}
@@ -213,10 +257,19 @@ export function GlobalAiChat() {
                                         <Send className="w-3.5 h-3.5" />
                                     </Button>
                                 </div>
+                                {/* Toggle View Button */}
+                                <button
+                                    onClick={() => setView('history')}
+                                    className="absolute -top-7 right-3 text-[10px] text-slate-500 hover:text-white flex items-center gap-1 bg-[#0b1120] px-2 py-1 rounded-t-lg border border-b-0 border-slate-700/60 transition-colors"
+                                >
+                                    <><History className="w-3 h-3" /> Lịch sử</>
+                                </button>
                                 <p className="text-center text-[9px] text-slate-700 mt-1.5">
                                     AI có thể sai. Hãy kiểm tra lại thông tin.
                                 </p>
                             </div>
+                            </>
+                            )}
                         </>
                     )}
                 </div>

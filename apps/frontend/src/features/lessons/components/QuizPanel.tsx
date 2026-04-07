@@ -59,7 +59,7 @@ export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
     return (
         <div className="h-full flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 shrink-0">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 shrink-0">
                 <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 uppercase tracking-wider">
                     <HelpCircle className="w-4 h-4" />
                     Trắc nghiệm ({questions.length} câu)
@@ -101,7 +101,7 @@ export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
                                     const showCorrect = submitted && opt.is_correct;
                                     const showWrong = submitted && isSelected && !opt.is_correct;
 
-                                    let optionClass = 'bg-navy-900/50 border-slate-700/60 text-slate-300 hover:border-indigo-500/40 hover:bg-indigo-500/5 cursor-pointer';
+                                    let optionClass = 'bg-white/5 border-white/10 text-slate-300 hover:border-indigo-500/40 hover:bg-indigo-500/5 cursor-pointer';
                                     if (isSelected && !submitted) {
                                         optionClass = 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300 ring-1 ring-indigo-500/20';
                                     }
@@ -147,7 +147,7 @@ export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-4 border-t border-slate-800 shrink-0">
+            <div className="px-5 py-4 border-t border-white/10 shrink-0">
                 {!submitted ? (
                     <Button
                         onClick={handleSubmit}

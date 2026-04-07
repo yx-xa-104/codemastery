@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bot, X } from "lucide-react";
 import { AiChat } from "./AiChat";
 import { Button } from "@/shared/components/ui/button";
@@ -15,8 +15,20 @@ export function AiChatDrawer({ onToggle, isOpen: controlledOpen, onClose }: AiCh
     const [internalOpen, setInternalOpen] = useState(false);
     const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
+    // Restore state from sessionStorage on mount to keep it open across lessons
+    useEffect(() => {
+        if (controlledOpen !== undefined) return;
+        const savedState = sessionStorage.getItem('codemastery-ai-drawer-open');
+        if (savedState === 'true') {
+            setInternalOpen(true);
+        }
+    }, [controlledOpen]);
+
     const toggle = (open: boolean) => {
-        if (controlledOpen === undefined) setInternalOpen(open);
+        if (controlledOpen === undefined) {
+            setInternalOpen(open);
+            sessionStorage.setItem('codemastery-ai-drawer-open', String(open));
+        }
         if (open === false) onClose?.();
         onToggle?.(open);
     };

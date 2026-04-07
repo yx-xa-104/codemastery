@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
 import { SupabaseModule } from './infrastructure/database/supabase.module';
 import { EventBusModule } from './infrastructure/event-bus/event-bus.module';
 import { LearningModule } from './modules/learning/learning.module';
@@ -20,6 +23,20 @@ import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
       envFilePath: '.env',
     }),
 
+    // Cache module for global access
+    CacheModule.register({
+      isGlobal: true,
+    }),
+
+    // Rate Limiting
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000,
+        limit: 100, // 100 requests per minute globally
+      }
+    ]),
+
     // Infrastructure
     SupabaseModule,
     EventBusModule,
@@ -35,6 +52,11 @@ import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
     GamificationModule,
     PicoclawModule,
   ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ]
 })
 export class AppModule { }
-

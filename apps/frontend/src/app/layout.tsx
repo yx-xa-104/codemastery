@@ -3,6 +3,7 @@ import { Chakra_Petch, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/shared/providers/AuthProvider";
 import "./globals.css";
 import { cn } from "@/shared/lib/utils";
+import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
 const chakraPetch = Chakra_Petch({
   variable: "--font-heading",
@@ -33,7 +34,9 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <AuthProvider>
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </AuthProvider>
       </body>
     </html>

@@ -145,9 +145,7 @@ export default function CourseCreatePage() {
   const [lessonTab, setLessonTab] = useState<'content' | 'code' | 'quiz' | 'settings'>('content');
 
   // ── Modules & lessons ─────────────────────────────────────────
-  const [modules, setModules] = useState<ModuleData[]>([
-    { id: 'm1', title: 'Chương 1', expanded: true, lessons: [newLesson()] },
-  ]);
+  const [modules, setModules] = useState<ModuleData[]>([]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -539,7 +537,7 @@ export default function CourseCreatePage() {
       }
 
       setSuccess('Đã lưu thành công!');
-      return true;
+      return courseId;
     } catch (err: any) {
       setError(err.message || 'Lỗi khi lưu');
       return false;
@@ -552,10 +550,10 @@ export default function CourseCreatePage() {
     if (!validateCourse(true)) return;
     
     // Save first with publishing validation on
-    const saveOk = await handleSave(true);
-    if (!saveOk) return;
+    const returnedCourseId = await handleSave(true);
+    if (!returnedCourseId) return;
     
-    const id = savedCourseId;
+    const id = typeof returnedCourseId === 'string' ? returnedCourseId : savedCourseId;
     if (!id) return;
     
     setPublishing(true); setError(null);
@@ -664,9 +662,9 @@ export default function CourseCreatePage() {
                           {lesson.type === 'code_exercise' ? <Code className="w-3 h-3 text-amber-400 shrink-0" />
                             : lesson.type === 'quiz' ? <CheckCircle className="w-3 h-3 text-green-400 shrink-0" />
                               : <FileText className="w-3 h-3 text-indigo-400 shrink-0" />}
-                          <input value={lesson.title} onClick={e => e.stopPropagation()}
-                            onChange={e => setModules(prev => prev.map((m, i) => i === mi ? { ...m, lessons: m.lessons.map((l, j) => j === li ? { ...l, title: e.target.value } : l) } : m))}
-                            className="bg-transparent border-none text-[11px] text-inherit focus:outline-none flex-1 min-w-0" />
+                          <span className="text-[11px] text-inherit flex-1 min-w-0 truncate text-left pointer-events-none">
+                            {lesson.title || 'Bài học mới'}
+                          </span>
                           {((lesson.type === 'article' && !lesson.content?.trim()) ||
                              (lesson.type === 'code_exercise' && !lesson.solutionCode?.trim()) ||
                              (lesson.type === 'quiz' && lesson.quizQuestions.length === 0)) && 

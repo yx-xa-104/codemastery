@@ -2,20 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, BookOpen, Compass, Trophy, LogOut, User, Settings, LayoutDashboard, ChevronDown, Shield, GraduationCap, Code2 } from "lucide-react";
+import { BookOpen, Compass, Trophy, Code2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
+import { motion } from "framer-motion";
+
 import { NotificationBell } from "@/shared/components/NotificationBell";
 import { useUser } from "@/shared/stores/useAuthStore";
-import { signOut } from "@/features/auth/actions";
 import { Button } from "@/shared/components/ui/button";
+
+// Extracted Sub-Components
+import { UserDropdown } from "./navbar/UserDropdown";
 
 export function Navbar() {
     const pathname = usePathname();
     const { user, role, loading } = useUser();
     const [isScrolled, setIsScrolled] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -42,10 +43,6 @@ export function Navbar() {
         { name: "Xếp hạng", href: "/leaderboard", icon: Trophy },
     ];
 
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
-    const avatarUrl = user?.user_metadata?.avatar_url;
-    const initials = displayName.charAt(0).toUpperCase();
-
     return (
         <nav
             className={`fixed top-0 left-0 right-0 z-50 py-2 transition-colors duration-300 ${isScrolled
@@ -56,12 +53,12 @@ export function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-14">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-glow-indigo transition-transform group-hover:scale-105">
-                            <span className="text-white font-bold text-lg">✦</span>
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <div className="size-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-lg shadow-indigo-900/20 group-hover:bg-indigo-500/20 transition-all">
+                            <Code2 className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300" />
                         </div>
-                        <span className="text-lg font-bold text-white tracking-tight font-heading">
-                            Code<span className="text-amber-500">Mastery</span>
+                        <span className="text-xl font-bold tracking-tight text-white group-hover:text-indigo-100 transition-colors">
+                            Code<span className="text-indigo-500">Mastery</span>
                         </span>
                     </Link>
 
@@ -95,115 +92,30 @@ export function Navbar() {
                         })}
                     </div>
 
-                    {/* Right side: Theme + Auth */}
+                    {/* Right side: Search + Auth */}
                     <div className="hidden md:flex items-center gap-3">
-                        <ThemeToggle />
+                        <button 
+                            onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+                            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-slate-400 text-xs font-medium mr-2 group/cmd"
+                        >
+                            <span className="group-hover/cmd:text-slate-300">Tìm kiếm...</span>
+                            <kbd className="px-1.5 py-0.5 rounded-md bg-black/40 border border-white/10 text-[10px] font-mono text-slate-400">⌘K</kbd>
+                        </button>
 
                         {loading ? (
                             <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />
                         ) : user ? (
-                            /* Logged-in: Notification + Avatar + Dropdown */
                             <>
-                            <NotificationBell />
-                            <div className="relative" ref={userMenuRef}>
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                    className="flex items-center gap-2 px-2 py-1.5 h-11 rounded-lg hover:bg-white/5 transition-colors group"
-                                >
-                                    {avatarUrl ? (
-                                        <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full border-2 border-indigo-500/50" />
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white text-sm font-bold border-2 border-indigo-500/50">
-                                            {initials}
-                                        </div>
-                                    )}
-                                    <span className="text-sm font-medium text-slate-300 max-w-[120px] truncate hidden lg:block">
-                                        {displayName}
-                                    </span>
-                                    <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
-                                </Button>
-
-                                <AnimatePresence>
-                                    {userMenuOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                                            transition={{ duration: 0.15 }}
-                                            className="absolute right-0 mt-2 w-56 rounded-xl bg-gray-900 border border-slate-800 shadow-2xl overflow-hidden z-50"
-                                        >
-                                            <div className="p-3 border-b border-slate-800">
-                                                <p className="text-sm font-medium text-white truncate">{displayName}</p>
-                                                <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                                            </div>
-                                            <div className="p-1">
-                                                {role === 'admin' && (
-                                                    <Link
-                                                        href="/admin/dashboard"
-                                                        onClick={() => setUserMenuOpen(false)}
-                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                    >
-                                                        <Shield className="w-4 h-4 text-red-400" />
-                                                        Admin Panel
-                                                    </Link>
-                                                )}
-                                                {role === 'teacher' && (
-                                                    <Link
-                                                        href="/teacher/dashboard"
-                                                        onClick={() => setUserMenuOpen(false)}
-                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                    >
-                                                        <GraduationCap className="w-4 h-4 text-amber-400" />
-                                                        Teacher Panel
-                                                    </Link>
-                                                )}
-                                                {(!role || role === 'student') && (
-                                                    <Link
-                                                        href="/dashboard"
-                                                        onClick={() => setUserMenuOpen(false)}
-                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                    >
-                                                        <LayoutDashboard className="w-4 h-4 text-indigo-400" />
-                                                        Dashboard
-                                                    </Link>
-                                                )}
-                                                <Link
-                                                    href="/dashboard/settings"
-                                                    onClick={() => setUserMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                >
-                                                    <Settings className="w-4 h-4 text-slate-400" />
-                                                    Cài đặt
-                                                </Link>
-                                                <Link
-                                                    href="/dashboard/profile"
-                                                    onClick={() => setUserMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                                                >
-                                                    <User className="w-4 h-4 text-slate-400" />
-                                                    Hồ sơ
-                                                </Link>
-                                            </div>
-                                            <div className="p-1 border-t border-slate-800">
-                                                <form action={signOut}>
-                                                    <Button
-                                                        type="submit"
-                                                        variant="ghost"
-                                                        className="w-full flex justify-start items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
-                                                    >
-                                                        <LogOut className="w-4 h-4" />
-                                                        Đăng xuất
-                                                    </Button>
-                                                </form>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
+                                <NotificationBell />
+                                <UserDropdown 
+                                    user={user} 
+                                    role={role} 
+                                    userMenuOpen={userMenuOpen} 
+                                    setUserMenuOpen={setUserMenuOpen}
+                                    userMenuRef={userMenuRef} 
+                                />
                             </>
                         ) : (
-                            /* Not logged-in: Login + Register buttons */
                             <>
                                 <Link
                                     href="/auth/login"
@@ -221,101 +133,8 @@ export function Navbar() {
                         )}
                     </div>
 
-                    {/* Mobile: Theme + Menu */}
-                    <div className="md:hidden flex items-center gap-2">
-                        <ThemeToggle />
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                        >
-                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                        </Button>
-                    </div>
                 </div>
             </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden glass-nav overflow-hidden border-t border-border"
-                    >
-                        <div className="px-4 pt-2 pb-6 space-y-1">
-                            {navLinks.map((link) => {
-                                const isActive = pathname.startsWith(link.href);
-                                const Icon = link.icon;
-                                return (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive
-                                            ? "bg-indigo-500/15 text-indigo-400"
-                                            : "text-slate-400 hover:bg-white/5 hover:text-white"
-                                            }`}
-                                    >
-                                        <Icon className="w-5 h-5" />
-                                        {link.name}
-                                    </Link>
-                                );
-                            })}
-                            <div className="pt-4 mt-3 border-t border-border flex flex-col gap-2">
-                                {user ? (
-                                    <>
-                                        <div className="flex items-center gap-3 px-4 py-2">
-                                            {avatarUrl ? (
-                                                <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full" />
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white text-sm font-bold">
-                                                    {initials}
-                                                </div>
-                                            )}
-                                            <div>
-                                                <p className="text-sm font-medium text-white">{displayName}</p>
-                                                <p className="text-xs text-slate-500">{user.email}</p>
-                                            </div>
-                                        </div>
-                                        {role === 'admin' && (
-                                            <Link href="/admin/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
-                                                <Shield className="w-5 h-5 text-red-400" /> Admin Panel
-                                            </Link>
-                                        )}
-                                        {role === 'teacher' && (
-                                            <Link href="/teacher/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
-                                                <GraduationCap className="w-5 h-5 text-amber-400" /> Teacher Panel
-                                            </Link>
-                                        )}
-                                        {(!role || role === 'student') && (
-                                            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-400 hover:bg-white/5 hover:text-white">
-                                                <LayoutDashboard className="w-5 h-5" /> Dashboard
-                                            </Link>
-                                        )}
-                                        <form action={signOut}>
-                                            <Button type="submit" variant="ghost" className="w-full flex justify-start items-center gap-3 px-4 py-3 h-12 rounded-lg text-sm text-red-400 hover:bg-red-500/10">
-                                                <LogOut className="w-5 h-5" /> Đăng xuất
-                                            </Button>
-                                        </form>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-400 hover:text-white font-medium rounded-lg hover:bg-white/5 transition-colors text-sm">
-                                            Đăng nhập
-                                        </Link>
-                                        <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)} className="w-full text-center py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg shadow-glow-indigo transition-colors text-sm">
-                                            Bắt đầu ngay
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </nav>
     );
 }

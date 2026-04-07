@@ -110,37 +110,37 @@ export default async function RoadmapPage() {
 
     return (
         <MainLayout>
-            <div className="min-h-screen bg-[#010816]">
+            <div className="min-h-screen relative z-10">
                 {/* Header — clean, no emojis, asymmetric */}
-                <header className="relative overflow-hidden border-b border-slate-800/50">
+                <header className="relative overflow-hidden border-b border-white/5">
                     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
                             <div>
-                                <p className="text-sm font-medium text-indigo-400 tracking-wide uppercase mb-3">Learning Paths</p>
-                                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                                <p className="text-sm font-semibold text-zinc-500 tracking-widest uppercase mb-3">Learning Paths</p>
+                                <h1 className="text-4xl md:text-5xl font-bold text-zinc-100 tracking-tight">
                                     Lộ trình Học tập
                                 </h1>
-                                <p className="text-slate-400 mt-3 max-w-lg leading-relaxed">
-                                    Mỗi lộ trình được sắp xếp từ cơ bản đến nâng cao. Hoàn thành theo thứ tự để nắm vững kiến thức.
+                                <p className="text-zinc-400 mt-4 max-w-lg leading-relaxed font-light">
+                                    Mỗi lộ trình được sắp xếp từ cơ bản đến nâng cao. Hoàn thành theo thứ tự kết hợp thực hành để làm chủ kiến thức nền tảng.
                                 </p>
                             </div>
 
                             {/* Stats pill */}
                             {user && totalCourses > 0 && (
-                                <div className="flex items-center gap-4 px-5 py-3 bg-[#0B1120] border border-slate-800 rounded-xl shrink-0">
+                                <div className="flex items-center gap-5 px-6 py-4 bg-zinc-900/30 backdrop-blur-md border border-white/5 rounded-2xl shrink-0 shadow-xl">
                                     <div className="text-center">
-                                        <p className="text-lg font-bold text-white">{totalCompleted}</p>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider">Hoàn thành</p>
+                                        <p className="text-2xl font-bold text-zinc-100">{totalCompleted}</p>
+                                        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Hoàn thành</p>
                                     </div>
-                                    <div className="w-px h-8 bg-slate-800" />
+                                    <div className="w-px h-10 bg-white/10" />
                                     <div className="text-center">
-                                        <p className="text-lg font-bold text-white">{totalCourses}</p>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider">Khóa học</p>
+                                        <p className="text-2xl font-bold text-zinc-100">{totalCourses}</p>
+                                        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Khóa học</p>
                                     </div>
-                                    <div className="w-px h-8 bg-slate-800" />
+                                    <div className="w-px h-10 bg-white/10" />
                                     <div className="text-center">
-                                        <p className="text-lg font-bold text-indigo-400">{roadmaps.length}</p>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider">Lộ trình</p>
+                                        <p className="text-2xl font-bold text-zinc-300">{roadmaps.length}</p>
+                                        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Lộ trình</p>
                                     </div>
                                 </div>
                             )}
@@ -149,54 +149,54 @@ export default async function RoadmapPage() {
                 </header>
 
                 {/* Roadmap tracks */}
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
                     {roadmaps.length === 0 ? (
-                        <div className="text-center py-20">
-                            <BookOpen className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-white mb-2">Chưa có lộ trình nào</h3>
-                            <p className="text-slate-500 text-sm">Các khóa học chưa được đăng tải.</p>
+                        <div className="text-center py-20 bg-zinc-900/20 backdrop-blur-sm rounded-3xl border border-white/5">
+                            <BookOpen className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                            <h3 className="text-lg font-bold text-zinc-300 mb-2">Chưa có lộ trình nào</h3>
+                            <p className="text-zinc-500 text-sm">Các khóa học chưa được đăng tải lên hệ thống.</p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-8">
                             {roadmaps.map(roadmap => {
                                 const { Icon, accent } = roadmap;
                                 const pct = roadmap.avgProgress;
 
                                 return (
-                                    <div key={roadmap.slug} className={`bg-[#0B1120] border ${accent.border} rounded-2xl overflow-hidden transition-colors hover:border-opacity-60`}>
-                                        {/* Track header — no heavy gradient, clean layout */}
-                                        <div className="px-6 py-5 flex items-center justify-between">
+                                    <div key={roadmap.slug} className="bg-zinc-900/30 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden transition-all hover:border-white/10 shadow-2xl">
+                                        {/* Track header — clean layout */}
+                                        <div className="px-6 py-6 sm:px-8 sm:py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                             <div className="flex items-center gap-4">
-                                                <div className={`size-11 rounded-xl ${accent.bg} flex items-center justify-center`}>
+                                                <div className={`size-12 rounded-2xl ${accent.bg} border ${accent.border} flex items-center justify-center`}>
                                                     <Icon className={`w-5 h-5 ${accent.text}`} />
                                                 </div>
                                                 <div>
-                                                    <h2 className="text-base font-bold text-white">{roadmap.title}</h2>
-                                                    <p className="text-xs text-slate-500 mt-0.5">
-                                                        {roadmap.totalSteps} khóa học · {roadmap.completedCount} đã xong
+                                                    <h2 className="text-xl font-bold text-zinc-100 tracking-tight">{roadmap.title}</h2>
+                                                    <p className="text-sm text-zinc-500 mt-1 font-medium">
+                                                        {roadmap.totalSteps} khóa học · {roadmap.completedCount} đã hoàn thành
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-4 w-full md:w-auto">
                                                 {/* Mini progress */}
-                                                <div className="hidden sm:flex items-center gap-2">
-                                                    <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                                        <div className={`h-full rounded-full ${accent.dot}`} style={{ width: `${pct}%` }} />
+                                                <div className="w-full md:w-auto flex items-center gap-3">
+                                                    <div className="flex-1 md:w-32 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                                        <div className={`h-full rounded-full ${accent.dot} transition-all duration-1000 ease-in-out`} style={{ width: `${pct}%` }} />
                                                     </div>
-                                                    <span className="text-xs text-slate-400 font-mono w-8">{pct}%</span>
+                                                    <span className="text-xs text-zinc-400 font-bold w-9 text-right shrink-0">{pct}%</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Separator */}
-                                        <div className="mx-6 border-t border-slate-800/60" />
+                                        <div className="h-px bg-white/5 w-full" />
 
                                         {/* Course steps — timeline */}
-                                        <div className="px-6 py-5">
+                                        <div className="px-6 py-6 sm:px-8">
                                             <div className="relative">
                                                 {/* Timeline line */}
-                                                <div className="absolute left-[15px] top-2 bottom-2 w-px bg-slate-800" />
+                                                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-white/5" />
 
                                                 <div className="space-y-1">
                                                     {roadmap.steps.map((step, i) => {
@@ -207,60 +207,62 @@ export default async function RoadmapPage() {
                                                             <Link
                                                                 key={i}
                                                                 href={`/courses/${step.courseSlug}`}
-                                                                className={`relative flex items-center gap-4 pl-10 pr-4 py-3 rounded-xl transition-all group cursor-pointer ${
+                                                                className={`relative flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 pl-12 pr-5 py-4 rounded-2xl transition-all duration-300 group cursor-pointer ${
                                                                     isNext
-                                                                        ? 'bg-indigo-500/5 hover:bg-indigo-500/10'
+                                                                        ? 'bg-white/5 hover:bg-white/10'
                                                                         : 'hover:bg-white/[0.02]'
                                                                 }`}
                                                             >
                                                                 {/* Node dot/icon */}
-                                                                <div className={`absolute left-0 size-[30px] rounded-full flex items-center justify-center z-10 ${
+                                                                <div className={`absolute left-0 top-1/2 -translate-y-1/2 size-8 rounded-full flex items-center justify-center z-10 transition-colors ${
                                                                     step.done
-                                                                        ? 'bg-emerald-500/15 border border-emerald-500/40'
+                                                                        ? 'bg-emerald-500/20 border-2 border-emerald-500/50'
                                                                         : isNext
-                                                                            ? 'bg-indigo-500/15 border-2 border-indigo-500/50'
-                                                                            : 'bg-[#0B1120] border border-slate-700/80'
+                                                                            ? 'bg-zinc-200 border-4 border-[#050505] shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                                                                            : 'bg-[#050505] border-2 border-white/10 group-hover:border-white/20'
                                                                 }`}>
                                                                     {step.done
-                                                                        ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                                                        ? <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                                                         : isNext
-                                                                            ? <PlayCircle className="w-3.5 h-3.5 text-indigo-400" />
-                                                                            : <span className="text-[10px] font-bold text-slate-600">{i + 1}</span>
+                                                                            ? <PlayCircle className="w-4 h-4 text-[#050505] ml-[1px]" />
+                                                                            : <span className="text-[10px] font-bold text-zinc-500">{i + 1}</span>
                                                                     }
                                                                 </div>
 
                                                                 {/* Content */}
-                                                                <div className="flex-1 min-w-0 flex items-center gap-3">
-                                                                    <p className={`text-sm font-medium truncate ${
+                                                                <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                                                    <p className={`text-base font-semibold truncate transition-colors duration-300 ${
                                                                         step.done
-                                                                            ? 'text-slate-500 line-through'
+                                                                            ? 'text-zinc-500 line-through'
                                                                             : isNext
-                                                                                ? 'text-white'
-                                                                                : 'text-slate-300'
+                                                                                ? 'text-zinc-100'
+                                                                                : 'text-zinc-400 group-hover:text-zinc-200'
                                                                     }`}>
                                                                         {step.title}
                                                                     </p>
-                                                                    <span className={`text-[10px] border rounded px-1.5 py-px shrink-0 ${tag.cls}`}>
+                                                                    <span className={`text-[10px] border rounded px-2 py-0.5 shrink-0 w-fit font-semibold uppercase tracking-wider ${
+                                                                        step.done ? 'border-white/5 text-zinc-600' : tag.cls
+                                                                    }`}>
                                                                         {tag.label}
                                                                     </span>
                                                                 </div>
 
                                                                 {/* Progress or action */}
-                                                                <div className="flex items-center gap-3 shrink-0">
+                                                                <div className="flex items-center gap-4 shrink-0 mt-2 sm:mt-0">
                                                                     {step.enrolled && !step.done && step.progress > 0 && (
-                                                                        <div className="hidden sm:flex items-center gap-1.5">
-                                                                            <div className="w-16 h-1 bg-slate-800 rounded-full overflow-hidden">
-                                                                                <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${step.progress}%` }} />
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div className="w-20 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                                                                <div className="h-full bg-zinc-400 rounded-full" style={{ width: `${step.progress}%` }} />
                                                                             </div>
-                                                                            <span className="text-[10px] text-slate-500 font-mono">{step.progress}%</span>
+                                                                            <span className="text-[10px] text-zinc-500 font-bold">{step.progress}%</span>
                                                                         </div>
                                                                     )}
-                                                                    <ArrowRight className={`w-4 h-4 transition-all ${
+                                                                    <ArrowRight className={`w-5 h-5 transition-transform duration-300 ${
                                                                         step.done
-                                                                            ? 'text-emerald-500/40'
+                                                                            ? 'text-emerald-500/0'
                                                                             : isNext
-                                                                                ? 'text-indigo-400 group-hover:translate-x-0.5'
-                                                                                : 'text-slate-700 group-hover:text-slate-500'
+                                                                                ? 'text-zinc-400 group-hover:translate-x-1'
+                                                                                : 'text-zinc-700 group-hover:text-zinc-500 group-hover:translate-x-1 opacity-0 group-hover:opacity-100'
                                                                     }`} />
                                                                 </div>
                                                             </Link>

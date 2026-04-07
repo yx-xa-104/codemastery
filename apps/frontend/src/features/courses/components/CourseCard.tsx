@@ -54,16 +54,16 @@ export function CourseCard({
             )}
 
             {/* Image Container */}
-            <div className="h-52 relative overflow-hidden bg-navy-900 border-b border-white/5">
+            <div className="h-52 relative overflow-hidden bg-[#010816] border-b border-white/5">
                 <img
                     src={image}
                     alt={title}
                     className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-navy-900 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#010816] to-transparent"></div>
             </div>
 
-            <div className="p-6 flex flex-col grow relative z-10">
+            <div className="p-6 flex flex-col grow relative z-10 bg-[#060D1F]/40 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-wider text-indigo-300 uppercase bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">
                         {category}
@@ -78,32 +78,32 @@ export function CourseCard({
                 </h3>
 
                 <div className="flex gap-4 text-sm text-slate-400 mb-6 flex-1">
-                    <div className="flex items-center gap-1.5 border border-slate-700/50 px-2 py-1 rounded-md bg-navy-950/50">
+                    <div className="flex items-center gap-1.5 border border-slate-700/30 px-2 py-1 rounded-md bg-white/5">
                         <Clock className="w-4 h-4 text-amber-500" />
                         <span className="font-mono text-xs">{duration}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 border border-slate-700/50 px-2 py-1 rounded-md bg-navy-950/50">
+                    <div className="flex items-center gap-1.5 border border-slate-700/30 px-2 py-1 rounded-md bg-white/5">
                         <BookOpen className="w-4 h-4 text-amber-500" />
                         <span className="font-mono text-xs">{lessons} bài</span>
                     </div>
                 </div>
 
-                <div className="mt-auto pt-5 border-t border-slate-800/80">
+                <div className="mt-auto pt-5 border-t border-slate-800/50">
                     {progress !== undefined && progress > 0 ? (
                         <div className="mb-2">
                             <div className="flex justify-between text-xs text-slate-400 mb-2 font-medium">
                                 <span>Tiến độ học tập</span>
                                 <span className="text-indigo-400 font-bold">{progress}%</span>
                             </div>
-                            <div className="w-full bg-navy-950 rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
+                            <div className="w-full bg-[#010816] rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
                                 <div
-                                    className="bg-linear-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
+                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
                                     style={{ width: `${progress}%` }}
                                 ></div>
                             </div>
                             <Link
                                 href={`/courses/${slug}`}
-                                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-glow-indigo flex items-center justify-center gap-2 group/btn"
+                                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group/btn"
                             >
                                 Tiếp tục học
                                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -112,7 +112,7 @@ export function CourseCard({
                     ) : (
                         <Link
                             href={`/courses/${slug}`}
-                            className="w-full py-3 rounded-xl bg-navy-800 hover:bg-indigo-600/20 text-white font-bold transition-all border border-slate-700 hover:border-indigo-500/50 flex items-center justify-center group/btn"
+                            className="w-full py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 text-white font-bold transition-all border border-white/10 hover:border-indigo-500/50 flex items-center justify-center group/btn backdrop-blur-sm"
                         >
                             Học ngay
                             <ArrowRight className="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all text-indigo-400" />

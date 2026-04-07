@@ -16,10 +16,10 @@ export class QuizController {
     }
 
     @Post(':lessonId/quiz')
-    @ApiOperation({ summary: 'Create a quiz question (teacher/admin)' })
+    @ApiOperation({ summary: 'Create a quiz question (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     createQuestion(
         @Param('lessonId') lessonId: string,
         @Body() body: CreateQuizQuestionDto,
@@ -33,10 +33,10 @@ export class QuizController {
     }
 
     @Patch('quiz/:questionId')
-    @ApiOperation({ summary: 'Update a quiz question (teacher/admin)' })
+    @ApiOperation({ summary: 'Update a quiz question (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     updateQuestion(
         @Param('questionId') questionId: string,
         @Body() body: UpdateQuizQuestionDto,
@@ -49,10 +49,10 @@ export class QuizController {
     }
 
     @Delete('quiz/:questionId')
-    @ApiOperation({ summary: 'Delete a quiz question (teacher/admin)' })
+    @ApiOperation({ summary: 'Delete a quiz question (teacher)' })
     @ApiBearerAuth()
     @UseGuards(SupabaseAuthGuard, RolesGuard)
-    @Roles('teacher', 'admin')
+    @Roles('teacher')
     deleteQuestion(@Param('questionId') questionId: string) {
         return this.quizService.deleteQuestion(questionId);
     }

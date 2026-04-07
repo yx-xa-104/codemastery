@@ -13,7 +13,9 @@
     "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
+    "@types/canvas-confetti": "^1.6.4",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "canvas-confetti": "^1.9.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
@@ -36,6 +38,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "@playwright/test": "^1.42.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

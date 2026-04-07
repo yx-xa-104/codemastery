@@ -8,25 +8,11 @@ const headlineWords = ["Khám", "Phá", "Tri", "Thức"];
 
 export function Hero() {
     return (
-        <section className="relative overflow-hidden bg-navy-950 pt-12 pb-20 sm:pt-16 sm:pb-28">
-            {/* Background effects */}
-            <div className="absolute inset-0 pointer-events-none">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                    className="absolute bottom-0 right-1/4 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl"
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                />
-            </div>
-
+        <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-32">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center max-w-3xl mx-auto">
                     {/* Headline */}
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                    <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight">
                         {/* Word-by-word staggered entrance */}
                         {headlineWords.map((word, i) => (
                             <motion.span
@@ -46,7 +32,7 @@ export function Hero() {
                         <br />
                         {/* "Lập Trình" — scale-in with gradient */}
                         <motion.span
-                            className="relative inline-block text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-amber-500"
+                            className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-500 my-2"
                             initial={{ opacity: 0, scale: 0.7, filter: "blur(12px)" }}
                             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                             transition={{
@@ -56,18 +42,18 @@ export function Hero() {
                             }}
                         >
                             Lập Trình
-                            <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent bg-[length:200%_100%] bg-clip-text animate-shimmer pointer-events-none" aria-hidden="true" />
+                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent bg-[length:200%_100%] bg-clip-text animate-shimmer pointer-events-none" aria-hidden="true" />
                         </motion.span>
                     </h1>
 
                     {/* Subtitle */}
                     <motion.p
-                        className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+                        className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, delay: 1.1, ease: "easeOut" }}
                     >
-                        Hơn 50+ khóa học từ cơ bản đến nâng cao, AI Tutor hỗ trợ 24/7. Nâng cao kỹ năng coding mỗi ngày.
+                        Hơn 50+ khóa học từ cơ bản đến nâng cao, AI Tutor hỗ trợ 24/7. Nâng cao kỹ năng coding mỗi ngày với giao diện đẳng cấp.
                     </motion.p>
 
                     {/* CTA */}
@@ -79,14 +65,14 @@ export function Hero() {
                     >
                         <Link
                             href="/courses"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base transition-all shadow-glow-indigo hover:-translate-y-0.5"
+                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1"
                         >
                             Bắt đầu học ngay
                             <ArrowRight className="w-5 h-5" />
                         </Link>
                         <Link
                             href="/roadmap"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-white/5 font-medium text-base transition-all"
+                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-slate-700/50 bg-[#0B1120]/50 backdrop-blur-md text-slate-300 hover:text-white hover:border-slate-500 hover:bg-white/10 font-bold text-base transition-all"
                         >
                             Xem lộ trình
                         </Link>
@@ -94,7 +80,7 @@ export function Hero() {
                 </div>
 
                 {/* Stats */}
-                <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+                <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
                     {[
                         { icon: Code2, label: "Khóa học", value: "50+" },
                         { icon: Zap, label: "Bài thực hành", value: "500+" },
@@ -102,14 +88,15 @@ export function Hero() {
                     ].map((stat, i) => (
                         <motion.div
                             key={stat.label}
-                            className="text-center p-4 rounded-xl bg-white/[0.03] border border-slate-800/60"
+                            className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-sm"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 1.7 + i * 0.15, ease: "easeOut" }}
+                            whileHover={{ y: -5, backgroundColor: "rgba(255,255,255,0.05)" }}
                         >
-                            <stat.icon className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
-                            <div className="text-2xl font-bold text-white">{stat.value}</div>
-                            <div className="text-xs text-slate-500 mt-1">{stat.label}</div>
+                            <stat.icon className="w-6 h-6 text-indigo-400 mx-auto mb-3" />
+                            <div className="text-3xl font-black text-white tracking-tight">{stat.value}</div>
+                            <div className="text-sm text-slate-400 mt-1 uppercase tracking-wider font-semibold">{stat.label}</div>
                         </motion.div>
                     ))}
                 </div>

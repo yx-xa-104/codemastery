@@ -7,6 +7,12 @@ export interface Message {
   content: string;
 }
 
+export interface AiSession {
+  id: string;
+  title: string;
+  created_at: string;
+}
+
 export function useAiChat(initialMessage?: Message) {
   const [messages, setMessages] = useState<Message[]>(initialMessage ? [initialMessage] : [
     {
@@ -15,18 +21,74 @@ export function useAiChat(initialMessage?: Message) {
       content: 'Xin chào! Tôi là PicoClaw AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
     }
   ]);
+  const [sessions, setSessions] = useState<AiSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSessionsLoading, setIsSessionsLoading] = useState(false);
+  
   const abortControllerRef = useRef<AbortController | null>(null);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+  const fetchSessions = useCallback(async (userId: string) => {
+    setIsSessionsLoading(true);
+    try {
+      const response = await fetch(`${baseUrl}/api/picoclaw/sessions?user_id=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'success') {
+          setSessions(data.data || []);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSessionsLoading(false);
+    }
+  }, [baseUrl]);
+
+  const loadSession = useCallback(async (sessionId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${baseUrl}/api/picoclaw/sessions/${sessionId}/messages`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'success') {
+          const loadedMessages = data.data.map((msg: any) => ({
+            id: msg.id,
+            role: msg.role,
+            content: msg.content
+          }));
+          setMessages(loadedMessages);
+          setCurrentSessionId(sessionId);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [baseUrl]);
+
+  const deleteSession = useCallback(async (sessionId: string) => {
+    try {
+      await fetch(`${baseUrl}/api/picoclaw/sessions/${sessionId}`, { method: 'DELETE' });
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      if (currentSessionId === sessionId) {
+        clearMessages();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [baseUrl, currentSessionId]);
 
   const sendMessage = useCallback(async (prompt: string, userId: string = 'anonymous') => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim() || isLoading) return;
 
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
     const assistantMsgId = (Date.now() + 1).toString();
-    setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -34,92 +96,46 @@ export function useAiChat(initialMessage?: Message) {
     abortControllerRef.current = new AbortController();
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const bodyParams: any = { user_id: userId, prompt };
+      if (currentSessionId) bodyParams.session_id = currentSessionId;
+
       const response = await fetch(`${baseUrl}/api/picoclaw/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user_id: userId, prompt }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyParams),
         signal: abortControllerRef.current.signal,
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to send message: ${response.statusText}`);
+      if (!response.ok) throw new Error(`Failed to send message: ${response.statusText}`);
+
+      const data = await response.json();
+      const reply = data.reply || 'Xin lỗi, tôi không thể xử lý yêu cầu lúc này.';
+      
+      if (data.session_id && !currentSessionId) {
+        setCurrentSessionId(data.session_id);
+        // Refresh sessions to show the new one
+        fetchSessions(userId);
       }
 
-      if (!response.body) {
-        throw new Error('No response body');
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep incomplete lines in the buffer
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-
-          if (trimmed.startsWith('data: ')) {
-            const dataStr = trimmed.slice(6).trim();
-            if (dataStr === '[DONE]') {
-              continue; // End of stream
-            }
-
-            try {
-              const data = JSON.parse(dataStr);
-              const contentchunk = typeof data === 'string' ? data : (data.content || data.data?.content || '');
-
-              if (contentchunk) {
-                setMessages((prev) => prev.map((msg) =>
-                  msg.id === assistantMsgId ? { ...msg, content: msg.content + contentchunk } : msg
-                ));
-              }
-            } catch (e) {
-              console.warn('Failed to parse SSE JSON chunk:', dataStr);
-            }
-          }
-        }
-      }
-
-      // Process remaining buffer
-      if (buffer.trim()) {
-        const trimmed = buffer.trim();
-        if (trimmed.startsWith('data: ')) {
-          const dataStr = trimmed.slice(6).trim();
-          try {
-             if (dataStr !== '[DONE]') {
-                const data = JSON.parse(dataStr);
-                const contentchunk = typeof data === 'string' ? data : (data.content || data.data?.content || '');
-                if (contentchunk) {
-                  setMessages((prev) => prev.map((msg) =>
-                    msg.id === assistantMsgId ? { ...msg, content: msg.content + contentchunk } : msg
-                  ));
-                }
-             }
-          } catch(e) {}
-        }
-      }
+      setMessages((prev) => [...prev, {
+        id: assistantMsgId,
+        role: 'assistant',
+        content: reply,
+      }]);
 
     } catch (error: any) {
       if (error.name !== 'AbortError') {
-        setMessages((prev) => prev.map((msg) =>
-          msg.id === assistantMsgId ? { ...msg, content: msg.content + '\n\n*(Lỗi: Rất tiếc, đã có lỗi khi lấy phản hồi. Vui lòng thử lại sau!)*' } : msg
-        ));
+        setMessages((prev) => [...prev, {
+          id: assistantMsgId,
+          role: 'assistant',
+          content: '*(Lỗi: Rất tiếc, đã có lỗi khi lấy phản hồi. Vui lòng thử lại sau!)*',
+        }]);
       }
     } finally {
       setIsLoading(false);
       abortControllerRef.current = null;
     }
-  }, []);
+  }, [isLoading, currentSessionId, baseUrl, fetchSessions]);
 
   const abortStream = useCallback(() => {
     if (abortControllerRef.current) {
@@ -140,6 +156,7 @@ export function useAiChat(initialMessage?: Message) {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
+    setCurrentSessionId(null);
     setMessages(initialMessage ? [initialMessage] : [
       {
         id: 'greeting',
@@ -150,5 +167,17 @@ export function useAiChat(initialMessage?: Message) {
     setIsLoading(false);
   }, [initialMessage]);
 
-  return { messages, isLoading, sendMessage, abortStream, clearMessages };
+  return { 
+    messages, 
+    isLoading, 
+    sendMessage, 
+    abortStream, 
+    clearMessages,
+    sessions,
+    isSessionsLoading,
+    currentSessionId,
+    fetchSessions,
+    loadSession,
+    deleteSession
+  };
 }
