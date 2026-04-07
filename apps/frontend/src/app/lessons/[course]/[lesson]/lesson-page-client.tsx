@@ -77,7 +77,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     }, [storageKey]);
 
     const handleMarkComplete = () => {
-        if (isCompleted) return;
+        if (isCompleted || isPending) return;
         // If there's a quiz, only the quiz needs to be passed.
         // Otherwise, if it's a code exercise with tests, all tests must be passed.
         if (hasQuiz) {
@@ -123,10 +123,16 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const isCodeChanged = currentCode !== lastSavedCode && currentCode.trim() !== "";
 
     return (
-        <div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden font-sans">
+        <div className="flex flex-col h-[100dvh] bg-[#09090b] text-slate-200 overflow-hidden font-sans">
+            {/* Global Abstract Background */}
+            <div className="fixed inset-0 pointer-events-none bg-size-[24px_24px] bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] z-0" />
+            <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none z-0" />
+            <div className="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
+
+            
             {/* XP Toast */}
             {xpToast && (
-                <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="fixed top-20 left-1/2 -translate-x-1/2 z-100 animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="flex items-center gap-2 px-5 py-3 bg-white/5 border border-amber-500/20 rounded-2xl backdrop-blur-xl shadow-2xl">
                         <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
                         <span className="text-zinc-100 font-bold text-sm">+{xpToast} XP</span>
@@ -214,24 +220,28 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                 />
 
                 <div className="flex-1 flex flex-col lg:ml-80 h-full min-w-0">
-                    <div className="flex-1 overflow-hidden flex flex-row">
+                    <div className="flex-1 overflow-hidden flex flex-row h-full">
                         {/* Left: Lesson content */}
-                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full overflow-y-auto border-b lg:border-b-0 lg:border-r border-white/10 shrink-0 scrollbar-thin scrollbar-thumb-zinc-700 hover:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
-                            <div className="p-5 lg:p-6">
+                        <div className="lg:w-[40%] xl:w-[35%] h-[35vh] lg:h-full relative border-b lg:border-b-0 lg:border-r border-white/10 shrink-0">
+                            <div className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 hover:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                                <div className="p-5 lg:p-6 min-h-full">
                                 <div className="flex items-center gap-2 mb-6 text-xs font-semibold text-slate-400 uppercase tracking-widest border border-white/10 w-fit px-3 py-1.5 rounded-full bg-white/5">
                                     <BookOpen className="w-4 h-4" />
                                     Nội dung bài học
                                 </div>
                                 <LessonContent content={lesson.content} />
+                                </div>
                             </div>
                         </div>
 
                         {/* Right: Code editor or Quiz */}
-                        <div className="flex-1 min-h-0 min-w-0">
+                        <div className="flex-1 min-h-0 min-w-0 flex flex-col h-full relative">
+                            <div className="absolute inset-0">
                             {hasQuiz ? (
                                 <QuizPanel
                                     questions={quizQuestions}
                                     onQuizComplete={(allCorrect) => setQuizPassed(allCorrect)}
+                                    isCompleted={isCompleted}
                                 />
                             ) : (
                                 <div className="p-3 lg:p-4 h-full">
@@ -274,6 +284,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                                     />
                                 </div>
                             )}
+                            </div>
                         </div>
                     </div>
                 </div>

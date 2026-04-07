@@ -43,7 +43,7 @@ export default function LoginPage() {
             {/* ─── LEFT: BRANDING (SPLIT LAYOUT) ─── */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-r border-slate-800/60 bg-[#060D1A]">
                 {/* Abstract grid & glow */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.03] bg-[size:24px_24px] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] pointer-events-none" />
                 <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
                 
                 <motion.div 
@@ -70,7 +70,7 @@ export default function LoginPage() {
                 >
                     <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
                         Định hình tương lai <br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-400">của bạn.</span>
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-amber-400">của bạn.</span>
                     </h2>
                     <p className="text-lg text-slate-400 leading-relaxed font-light">
                         Tham gia nền tảng học lập trình trực tuyến chuyên nghiệp. Mở khóa tiềm năng công nghệ bằng thực hành trực tiếp và sự hướng dẫn bài bản.
@@ -86,7 +86,7 @@ export default function LoginPage() {
                     <div className="flex items-center gap-3">
                         <div className="flex -space-x-2">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className={`size-8 rounded-full border-2 border-[#060D1A] bg-gradient-to-br from-indigo-${i*2}00 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shadow-sm`}>
+                                <div key={i} className={`size-8 rounded-full border-2 border-[#060D1A] bg-linear-to-br from-indigo-${i*2}00 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shadow-sm`}>
                                    SV
                                 </div>
                             ))}
@@ -141,6 +141,7 @@ export default function LoginPage() {
                                 Email hoặc Mã SV
                             </label>
                             <div className="relative group">
+                                <div className="absolute inset-px bg-slate-900 rounded-[11px] bg-linear-to-r from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                                 <input
                                     name="email"
@@ -181,7 +182,8 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-2 relative group">
+                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
                             <Button
                                 type="submit"
                                 disabled={loading}

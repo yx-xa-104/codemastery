@@ -32,7 +32,7 @@ export function Hero() {
                         <br />
                         {/* "Lập Trình" — scale-in with gradient */}
                         <motion.span
-                            className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-500 my-2"
+                            className="relative inline-block text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-amber-500 my-2"
                             initial={{ opacity: 0, scale: 0.7, filter: "blur(12px)" }}
                             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                             transition={{
@@ -42,7 +42,7 @@ export function Hero() {
                             }}
                         >
                             Lập Trình
-                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent bg-[length:200%_100%] bg-clip-text animate-shimmer pointer-events-none" aria-hidden="true" />
+                            <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent bg-size-[200%_100%] bg-clip-text animate-shimmer pointer-events-none" aria-hidden="true" />
                         </motion.span>
                     </h1>
 
@@ -88,7 +88,7 @@ export function Hero() {
                     ].map((stat, i) => (
                         <motion.div
                             key={stat.label}
-                            className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-sm"
+                            className="text-center p-6 rounded-2xl bg-white/2 border border-white/5 backdrop-blur-sm"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 1.7 + i * 0.15, ease: "easeOut" }}

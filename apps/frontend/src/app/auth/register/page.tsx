@@ -72,7 +72,7 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-[#010816] flex font-sans antialiased text-slate-200">
             {/* ─── LEFT: BRANDING (SPLIT LAYOUT) ─── */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-r border-slate-800/60 bg-[#060D1A]">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.03] bg-[size:24px_24px] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] pointer-events-none" />
                 <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
                 
                 <motion.div 
@@ -185,6 +185,7 @@ export default function RegisterPage() {
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Email</label>
                             <div className="relative group">
+                                <div className="absolute inset-px bg-slate-900 rounded-[11px] bg-linear-to-r from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                                 <input name="email" type="email" required placeholder="email@example.com"
                                     className="w-full bg-[#0B1120]/50 border border-slate-700/50 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium backdrop-blur-xl outline-none" />
@@ -205,7 +206,7 @@ export default function RegisterPage() {
                                 <div className="relative group">
                                     <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                                     <input name="class_code" type="text" required placeholder="2305HTTA"
-                                        className="w-full bg-[#0B1120]/50 border border-slate-700/50 rounded-xl py-3 pl-9 pr-3 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium uppercase backdrop-blur-xl outline-none text-sm" />
+                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 pl-9 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono text-sm scheme-dark" />
                                 </div>
                             </div>
                         </div>
@@ -274,8 +275,9 @@ export default function RegisterPage() {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
+                            className="relative w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
                         >
+                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
                             {loading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (

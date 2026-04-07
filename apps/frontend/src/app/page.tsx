@@ -31,7 +31,7 @@ export default async function HomePage() {
                 <Sparkles className="w-4 h-4 text-amber-400" /> Bắt đầu hành trình
               </div>
               <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-                Lộ trình của các <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-indigo-400">Chuyên gia</span>
+                Lộ trình của các <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-400 to-indigo-400">Chuyên gia</span>
               </h2>
               <p className="mt-4 text-lg text-slate-400 max-w-2xl font-light">
                 Chọn khoá học phù hợp với cấp độ của bạn. CodeMastery cung cấp những dự án thực tế nhất giúp bạn tự tin ứng tuyển.

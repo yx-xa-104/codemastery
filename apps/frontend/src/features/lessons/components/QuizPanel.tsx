@@ -21,12 +21,23 @@ interface QuizQuestion {
 interface QuizPanelProps {
     questions: QuizQuestion[];
     onQuizComplete?: (allCorrect: boolean) => void;
+    isCompleted?: boolean;
 }
 
-export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
-    const [selected, setSelected] = useState<Record<string, string>>({});
-    const [submitted, setSubmitted] = useState(false);
-    const [score, setScore] = useState(0);
+export function QuizPanel({ questions, onQuizComplete, isCompleted }: QuizPanelProps) {
+    const [selected, setSelected] = useState<Record<string, string>>(() => {
+        if (isCompleted) {
+            const initial: Record<string, string> = {};
+            questions.forEach(q => {
+                const correct = q.quiz_options.find(o => o.is_correct);
+                if (correct) initial[q.id] = correct.id;
+            });
+            return initial;
+        }
+        return {};
+    });
+    const [submitted, setSubmitted] = useState(isCompleted || false);
+    const [score, setScore] = useState(isCompleted ? questions.length : 0);
 
     const handleSelect = (questionId: string, optionId: string) => {
         if (submitted) return;
@@ -48,6 +59,7 @@ export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
     };
 
     const handleRetry = () => {
+        if (isCompleted) return; // Cannot retry if already completed.
         setSelected({});
         setSubmitted(false);
         setScore(0);
@@ -160,7 +172,7 @@ export function QuizPanel({ questions, onQuizComplete }: QuizPanelProps) {
                     <div className="text-center py-2">
                         <p className="text-emerald-400 font-bold text-sm flex items-center justify-center gap-2">
                             <Trophy className="w-5 h-5 fill-emerald-400" />
-                            Xuất sắc! Bạn trả lời đúng tất cả!
+                            {isCompleted ? "Bạn đã hoàn thành bài tập này!" : "Xuất sắc! Bạn trả lời đúng tất cả!"}
                         </p>
                     </div>
                 ) : (

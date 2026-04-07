@@ -60,7 +60,7 @@ export function CourseCard({
                     alt={title}
                     className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#010816] to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-[#010816] to-transparent"></div>
             </div>
 
             <div className="p-6 flex flex-col grow relative z-10 bg-[#060D1F]/40 backdrop-blur-md">
@@ -97,7 +97,7 @@ export function CourseCard({
                             </div>
                             <div className="w-full bg-[#010816] rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
                                 <div
-                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
+                                    className="bg-linear-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
                                     style={{ width: `${progress}%` }}
                                 ></div>
                             </div>
