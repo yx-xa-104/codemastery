@@ -67,4 +67,8 @@ export class AdminService {
     async updateUserLockStatus(userId: string, locked: boolean) {
         return this.adminRepository.updateUserLockStatus(userId, locked);
     }
+
+    async resetUserPassword(userId: string) {
+        return this.adminRepository.resetUserPassword(userId);
+    }
 }

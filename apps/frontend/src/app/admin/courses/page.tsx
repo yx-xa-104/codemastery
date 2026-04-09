@@ -8,6 +8,7 @@ import {
     Loader2, Search, AlertTriangle, Clock, BookOpen
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import Link from "next/link";
 
 type Course = {
     id: string;
@@ -196,6 +197,8 @@ export default function AdminCoursesPage() {
                                                 <div className="flex items-center gap-1.5 justify-end">
                                                     {isLoading ? <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" /> : (
                                                         <>
+                                                            <Link href={`/admin/courses/${c.slug}/preview`} title="Xem trước khóa học"
+                                                                className="p-1.5 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors"><Eye className="w-4 h-4" /></Link>
                                                             {(c.status === "pending_review" || c.status === "draft") && (
                                                                 <button onClick={() => doAction(c.id, "approve")} title="Duyệt"
                                                                     className="p-1.5 rounded-lg text-green-400 hover:bg-green-500/10 transition-colors"><CheckCircle className="w-4 h-4" /></button>
@@ -210,7 +213,7 @@ export default function AdminCoursesPage() {
                                                             )}
                                                             {(c.status === "suspended" || c.status === "published") && (
                                                                 <button onClick={() => doAction(c.id, "unpublish")} title="Gỡ xuống (về nháp)"
-                                                                    className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-500/10 transition-colors"><Eye className="w-4 h-4" /></button>
+                                                                    className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-500/10 transition-colors"><Ban className="w-4 h-4" /></button>
                                                             )}
                                                             <button onClick={() => { setTransferModal({ courseId: c.id, title: c.title }); setTransferTeacherId(""); }} title="Chuyển sở hữu"
                                                                 className="p-1.5 rounded-lg text-blue-400 hover:bg-blue-500/10 transition-colors"><ArrowRightLeft className="w-4 h-4" /></button>

@@ -12,22 +12,34 @@ export default async function TeacherDashboardPage() {
 
     const cookieStore = await cookies();
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const { data: { session } } = await supabase.auth.getSession();
 
     let courseCount = 0;
     let enrollmentCount = 0;
+    let averageRatingStr = '—';
     let courses: any[] = [];
-    try {
-        const res = await fetch(`${API_URL}/api/courses/my`, {
-            headers: { Cookie: cookieStore.toString() },
-            cache: 'no-store'
-        });
+    if (session) {
+        try {
+            const res = await fetch(`${API_URL}/api/courses/my`, {
+                headers: { 
+                    Authorization: `Bearer ${session.access_token}` 
+                },
+                cache: 'no-store'
+            });
         if (res.ok) {
             courses = await res.json();
             courseCount = courses.length;
             enrollmentCount = courses.reduce((sum: number, c: any) => sum + (c.total_enrollments || 0), 0);
+            
+            const coursesWithRating = courses.filter((c: any) => c.avg_rating && Number(c.avg_rating) > 0);
+            if (coursesWithRating.length > 0) {
+                const totalRating = coursesWithRating.reduce((sum: number, c: any) => sum + Number(c.avg_rating), 0);
+                averageRatingStr = (totalRating / coursesWithRating.length).toFixed(1);
+            }
         }
-    } catch (err) {
-        console.error("Failed to fetch teacher data", err);
+        } catch (err) {
+            console.error("Failed to fetch teacher data", err);
+        }
     }
 
     return (
@@ -36,7 +48,7 @@ export default async function TeacherDashboardPage() {
                 {[
                     { icon: BookOpen, label: 'Khóa học', value: courseCount, color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' },
                     { icon: Users, label: 'Tổng ghi danh', value: enrollmentCount, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-                    { icon: TrendingUp, label: 'Đánh giá TB', value: '—', color: 'text-green-400 bg-green-500/10 border-green-500/20' },
+                    { icon: TrendingUp, label: 'Đánh giá TB', value: averageRatingStr, color: 'text-green-400 bg-green-500/10 border-green-500/20' },
                 ].map(({ icon: Icon, label, value, color }) => (
                     <div key={label} className={`bg-[#0B1120] border rounded-xl p-5 flex items-center gap-4 ${color.split(' ').slice(1).join(' ')}`}>
                         <div className={`p-3 rounded-lg border ${color}`}><Icon className="w-5 h-5" /></div>

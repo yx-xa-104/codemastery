@@ -13,25 +13,30 @@ export async function signInWithPassword(formData: FormData) {
     email = `${email.toLowerCase()}@student.codemastery.vn`;
   }
 
-  const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+  try {
+    const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) {
-    return { error: error.message };
+    if (error) {
+      return { error: error.message };
+    }
+
+    // Fetch role to redirect to correct panel
+    let redirectPath = '/dashboard';
+    if (user) {
+      const { data: profile } = await (supabase as any)
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      if (profile?.role === 'admin') redirectPath = '/admin/dashboard';
+      else if (profile?.role === 'teacher') redirectPath = '/teacher/dashboard';
+    }
+
+    return { success: true, redirectPath };
+  } catch (err: any) {
+    console.error("Sign-in server error:", err);
+    return { error: err.message || "Lỗi máy chủ khi đăng nhập." };
   }
-
-  // Fetch role to redirect to correct panel
-  let redirectPath = '/dashboard';
-  if (user) {
-    const { data: profile } = await (supabase as any)
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-    if (profile?.role === 'admin') redirectPath = '/admin/dashboard';
-    else if (profile?.role === 'teacher') redirectPath = '/teacher/dashboard';
-  }
-
-  redirect(redirectPath);
 }
 
 export async function signUp(formData: FormData) {

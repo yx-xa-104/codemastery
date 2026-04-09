@@ -20,6 +20,7 @@ type CourseWithCategory = {
     total_lessons: number | null;
     is_hot: boolean;
     categories: { name: string } | null;
+    profiles: { full_name: string } | null;
 };
 
 const levelKeyMap: Record<string, string> = {
@@ -193,6 +194,7 @@ export default function CoursesPage() {
                                         image={course.thumbnail_url ?? ''}
                                         slug={course.slug}
                                         isHot={course.is_hot}
+                                        teacherName={course.profiles?.full_name}
                                     />
                                 </motion.div>
                             ))}

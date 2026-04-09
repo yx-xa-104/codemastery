@@ -76,7 +76,7 @@ export default function AiChatPage() {
 
     return (
         <MainLayout hideAiChat>
-            <div className="h-[calc(100vh-64px)] bg-[#010816] flex flex-col lg:flex-row overflow-hidden">
+            <div className="h-[calc(100vh-64px)] flex flex-col lg:flex-row overflow-hidden">
 
                 {/* ── Left sidebar: features & suggestions ── */}
                 <aside className="hidden lg:flex flex-col w-72 xl:w-80 shrink-0 border-r border-slate-800/60 p-6 gap-6">
@@ -202,7 +202,7 @@ export default function AiChatPage() {
                     </div>
 
                     {/* Input bar */}
-                    <div className="px-4 pb-4 pt-3 border-t border-slate-800/60 bg-[#010816]">
+                    <div className="px-4 pb-4 pt-3 border-t border-slate-800/60">
                         {/* Mobile suggestions */}
                         <div className="lg:hidden flex gap-2 overflow-x-auto pb-2 mb-2 scrollbar-none">
                             {SUGGESTIONS.slice(0, 3).map(s => (

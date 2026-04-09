@@ -3,10 +3,11 @@
 import { Sidebar } from "@/shared/components/layouts/Sidebar";
 import { CodeEditor } from "@/features/editor/components/CodeEditor";
 import { AiChatDrawer } from "@/features/ai/components/AiChatDrawer";
+import { ClassroomDiscussionDrawer } from "@/features/lessons/components/ClassroomDiscussionDrawer";
 import { QuizPanel } from "@/features/lessons/components/QuizPanel";
 import type { TestCase } from "@/features/editor/hooks/useTestRunner";
 import { useState, useTransition, useCallback, useEffect } from "react";
-import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save, Zap } from "lucide-react";
+import { ArrowLeft, Menu, X, CheckCircle, BookOpen, Loader2, Save, Zap, MessageSquare } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { apiClient } from "@/shared/lib/api-client";
@@ -28,7 +29,7 @@ interface LessonModule {
 }
 
 interface LessonPageClientProps {
-    course: { title: string; slug: string };
+    course: { id: string; title: string; slug: string };
     lesson: {
         id: string;
         title: string;
@@ -54,6 +55,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const [xpToast, setXpToast] = useState<number | null>(null);
     const [testsPassed, setTestsPassed] = useState(false);
     const [quizPassed, setQuizPassed] = useState(false);
+    const [isDiscussionOpen, setDiscussionOpen] = useState(false);
     const hasQuiz = quizQuestions.length > 0;
 
     const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
@@ -161,6 +163,14 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                     </h1>
                 </div>
                 <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        onClick={() => setDiscussionOpen(true)}
+                        className="h-auto px-3 py-2 rounded-lg text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 hover:text-indigo-300 border border-indigo-500/20 transition-colors flex items-center gap-1.5 text-xs font-semibold mr-1"
+                    >
+                        <MessageSquare className="w-4 h-4" />
+                        <span className="hidden sm:inline">Hỏi đáp</span>
+                    </Button>
                     {/* Save code button */}
                     {lesson.lessonType !== "video" && !hasQuiz && (
                         <Button
@@ -289,6 +299,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                     </div>
                 </div>
 
+                <ClassroomDiscussionDrawer courseId={course.id} isOpen={isDiscussionOpen} onClose={() => setDiscussionOpen(false)} />
                 <AiChatDrawer />
             </div>
         </div>

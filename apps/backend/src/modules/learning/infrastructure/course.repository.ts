@@ -15,7 +15,7 @@ export class CourseRepository {
     }): Promise<CourseWithCategory[]> {
         let query = this.supabase.admin
             .from('courses')
-            .select('*, categories(id, name, slug)')
+            .select('*, categories(id, name, slug), profiles!courses_teacher_id_fkey(full_name, avatar_url)')
             .order('created_at', { ascending: false });
 
         if (filters?.status) query = query.eq('status', filters.status as any);
@@ -30,7 +30,7 @@ export class CourseRepository {
     async findByTeacher(teacherId: string): Promise<CourseWithCategory[]> {
         const { data, error } = await this.supabase.admin
             .from('courses')
-            .select('*, categories(id, name, slug)')
+            .select('*, categories(id, name, slug), profiles!courses_teacher_id_fkey(full_name, avatar_url)')
             .eq('teacher_id', teacherId)
             .order('created_at', { ascending: false });
 
@@ -41,7 +41,7 @@ export class CourseRepository {
     async findById(id: string): Promise<CourseWithCategory> {
         const { data, error } = await this.supabase.admin
             .from('courses')
-            .select('*, categories(id, name, slug)')
+            .select('*, categories(id, name, slug), profiles!courses_teacher_id_fkey(full_name, avatar_url)')
             .eq('id', id)
             .single();
 
@@ -52,7 +52,7 @@ export class CourseRepository {
     async findBySlug(slug: string): Promise<CourseWithCategory> {
         const { data, error } = await this.supabase.admin
             .from('courses')
-            .select('*, categories(id, name, slug)')
+            .select('*, categories(id, name, slug), profiles!courses_teacher_id_fkey(full_name, avatar_url)')
             .eq('slug', slug)
             .single();
 
@@ -125,7 +125,7 @@ export class CourseRepository {
     async search(query: string): Promise<CourseWithCategory[]> {
         const { data, error } = await this.supabase.admin
             .from('courses')
-            .select('*, categories(id, name, slug)')
+            .select('*, categories(id, name, slug), profiles!courses_teacher_id_fkey(full_name, avatar_url)')
             .eq('status', 'published' as any)
             .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
             .order('total_enrollments', { ascending: false })

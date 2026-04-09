@@ -10,12 +10,14 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { signOut } from "@/features/auth/actions";
 import { NotificationBell } from "@/shared/components/NotificationBell";
+import { createClient } from "@/shared/lib/supabase/client";
+import { useState, useEffect } from "react";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/teacher/dashboard', icon: LayoutDashboard },
     { label: 'Khóa học', href: '/teacher/courses', icon: BookOpen },
     { label: 'Bài tập', href: '/teacher/exercises', icon: BookMarked },
-    { label: 'Tin nhắn', href: '/teacher/messages', icon: MessageSquare, badge: 3 },
+    { label: 'Tin nhắn', href: '/teacher/messages', icon: MessageSquare },
     { label: 'Cài đặt', href: '/teacher/settings', icon: Settings },
 ];
 
@@ -34,6 +36,54 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
     const avatarUrl = user?.user_metadata?.avatar_url;
     const initials = displayName.charAt(0).toUpperCase();
 
+    const [unreadMessages, setUnreadMessages] = useState<number>(0);
+
+    // Fetch initial unread count
+    useEffect(() => {
+        if (!user) return;
+        const supabase = createClient();
+
+        const fetchUnread = async () => {
+            const { count } = await supabase
+                .from('notifications')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id)
+                .eq('is_read', false)
+                .like('link_url', '%/teacher/messages%');
+            
+            if (count !== null) setUnreadMessages(count);
+        };
+        
+        fetchUnread();
+
+        const channel = supabase
+            .channel(`public:notifications_${user.id}_layout`)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` }, () => {
+                fetchUnread();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user]);
+
+    // Clear unread when visiting the messages page
+    useEffect(() => {
+        if (pathname === '/teacher/messages' && unreadMessages > 0 && user) {
+            setUnreadMessages(0);
+            const clearUnread = async () => {
+                const supabase = createClient();
+                await (supabase as any).from('notifications')
+                    .update({ is_read: true })
+                    .eq('user_id', user.id)
+                    .eq('is_read', false)
+                    .like('link_url', '%/teacher/messages%');
+            };
+            clearUnread();
+        }
+    }, [pathname, unreadMessages, user]);
+
     return (
         <div className="flex h-screen bg-[#010816] text-slate-100 overflow-hidden font-sans">
             {/* Sidebar */}
@@ -46,8 +96,10 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
                 </div>
 
                 <nav className="flex-1 py-5 px-3 space-y-0.5 overflow-y-auto">
-                    {NAV_ITEMS.map(({ label, href, icon: Icon, badge }) => {
+                    {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
                         const isActive = pathname === href || (href !== '/teacher/dashboard' && pathname.startsWith(href));
+                        const showDot = label === 'Tin nhắn' && unreadMessages > 0;
+                        
                         return (
                             <Link key={label} href={href}
                                 className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${isActive
@@ -56,7 +108,7 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
                                     }`}>
                                 <Icon className="w-4 h-4 shrink-0" />
                                 {label}
-                                {badge && <span className="ml-auto bg-red-500 text-white text-[10px] py-0.5 px-1.5 rounded-full">{badge}</span>}
+                                {showDot && <span className="ml-auto w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>}
                             </Link>
                         );
                     })}

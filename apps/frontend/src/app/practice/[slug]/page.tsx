@@ -103,6 +103,15 @@ export default function PracticeProblemPage() {
       if (res.ok) {
         const result = await res.json();
         setSubmitResult(result);
+        
+        setProblem(prev => prev ? {
+          ...prev,
+          total_submissions: prev.total_submissions + 1,
+          total_accepted: prev.total_accepted + (result.status === "accepted" ? 1 : 0)
+        } : prev);
+        
+        loadSubmissions();
+
         if (result.isFirstAccept) {
           setXpToast(20);
           setTimeout(() => setXpToast(null), 3000);

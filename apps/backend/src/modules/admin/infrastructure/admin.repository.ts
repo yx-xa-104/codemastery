@@ -178,4 +178,13 @@ export class AdminRepository {
         }
         return { success: true };
     }
+
+    async resetUserPassword(userId: string) {
+        const defaultPassword = 'CodeMastery@123';
+        const { error } = await this.supabase.admin.auth.admin.updateUserById(userId, {
+            password: defaultPassword,
+        });
+        if (error) throw error;
+        return { success: true, defaultPassword };
+    }
 }

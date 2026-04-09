@@ -34,16 +34,50 @@ export function NotificationBell() {
 
     useEffect(() => {
         fetchNotifications();
-    }, []);
+        
+        let channel: any;
+        const setupRealtime = async () => {
+            const supabase = createBrowserClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            );
+            const { data } = await supabase.auth.getSession();
+            if (!data.session) return;
+            const userId = data.session.user.id;
 
-    useEffect(() => {
+            channel = supabase.channel(`public:notifications_${userId}`)
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'notifications',
+                    filter: `user_id=eq.${userId}`
+                }, (payload) => {
+                    const newNotification = payload.new as Notification;
+                    if (newNotification.link_url === '/teacher/messages') return;
+                    setNotifications(prev => [newNotification, ...prev]);
+                    setUnreadCount(prev => prev + 1);
+                })
+                .subscribe();
+        };
+
+        setupRealtime();
+
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            if (channel) {
+                const supabase = createBrowserClient(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                );
+                supabase.removeChannel(channel);
+            }
+        };
     }, []);
 
     async function fetchNotifications() {
@@ -55,8 +89,9 @@ export function NotificationBell() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setNotifications(data.notifications ?? []);
-                setUnreadCount(data.unreadCount ?? 0);
+                const filtered = (data.notifications ?? []).filter((n: any) => n.link_url !== '/teacher/messages');
+                setNotifications(filtered);
+                setUnreadCount(filtered.filter((n: any) => !n.is_read).length);
             }
         } catch (err) {
             console.error('Failed to fetch notifications', err);

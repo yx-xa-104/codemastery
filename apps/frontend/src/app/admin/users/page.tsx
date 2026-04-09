@@ -105,6 +105,31 @@ export default function AdminUsersPage() {
         setActionMenu(null);
     };
 
+    const resetPassword = async (userId: string) => {
+        if (!confirm('Bạn có chắc muốn reset mật khẩu tài khoản này về mặc định (CodeMastery@123)?')) return;
+        setActionLoading(userId);
+        try {
+            const token = await getToken();
+            const res = await fetch(`${API_URL}/api/admin/users/${userId}/reset-password`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setSuccess(`Đã reset mật khẩu thành công. Mật khẩu mới: ${data.defaultPassword}`);
+            } else {
+                setSuccess('Lỗi khi reset mật khẩu');
+            }
+            setTimeout(() => setSuccess(''), 5000);
+        } catch (e) {
+            console.error('Failed to reset password', e);
+            setSuccess('Lỗi kết nối server');
+            setTimeout(() => setSuccess(''), 3000);
+        }
+        setActionLoading(null);
+        setActionMenu(null);
+    };
+
     const filtered = users.filter(u =>
         (!roleFilter || u.role === roleFilter) &&
         (!search || (u.full_name?.toLowerCase() || '').includes(search.toLowerCase()) ||
@@ -172,6 +197,7 @@ export default function AdminUsersPage() {
                                 <tr className="border-b border-indigo-900/30 bg-[#050C1F]">
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Tài khoản</th>
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Vai trò</th>
+                                    <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Mã SV/GV</th>
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Trạng thái</th>
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Ngày tạo</th>
                                     <th className="px-5 py-3.5 w-16" />
@@ -203,6 +229,9 @@ export default function AdminUsersPage() {
                                                 <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border ${roleInfo.color}`}>
                                                     <RoleIcon className="w-3 h-3" /> {roleInfo.label}
                                                 </span>
+                                            </td>
+                                            <td className="px-5 py-4">
+                                                <span className="text-sm text-slate-300 font-mono">{u.student_id || '—'}</span>
                                             </td>
                                             <td className="px-5 py-4">
                                                 {u.is_locked ? (
@@ -238,6 +267,7 @@ export default function AdminUsersPage() {
                                                                 ) : (
                                                                     <button onClick={() => toggleLock(u.id, true)} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10">Khóa tài khoản</button>
                                                                 )}
+                                                                <button onClick={() => resetPassword(u.id)} className="w-full text-left px-4 py-2 text-sm text-yellow-400 hover:bg-yellow-500/10">Reset mật khẩu</button>
                                                             </div>
                                                         )}
                                                     </div>

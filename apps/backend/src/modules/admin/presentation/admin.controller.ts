@@ -82,4 +82,10 @@ export class AdminController {
     ) {
         return this.adminService.updateUserLockStatus(id, body.locked);
     }
+
+    @Patch('users/:id/reset-password')
+    @ApiOperation({ summary: 'Reset user password to default' })
+    async resetUserPassword(@Param('id') id: string) {
+        return this.adminService.resetUserPassword(id);
+    }
 }

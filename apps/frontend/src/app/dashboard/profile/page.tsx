@@ -96,7 +96,7 @@ export default async function DashboardProfilePage() {
 
     return (
         <MainLayout>
-            <div className="min-h-screen bg-[#010816] py-10">
+            <div className="min-h-screen relative z-10 py-10">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Tab bar */}
                     <div className="flex gap-2 mb-8 border-b border-slate-800">

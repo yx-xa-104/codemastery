@@ -24,6 +24,7 @@ interface CourseCardProps {
     progress?: number;
     slug: string;
     isHot?: boolean;
+    teacherName?: string;
 }
 
 export function CourseCard({
@@ -36,6 +37,7 @@ export function CourseCard({
     progress,
     slug,
     isHot,
+    teacherName,
 }: CourseCardProps) {
     return (
         <div className="group glass rounded-2xl overflow-hidden flex flex-col h-full relative border border-white/5 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-glow-indigo hover:-translate-y-2">
@@ -73,9 +75,15 @@ export function CourseCard({
                     </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-indigo-400 transition-colors leading-tight">
+                <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-indigo-400 transition-colors leading-tight">
                     {title}
                 </h3>
+                
+                {teacherName && (
+                    <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400 mb-4">
+                        Giảng viên: <span className="text-slate-300">{teacherName}</span>
+                    </div>
+                )}
 
                 <div className="flex gap-4 text-sm text-slate-400 mb-6 flex-1">
                     <div className="flex items-center gap-1.5 border border-slate-700/30 px-2 py-1 rounded-md bg-white/5">

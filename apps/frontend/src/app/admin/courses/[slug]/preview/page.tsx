@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { EnrollButton } from "@/shared/components/enrollment/EnrollButton";
 import { createClient } from "@/shared/lib/supabase/server";
 import { CourseReviews } from "@/features/courses/components/CourseReviews";
+import { AdminCoursePreviewActions } from "@/features/admin/components/AdminCoursePreviewActions";
 
 const levelMap: Record<string, string> = {
     beginner: 'Cơ bản',
@@ -84,8 +85,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                 <section className="relative pt-12 pb-16 lg:pt-20 lg:pb-24 overflow-hidden border-b border-white/5 z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                        <Link href="/courses" className="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium text-sm mb-6 transition-colors group">
-                            <span className="text-slate-500 mr-2 group-hover:text-indigo-400">&larr;</span> Khóa học <span className="mx-2 text-slate-600">/</span> {categoryName}
+                        <Link href="/admin/courses" className="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium text-sm mb-6 transition-colors group">
+                            <span className="text-slate-500 mr-2 group-hover:text-indigo-400">&larr;</span> Trở về danh sách
                         </Link>
 
                         <div className="max-w-4xl">
@@ -202,17 +203,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                         </div>
                                                         <div className="flex flex-col">
                                                             {lessons.map((lesson, lessonIdx) => (
-                                                                <Link
+                                                                <div
                                                                     key={lesson.id}
-                                                                    href={`/lessons/${slug}/${lesson.slug ?? lesson.id}`}
-                                                                    className={`flex items-center justify-between p-4 transition-all group hover:bg-white/5 cursor-pointer ${lessonIdx !== lessons.length - 1 ? "border-b border-slate-800/50" : ""}`}
+                                                                    className={`flex items-center justify-between p-4 group border-b border-slate-800/50`}
                                                                 >
                                                                     <div className="flex items-center gap-3 w-full pr-4">
-                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                                                                            completedLessonIds.includes(lesson.id)
-                                                                                ? 'bg-green-500/20 border border-green-500/30'
-                                                                                : 'bg-navy-950 border border-slate-800 group-hover:bg-indigo-600/20 group-hover:border-indigo-500/30'
-                                                                        }`}>
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors bg-navy-950 border border-slate-800`}>
                                                                             {completedLessonIds.includes(lesson.id) ? (
                                                                                 <CheckCircle2 className="w-4 h-4 text-green-500" />
                                                                             ) : lesson.lesson_type === 'video' ? (
@@ -221,7 +217,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                                                 <Code2 className="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors" />
                                                                             )}
                                                                         </div>
-                                                                        <span className="text-slate-300 text-sm font-medium group-hover:text-white transition-colors truncate">
+                                                                        <span className="text-slate-300 text-sm font-medium">
                                                                             {lessonIdx + 1}. {lesson.title}
                                                                         </span>
                                                                     </div>
@@ -229,9 +225,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                                         <span className="text-xs text-slate-500 font-mono tracking-wide">
                                                                             {lesson.duration_minutes ? `${lesson.duration_minutes}:00` : '—'}
                                                                         </span>
-                                                                        <ArrowRight className="w-4 h-4 text-slate-600 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-indigo-400 transition-all duration-300" />
                                                                     </div>
-                                                                </Link>
+                                                                </div>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -253,14 +248,14 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
 
                             {/* Right Sticky Sidebar (Enrollment Card) */}
                             <div className="w-full lg:w-[40%] lg:sticky lg:top-24 mt-8 lg:mt-0 relative">
-                                <div className="p-[1px] rounded-3xl bg-linear-to-b from-indigo-500/30 to-slate-800/30 shadow-[0_0_40px_rgba(79,70,229,0.1)]">
+                                <div className="p-px rounded-3xl bg-linear-to-b from-indigo-500/30 to-slate-800/30 shadow-[0_0_40px_rgba(79,70,229,0.1)]">
                                     <div className="bg-navy-900 rounded-[23px] overflow-hidden flex flex-col h-full">
 
                                         {/* Thumbnail with overlay play */}
-                                        <div className="relative h-[220px] w-full group cursor-pointer overflow-hidden bg-navy-950">
-                                            <img src={course.thumbnail_url ?? ''} alt={course.title} className="w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" />
-                                            <div className="absolute inset-0 bg-navy-950/40 group-hover:bg-navy-950/20 transition-colors flex items-center justify-center">
-                                                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center group-hover:bg-indigo-600 group-hover:border-indigo-500 shadow-xl transition-all duration-300 group-hover:scale-110">
+                                        <div className="relative h-[220px] w-full group overflow-hidden bg-navy-950">
+                                            <img src={course.thumbnail_url ?? ''} alt={course.title} className="w-full h-full object-cover opacity-80" />
+                                            <div className="absolute inset-0 bg-navy-950/40 flex items-center justify-center">
+                                                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center shadow-xl">
                                                     <PlayCircle className="w-8 h-8 text-white ml-1" />
                                                 </div>
                                             </div>
@@ -269,26 +264,16 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                         {/* Enrollment Details */}
                                         <div className="p-6 md:p-8 flex flex-col gap-6">
                                             <div className="text-center">
-                                                <div className="text-2xl font-bold text-white mb-1">
-                                                    {course.is_free ? 'Miễn phí trải nghiệm' : 'Đăng ký ngay'}
+                                                <div className="text-2xl font-bold text-amber-400 mb-1">
+                                                    Chế độ Preview
                                                 </div>
-                                                <p className="text-sm text-slate-400">Đăng ký để học trước 1 chương</p>
+                                                <p className="text-sm text-slate-400">Admin đang xem trước khóa học</p>
                                             </div>
-
-                                            <EnrollButton
-                                                courseId={course.id}
-                                                courseSlug={slug}
-                                                firstLessonSlug={
-                                                    modules && modules.length > 0
-                                                        ? ((modules[0].lessons as unknown as { slug: string | null }[])?.[0]?.slug) ?? undefined
-                                                        : undefined
-                                                }
-                                            />
 
                                             <div className="space-y-0 text-sm">
                                                 <div className="flex justify-between items-center py-3 border-b border-slate-800/80">
-                                                    <span className="text-slate-400 flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> Cam kết</span>
-                                                    <span className="font-medium text-emerald-400">Miễn phí 100%</span>
+                                                    <span className="text-slate-400 flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> Trạng thái</span>
+                                                    <span className="font-medium text-amber-400 capitalize">{course.status}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center py-3 border-b border-slate-800/80">
                                                     <span className="text-slate-400 flex items-center gap-2"><Clock className="w-4 h-4" /> Truy cập</span>
@@ -303,6 +288,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                         </div>
                     </div>
                 </section>
+                <AdminCoursePreviewActions courseId={course.id} currentStatus={course.status} />
             </div>
         </MainLayout>
     );

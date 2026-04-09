@@ -56,6 +56,7 @@ export default async function HomePage() {
                 image={course.thumbnail_url ?? ''}
                 slug={course.slug}
                 isHot={course.is_hot}
+                teacherName={course.profiles?.full_name}
               />
             ))}
           </div>

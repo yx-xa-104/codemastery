@@ -111,7 +111,7 @@ export default async function LessonPage({ params }: Props) {
 
     return (
         <LessonPageClient
-            course={{ title: course.title, slug: course.slug }}
+            course={{ id: course.id, title: course.title, slug: course.slug }}
             lesson={{
                 id: lesson.id,
                 title: lesson.title,

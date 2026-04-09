@@ -14,6 +14,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
+import { CommunityModule } from './modules/community/community.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
     NotificationModule,
     GamificationModule,
     PicoclawModule,
+    CommunityModule,
   ],
   providers: [
     {

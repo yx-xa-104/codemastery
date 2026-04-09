@@ -43,8 +43,13 @@ export function EnrollButton({ courseId, courseSlug, firstLessonSlug }: EnrollBu
             try {
                 await apiClient.post(`/api/enrollments/${courseId}`, {});
                 await checkStatus();
-            } catch (err) {
-                console.error("Enroll failed", err);
+            } catch (err: any) {
+                if (err.message && err.message.includes('REQUIRE_PROFILE_UPDATE')) {
+                    alert('Bạn cần cập nhật đầy đủ Mã Sinh Viên và Mã Lớp trước khi ghi danh khóa học!');
+                    window.location.href = '/account/profile';
+                } else {
+                    console.error("Enroll failed", err);
+                }
             }
         });
     };

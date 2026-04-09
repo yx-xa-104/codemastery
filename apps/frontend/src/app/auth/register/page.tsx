@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Code2, UserPlus, Lock, ArrowRight, Loader2, Mail, Calendar, Hash, GraduationCap, Eye, EyeOff } from "lucide-react";
-import { signUp } from "@/app/auth/actions";
+import { signUp } from "@/features/auth/actions";
+import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -12,6 +13,8 @@ export default function RegisterPage() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPw, setShowPw] = useState(false);
+    const router = useRouter();
+
     const [password, setPassword] = useState("");
     const [confirmPw, setConfirmPw] = useState("");
 
@@ -33,26 +36,32 @@ export default function RegisterPage() {
             return;
         }
 
-        const formData = new FormData(e.currentTarget);
-        const studentId = formData.get('student_id') as string;
-        const emailVal = formData.get('email') as string;
-        if (!emailVal && studentId) {
-            formData.set('email', `${studentId.toLowerCase()}@student.codemastery.vn`);
-        }
-
-        const result = await signUp(formData);
-
-        if (result?.error) {
-            const msg = result.error;
-            if (msg.includes("already registered")) {
-                setError("Email này đã được đăng ký. Vui lòng đăng nhập hoặc đặt lại mật khẩu.");
-            } else {
-                setError(msg);
+        try {
+            const formData = new FormData(e.currentTarget);
+            const studentId = formData.get('student_id') as string;
+            const emailVal = formData.get('email') as string;
+            if (!emailVal && studentId) {
+                formData.set('email', `${studentId.toLowerCase()}@student.codemastery.vn`);
             }
-        } else if (result?.success) {
-            setSuccess(result.success);
+
+            const result = await signUp(formData);
+
+            if (result?.error) {
+                const msg = result.error;
+                if (msg.includes("already registered")) {
+                    setError("Email này đã được đăng ký. Vui lòng đăng nhập hoặc đặt lại mật khẩu.");
+                } else {
+                    setError(msg);
+                }
+            } else if (result?.success) {
+                setSuccess(result.success || "Đăng ký thành công!");
+                setTimeout(() => router.push("/auth/login"), 3000);
+            }
+        } catch (err: any) {
+            setError(err.message || "Đã có lỗi xảy ra khi kết nối. Vui lòng thử lại.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     const getStrength = (pw: string) => {
@@ -271,23 +280,23 @@ export default function RegisterPage() {
                                 <p className="text-[11px] font-medium text-red-400 ml-1 pt-1">Mật khẩu không khớp!</p>
                             )}
                         </div>
-
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            className="relative w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
-                        >
-                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
-                            {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <>
-                                    <span>Tạo Tài Khoản</span>
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 duration-300" />
-                                </>
-                            )}
-                        </Button>
-
+                        <div className="pt-2 relative group">
+                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300 pointer-events-none"></div>
+                            <Button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <span>Tạo Tài Khoản</span>
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 duration-300" />
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                         <p className="text-center text-xs text-slate-500 mt-6 font-medium">
                             Bằng cách đăng ký, bạn đồng ý với{" "}
                             <Link href="#" className="text-indigo-400 hover:text-amber-400 transition-colors">Điều khoản</Link>

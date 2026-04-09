@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Tables } from '@infra/database/database.types';
 import { EnrollmentRepository } from '../infrastructure/enrollment.repository';
@@ -16,10 +16,16 @@ export class EnrollmentService {
         if (existing) {
             throw new ConflictException('Already enrolled in this course');
         }
-
-        const enrollment = await this.enrollmentRepository.create(userId, courseId);
-        await this.enrollmentRepository.incrementEnrollmentCount(courseId);
-        return enrollment;
+        try {
+            const enrollment = await this.enrollmentRepository.create(userId, courseId);
+            await this.enrollmentRepository.incrementEnrollmentCount(courseId);
+            return enrollment;
+        } catch (error: any) {
+            if (error.message === 'REQUIRE_PROFILE_UPDATE') {
+                throw new BadRequestException('REQUIRE_PROFILE_UPDATE');
+            }
+            throw error;
+        }
     }
 
     async unenroll(userId: string, courseId: string): Promise<{ message: string }> {

@@ -1,41 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Code2, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
-import { signInWithPassword } from "@/app/auth/actions";
+import { useRouter } from "next/navigation";
+import { signInWithPassword } from "@/features/auth/actions";
 import { Button } from "@/shared/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const [showPw, setShowPw] = useState(false);
+    const router = useRouter();
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setLoading(true);
+    function formAction(formData: FormData) {
+        if (isPending) return;
         setError("");
 
-        const formData = new FormData(e.currentTarget);
         const emailVal = formData.get("email") as string;
         if (emailVal && !emailVal.includes("@")) {
             formData.set("email", `${emailVal.toLowerCase()}@student.codemastery.vn`);
         }
 
-        const result = await signInWithPassword(formData);
-
-        if (result?.error) {
-            const msg = result.error;
-            if (msg.includes("Invalid login credentials")) {
-                setError("Email hoặc mật khẩu không đúng.");
-            } else if (msg.includes("Email not confirmed")) {
-                setError("Tài khoản chưa được xác nhận. Vui lòng kiểm tra email.");
-            } else {
-                setError(msg);
+        startTransition(async () => {
+            try {
+                const result = await signInWithPassword(formData);
+        
+                if (result?.error) {
+                    const msg = result.error;
+                    if (msg.includes("Invalid login credentials")) {
+                        setError("Email hoặc mật khẩu không đúng.");
+                    } else if (msg.includes("Email not confirmed")) {
+                        setError("Tài khoản chưa được xác nhận. Vui lòng kiểm tra email.");
+                    } else {
+                        setError(msg);
+                    }
+                } else if (result?.success && result.redirectPath) {
+                    window.location.href = result.redirectPath;
+                }
+            } catch (err: any) {
+                console.error("[Login Client Error]", err);
+                setError(err.message || "Đã có lỗi xảy ra khi kết nối đến máy chủ.");
             }
-            setLoading(false);
-        }
+        });
     }
 
     return (
@@ -125,7 +133,7 @@ export default function LoginPage() {
                         </Link>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form action={formAction} className="space-y-5">
                         {error && (
                             <motion.div 
                                 initial={{ opacity: 0, height: 0 }}
@@ -183,13 +191,13 @@ export default function LoginPage() {
                         </div>
 
                         <div className="pt-2 relative group">
-                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
+                            <div className="absolute -inset-0.5 bg-linear-to-br from-indigo-500 to-purple-500 rounded-[14px] opacity-0 group-hover:opacity-20 blur transition-all duration-300 pointer-events-none"></div>
                             <Button
                                 type="submit"
-                                disabled={loading}
+                                disabled={isPending}
                                 className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
                             >
-                                {loading ? (
+                                {isPending ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
                                 ) : (
                                     <>

@@ -120,7 +120,7 @@ export default async function AdminDashboardPage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 shrink-0">
-                                            <Link href={`/teacher/courses`} className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-all">Chỉnh sửa</Link>
+                                            <Link href={`/admin/courses`} className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-all">Kiểm duyệt</Link>
                                         </div>
                                     </div>
                                 </div>

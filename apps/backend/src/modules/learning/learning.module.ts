@@ -19,14 +19,16 @@ import { ModuleRepository } from './infrastructure/module.repository';
 import { QuizRepository } from './infrastructure/quiz.repository';
 import { ReviewRepository } from './infrastructure/review.repository';
 import { PracticeRepository } from './infrastructure/practice.repository';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
+    imports: [NotificationModule],
     controllers: [CourseController, AdminCourseController, LessonController, ModuleController, QuizController, ReviewController, PracticeController],
     providers: [
         CourseService, AdminCourseService, LessonService, ModuleService, QuizService, ReviewService, PracticeService,
         CourseRepository, LessonRepository, ModuleRepository, QuizRepository, ReviewRepository, PracticeRepository,
     ],
-    exports: [CourseService, LessonService],
+    exports: [CourseService, LessonService, CourseRepository],
 })
 export class LearningModule { }
 

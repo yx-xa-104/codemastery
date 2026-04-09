@@ -8,17 +8,28 @@ import { EnrollmentWithCourse } from '../domain/enrollment.interface';
 export class EnrollmentRepository {
     constructor(private supabase: SupabaseService) { }
 
-    async findByUserAndCourse(userId: string, courseId: string): Promise<{ id: string } | null> {
-        const { data } = await this.supabase.admin
+    async findByUserAndCourse(userId: string, courseId: string): Promise<{ id: string, is_blocked?: boolean } | null> {
+        const { data } = await (this.supabase.admin as any)
             .from('enrollments')
-            .select('id')
+            .select('id, is_blocked')
             .eq('user_id', userId)
             .eq('course_id', courseId)
             .maybeSingle();
-        return data as { id: string } | null;
+        return data as { id: string, is_blocked?: boolean } | null;
     }
 
     async create(userId: string, courseId: string): Promise<Tables<'enrollments'>> {
+        // First check profile info
+        const { data: profile } = await this.supabase.admin
+            .from('profiles')
+            .select('student_id, class_code')
+            .eq('id', userId)
+            .single();
+
+        if (!profile || !(profile as any).student_id || !(profile as any).class_code) {
+            throw new Error('REQUIRE_PROFILE_UPDATE');
+        }
+
         const { data, error } = await (this.supabase.admin as any)
             .from('enrollments')
             .insert({ user_id: userId, course_id: courseId })
@@ -70,6 +81,27 @@ export class EnrollmentRepository {
 
         if (error) handleSupabaseError(error, 'Enrollment not found');
         return data as Tables<'enrollments'>;
+    }
+
+    async updateBlockStatus(userId: string, courseId: string, isBlocked: boolean): Promise<void> {
+        const { error } = await (this.supabase.admin as any)
+            .from('enrollments')
+            .update({ is_blocked: isBlocked })
+            .eq('user_id', userId)
+            .eq('course_id', courseId);
+            
+        if (error) handleSupabaseError(error, 'Failed to update block status');
+    }
+
+    async getBlockedStudentsByCourse(courseId: string) {
+        const { data, error } = await (this.supabase.admin as any)
+            .from('enrollments')
+            .select('user_id, enrolled_at, profiles!inner(full_name, avatar_url, student_id, class_code)')
+            .eq('course_id', courseId)
+            .eq('is_blocked', true);
+
+        if (error) handleSupabaseError(error);
+        return data;
     }
 
     async upsertLessonProgress(
