@@ -13,7 +13,13 @@ export class ProfileRepository {
             .from('profiles')
             .select('*')
             .eq('id', userId)
-            .single();
+            .maybeSingle();
+
+        // If profile doesn't exist, we return a mock empty profile to prevent frontend crashes
+        // The frontend will then allow the user to fill it and send an update.
+        if (!data) {
+             return { id: userId, full_name: '', email: '', avatar_url: null, bio: null, class_code: null, student_id: null, date_of_birth: null, gender: null, phone: null, role: 'student', created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as unknown as Tables<'profiles'>;
+        }
 
         if (error) handleSupabaseError(error, `Profile ${userId} not found`);
         return data as Tables<'profiles'>;
@@ -31,14 +37,14 @@ export class ProfileRepository {
             gender?: string;
         },
     ): Promise<Tables<'profiles'>> {
+        // Use UPSERT so users without a profile row can successfully save their info
         const { data, error } = await (this.supabase.admin as any)
             .from('profiles')
-            .update(updates)
-            .eq('id', userId)
+            .upsert({ id: userId, ...updates }, { onConflict: 'id' })
             .select()
             .single();
 
-        if (error) handleSupabaseError(error, 'Profile not found');
+        if (error) handleSupabaseError(error, 'Failed to update profile');
         return data as Tables<'profiles'>;
     }
 

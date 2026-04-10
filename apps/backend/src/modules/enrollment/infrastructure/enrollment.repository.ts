@@ -24,9 +24,13 @@ export class EnrollmentRepository {
             .from('profiles')
             .select('student_id, class_code')
             .eq('id', userId)
-            .single();
+            .maybeSingle();
 
-        if (!profile || !(profile as any).student_id || !(profile as any).class_code) {
+        if (
+            !profile || 
+            !(profile as any).student_id?.trim() || 
+            !(profile as any).class_code?.trim()
+        ) {
             throw new Error('REQUIRE_PROFILE_UPDATE');
         }
 
