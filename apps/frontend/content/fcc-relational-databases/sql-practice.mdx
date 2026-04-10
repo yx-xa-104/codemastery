@@ -1,0 +1,48 @@
+---
+title: "Thực hành: SQL Queries"
+description: "Bài tập truy vấn SQL nâng cao"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# Thực hành: SQL Queries
+
+## Subqueries
+```sql
+-- Sinh viên có GPA cao hơn trung bình
+SELECT name, gpa FROM students
+WHERE gpa > (SELECT AVG(gpa) FROM students);
+
+-- Khóa học có nhiều sinh viên nhất
+SELECT c.title, COUNT(e.student_id) AS total
+FROM courses c
+JOIN enrollments e ON c.id = e.course_id
+GROUP BY c.title
+ORDER BY total DESC
+LIMIT 1;
+```
+
+## Views
+```sql
+CREATE VIEW student_summary AS
+SELECT s.name, s.gpa, COUNT(e.course_id) AS courses_taken
+FROM students s
+LEFT JOIN enrollments e ON s.id = e.student_id
+GROUP BY s.id, s.name, s.gpa;
+
+SELECT * FROM student_summary WHERE gpa >= 3.5;
+```
+
+## CTE (Common Table Expression)
+```sql
+WITH top_students AS (
+    SELECT name, gpa, RANK() OVER (ORDER BY gpa DESC) AS rank
+    FROM students
+)
+SELECT name, gpa, rank FROM top_students WHERE rank <= 3;
+```
+
+## Thử thách
+1. Tìm sinh viên chưa đăng ký khóa nào
+2. Tính GPA trung bình theo khóa học
+3. Liệt kê top 5 sinh viên theo số khóa đã hoàn thành

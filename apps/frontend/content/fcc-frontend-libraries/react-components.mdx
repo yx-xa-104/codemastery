@@ -1,0 +1,73 @@
+---
+title: "Components, JSX & Props"
+description: "Tạo React components với JSX và Props"
+difficulty: "intermediate"
+language: "jsx"
+---
+
+# React Components, JSX & Props
+
+## JSX — JavaScript XML
+```jsx
+const element = <h1 className="title">Xin chào React!</h1>;
+
+// JSX cho phép viết HTML trong JavaScript
+const greeting = (
+  <div>
+    <h1>Xin chào</h1>
+    <p>Chào mừng đến với React</p>
+  </div>
+);
+```
+
+## Function Components
+```jsx
+// Cách hiện đại để tạo component
+function Welcome({ name, role = "student" }) {
+  return (
+    <div className="welcome">
+      <h2>Xin chào, {name}!</h2>
+      <p>Vai trò: {role}</p>
+    </div>
+  );
+}
+
+// Arrow function
+const Card = ({ title, children }) => (
+  <div className="card">
+    <h3>{title}</h3>
+    <div className="card-body">{children}</div>
+  </div>
+);
+```
+
+## Props — Truyền dữ liệu
+```jsx
+// Parent → Child qua props
+function App() {
+  const courses = ["HTML", "CSS", "JavaScript"];
+  return (
+    <div>
+      <Welcome name="An" role="admin" />
+      <CourseList items={courses} />
+    </div>
+  );
+}
+
+function CourseList({ items }) {
+  return (
+    <ul>
+      {items.map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Conditional Rendering
+```jsx
+function Status({ isOnline }) {
+  return isOnline ? <span className="online">🟢 Online</span> : <span>⚫ Offline</span>;
+}
+```

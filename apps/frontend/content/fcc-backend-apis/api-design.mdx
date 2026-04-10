@@ -1,0 +1,57 @@
+---
+title: "RESTful API Design"
+description: "Nguyên tắc thiết kế RESTful API"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# RESTful API Design
+
+## Nguyên tắc REST
+
+### 1. URL = Resource (danh từ, số nhiều)
+```
+✅ GET    /api/users          Lấy danh sách
+✅ GET    /api/users/123       Lấy chi tiết
+✅ POST   /api/users           Tạo mới
+✅ PUT    /api/users/123       Cập nhật toàn bộ
+✅ PATCH  /api/users/123       Cập nhật một phần
+✅ DELETE /api/users/123       Xóa
+
+❌ GET /api/getUsers
+❌ POST /api/createUser
+❌ GET /api/user/delete/123
+```
+
+### 2. HTTP Status Codes
+| Code | Ý nghĩa |
+|------|--------|
+| 200 | Thành công |
+| 201 | Đã tạo (POST) |
+| 204 | Thành công, không có body (DELETE) |
+| 400 | Bad Request — dữ liệu không hợp lệ |
+| 401 | Unauthorized — chưa đăng nhập |
+| 403 | Forbidden — không có quyền |
+| 404 | Not Found |
+| 500 | Server Error |
+
+### 3. Response Format
+```json
+{
+  "data": [{ "id": 1, "name": "An" }],
+  "meta": { "total": 50, "page": 1, "limit": 10 },
+  "error": null
+}
+```
+
+### 4. Pagination & Filtering
+```
+GET /api/users?page=2&limit=10&sort=-createdAt
+GET /api/users?role=admin&search=an
+```
+
+### 5. Versioning
+```
+/api/v1/users
+/api/v2/users
+```

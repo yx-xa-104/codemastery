@@ -1,0 +1,42 @@
+---
+title: "Thực hành: Logic cơ bản"
+description: "Bài tập kiểm tra số chẵn/lẻ"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# 📝 Bài tập: Kiểm tra số chẵn hay lẻ
+
+## Yêu cầu
+
+Viết chương trình đọc một số nguyên `n` từ đầu vào, sau đó:
+
+- Nếu `n` là **số chẵn**, in ra `even`
+- Nếu `n` là **số lẻ**, in ra `odd`
+
+## Ví dụ
+
+| Input | Output |
+| ----- | ------ |
+| `4`   | `even` |
+| `7`   | `odd`  |
+| `0`   | `even` |
+
+## Gợi ý
+
+- Sử dụng toán tử `%` (modulo) để kiểm tra số chẵn lẻ
+- Đọc input bằng `prompt()` trong JavaScript
+- Dùng `parseInt()` để chuyển chuỗi sang số
+
+## Kiến thức cần nhớ
+
+```javascript
+// Toán tử modulo
+console.log(10 % 2); // 0 (chẵn)
+console.log(7 % 2); // 1 (lẻ)
+
+// Đọc input
+const n = parseInt(prompt());
+```
+
+> ⚡ **Lưu ý:** Bạn cần pass tất cả test cases trước khi đánh dấu hoàn thành bài học.

@@ -1,0 +1,56 @@
+---
+title: "Database Design & Normalization"
+description: "Thiết kế CSDL và chuẩn hóa dữ liệu"
+difficulty: "intermediate"
+language: "sql"
+---
+
+# Database Design & Normalization
+
+## Chuẩn hóa (Normal Forms)
+
+### 1NF: Giá trị nguyên tử
+```sql
+-- ❌ Sai: cột chứa nhiều giá trị
+-- name: "An", courses: "HTML, CSS, JS"
+
+-- ✅ Đúng: Tách thành bảng riêng
+CREATE TABLE student_courses (
+    student_id INT REFERENCES students(id),
+    course_id INT REFERENCES courses(id),
+    PRIMARY KEY (student_id, course_id)
+);
+```
+
+### 2NF: Không có phụ thuộc một phần
+### 3NF: Không có phụ thuộc bắc cầu
+
+## Quan hệ
+```sql
+-- 1:1 (profiles ↔ users)
+CREATE TABLE user_profiles (
+    user_id UUID PRIMARY KEY REFERENCES users(id),
+    bio TEXT, avatar_url TEXT
+);
+
+-- 1:N (courses → lessons)
+CREATE TABLE lessons (
+    id SERIAL PRIMARY KEY,
+    course_id INT NOT NULL REFERENCES courses(id),
+    title TEXT NOT NULL
+);
+
+-- N:N (students ↔ courses qua enrollments)
+CREATE TABLE enrollments (
+    student_id INT REFERENCES students(id),
+    course_id INT REFERENCES courses(id),
+    PRIMARY KEY (student_id, course_id)
+);
+```
+
+## Checklist thiết kế
+1. Xác định entities và relationships
+2. Chọn primary keys (UUID vs SERIAL)
+3. Thiết lập foreign keys với ON DELETE
+4. Thêm indexes cho cột query thường xuyên
+5. Áp dụng RLS nếu dùng Supabase

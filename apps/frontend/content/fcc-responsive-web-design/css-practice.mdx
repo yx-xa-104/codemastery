@@ -1,0 +1,60 @@
+---
+title: "Thực hành: Styling trang web"
+description: "Bài tập CSS cho trang portfolio"
+difficulty: "beginner"
+language: "css"
+---
+
+# Thực hành: Styling Trang Web
+
+## Bài tập
+Thêm CSS cho trang portfolio HTML từ bài trước.
+
+```css
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+nav a:hover { background: rgba(255,255,255,0.2); }
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+section { margin-bottom: 3rem; }
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+footer {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+```

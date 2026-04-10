@@ -1,0 +1,44 @@
+---
+title: "Comprehensions & Generators"
+description: "Bài tập lọc số chẵn bằng list comprehension"
+difficulty: "beginner"
+language: "python"
+---
+
+# 📝 Bài tập: Lọc Số Chẵn
+
+## Yêu cầu
+
+Viết chương trình đọc một số nguyên `n` từ đầu vào, tìm **tất cả các số chẵn** từ 1 đến `n` (bao gồm `n` nếu chẵn), và in ra các số đó **cách nhau bởi dấu phẩy**.
+
+## Ví dụ
+
+| Input | Output       |
+| ----- | ------------ |
+| `10`  | `2,4,6,8,10` |
+| `7`   | `2,4,6`      |
+| `2`   | `2`          |
+
+## Gợi ý
+
+Sử dụng **list comprehension** — cú pháp ngắn gọn của Python:
+
+```python
+# Cú pháp list comprehension
+evens = [x for x in range(1, n+1) if x % 2 == 0]
+
+# Nối list thành chuỗi:
+print(",".join(map(str, evens)))
+```
+
+## Kiến thức cần nhớ
+
+```python
+# List comprehension cơ bản
+squares = [x**2 for x in range(5)]  # [0, 1, 4, 9, 16]
+
+# Với điều kiện lọc
+odds = [x for x in range(10) if x % 2 != 0]  # [1, 3, 5, 7, 9]
+```
+
+> ⚡ **Lưu ý:** Đọc input bằng `input()` và in kết quả bằng `print()`.

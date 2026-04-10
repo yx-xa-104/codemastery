@@ -1,0 +1,70 @@
+---
+title: "Routing & Middleware"
+description: "Định tuyến và middleware trong Express.js"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Express.js: Routing & Middleware
+
+## Setup
+```javascript
+const express = require("express");
+const app = express();
+
+// Middleware parsing JSON body
+app.use(express.json());
+
+// Logger middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+```
+
+## Routing
+```javascript
+// GET
+app.get("/api/users", (req, res) => {
+  res.json([{ id: 1, name: "An" }]);
+});
+
+// GET với params
+app.get("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  res.json({ id, name: "An" });
+});
+
+// POST
+app.post("/api/users", (req, res) => {
+  const { name, email } = req.body;
+  res.status(201).json({ id: Date.now(), name, email });
+});
+
+// PUT
+app.put("/api/users/:id", (req, res) => {
+  res.json({ message: "Updated", id: req.params.id });
+});
+
+// DELETE
+app.delete("/api/users/:id", (req, res) => {
+  res.status(204).send();
+});
+```
+
+## Router (modular)
+```javascript
+// routes/users.js
+const router = express.Router();
+router.get("/", getUsers);
+router.post("/", createUser);
+module.exports = router;
+
+// app.js
+app.use("/api/users", require("./routes/users"));
+```
+
+## Khởi chạy
+```javascript
+app.listen(3000, () => console.log("Server đang chạy trên port 3000"));
+```

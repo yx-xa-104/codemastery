@@ -1,0 +1,66 @@
+---
+title: "State & Lifecycle Hooks"
+description: "useState, useEffect và các Hooks cơ bản"
+difficulty: "intermediate"
+language: "jsx"
+---
+
+# State & Lifecycle Hooks
+
+## useState
+```jsx
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Đếm: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <button onClick={() => setCount(prev => prev - 1)}>-1</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+```
+
+## useEffect
+```jsx
+import { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => { setUser(data); setLoading(false); });
+
+    return () => console.log("Cleanup khi unmount hoặc userId thay đổi");
+  }, [userId]); // Dependency array
+
+  if (loading) return <p>Đang tải...</p>;
+  return <h2>{user.name}</h2>;
+}
+```
+
+## Custom Hook
+```jsx
+function useLocalStorage(key, initial) {
+  const [value, setValue] = useState(() => {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : initial;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue];
+}
+
+// Sử dụng
+const [theme, setTheme] = useLocalStorage("theme", "dark");
+```

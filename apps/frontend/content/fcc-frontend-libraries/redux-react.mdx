@@ -1,0 +1,65 @@
+---
+title: "React-Redux Integration"
+description: "Kết nối Redux với React"
+difficulty: "intermediate"
+language: "jsx"
+---
+
+# React-Redux Integration
+
+## Setup
+```jsx
+// store.js
+import { configureStore, createSlice } from '@reduxjs/toolkit';
+
+const todoSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    addTodo: (state, action) => { state.push(action.payload); },
+    toggleTodo: (state, action) => {
+      const todo = state.find(t => t.id === action.payload);
+      if (todo) todo.done = !todo.done;
+    },
+    removeTodo: (state, action) => state.filter(t => t.id !== action.payload),
+  }
+});
+
+export const { addTodo, toggleTodo, removeTodo } = todoSlice.actions;
+export const store = configureStore({ reducer: { todos: todoSlice.reducer } });
+```
+
+## Provider & Hooks
+```jsx
+// App.jsx
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import { store, addTodo, toggleTodo } from './store';
+
+function TodoList() {
+  const todos = useSelector(state => state.todos);
+  const dispatch = useDispatch();
+
+  return (
+    <ul>
+      {todos.map(t => (
+        <li key={t.id} onClick={() => dispatch(toggleTodo(t.id))}>
+          {t.done ? "✅" : "⬜"} {t.text}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function App() {
+  return (
+    <Provider store={store}>
+      <TodoList />
+    </Provider>
+  );
+}
+```
+
+## Redux Toolkit > Redux cổ điển
+- `createSlice`: tự tạo action creators + reducer
+- `configureStore`: tự thêm middleware
+- Có thể "mutate" state (dùng Immer bên trong)

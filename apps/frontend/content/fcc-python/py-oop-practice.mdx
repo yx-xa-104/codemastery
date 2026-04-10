@@ -1,0 +1,48 @@
+---
+title: "Thực hành: OOP Project"
+description: "Bài tập tạo class Animal"
+difficulty: "beginner"
+language: "python"
+---
+
+# 📝 Bài tập: Tạo Class Animal
+
+## Yêu cầu
+
+Đọc hai dòng input:
+
+- Dòng 1: **tên** động vật (ví dụ: `Cat`)
+- Dòng 2: **tiếng kêu** (ví dụ: `Meow`)
+
+Tạo class `Animal` và in ra theo format:
+
+```
+The <name> says <sound>
+```
+
+## Ví dụ
+
+| Input           | Output              |
+| --------------- | ------------------- |
+| `Cat`<br>`Meow` | `The Cat says Meow` |
+| `Dog`<br>`Woof` | `The Dog says Woof` |
+
+## Gợi ý
+
+```python
+class Animal:
+    def __init__(self, name, sound):
+        self.name = name
+        self.sound = sound
+
+    def speak(self):
+        return f"The {self.name} says {self.sound}"
+```
+
+## Kiến thức cần nhớ
+
+- `__init__` là constructor, chạy khi tạo object mới
+- `self` tương tự `this` trong JavaScript
+- `f-string` giúp format chuỗi dễ dàng: `f"Hello {name}"`
+
+> ⚡ **Lưu ý:** Đọc input bằng `input()` và in kết quả bằng `print()`.

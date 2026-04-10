@@ -1,0 +1,46 @@
+---
+title: "Regular Expressions"
+description: "Biểu thức chính quy trong Python"
+difficulty: "beginner"
+language: "python"
+---
+
+# Regular Expressions
+
+```python
+import re
+
+# Tìm kiếm
+text = "Email: an@mail.com và binh@gmail.com"
+emails = re.findall(r'[\w.]+@[\w.]+', text)
+# ["an@mail.com", "binh@gmail.com"]
+
+# Patterns phổ biến
+re.match(r'^\d+', "123abc")       # Match đầu chuỗi
+re.search(r'\d+', "abc123def")    # Tìm bất kỳ đâu
+re.findall(r'\b\w{4}\b', text)   # Tất cả từ 4 ký tự
+re.sub(r'\d+', 'X', "abc123")    # Thay thế → "abcX"
+
+# Nhóm (Groups)
+pattern = r'(\w+)@(\w+)\.(\w+)'
+match = re.search(pattern, "an@mail.com")
+match.group(1)  # "an"
+match.group(2)  # "mail"
+
+# Các ký hiệu
+# \d = digit, \w = word char, \s = whitespace
+# .  = any char, * = 0+, + = 1+, ? = 0 or 1
+# ^  = start, $ = end
+# [] = char class, () = group
+```
+
+## Ví dụ thực tế
+```python
+# Validate số điện thoại VN
+def is_valid_phone(phone):
+    return bool(re.match(r'^(0|\+84)(3|5|7|8|9)\d{8}$', phone))
+
+# Extract hashtags
+tags = re.findall(r'#(\w+)', "Học #Python #freeCodeCamp")
+# ["Python", "freeCodeCamp"]
+```

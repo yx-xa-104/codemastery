@@ -1,0 +1,45 @@
+---
+title: "Classes & Objects"
+description: "Lập trình hướng đối tượng: class, object, methods"
+difficulty: "beginner"
+language: "python"
+---
+
+# Classes & Objects
+
+## Tạo Class
+```python
+class Student:
+    school = "CodeMastery"  # Class attribute
+
+    def __init__(self, name, age):
+        self.name = name    # Instance attribute
+        self.age = age
+        self._score = 0     # Private (convention)
+
+    def greet(self):
+        return f"Xin chào, tôi là {self.name}, {self.age} tuổi"
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        if 0 <= value <= 100:
+            self._score = value
+        else:
+            raise ValueError("Điểm phải từ 0-100")
+
+    def __str__(self):
+        return f"Student({self.name})"
+
+    def __repr__(self):
+        return f"Student(name='{self.name}', age={self.age})"
+
+# Sử dụng
+s = Student("An", 20)
+print(s.greet())
+s.score = 95
+print(s)  # Student(An)
+```

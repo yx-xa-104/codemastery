@@ -1,0 +1,47 @@
+---
+title: "Thực hành: Giải thuật toán"
+description: "Bài tập đảo ngược chuỗi"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# 📝 Bài tập: Đảo ngược chuỗi
+
+## Yêu cầu
+
+Viết chương trình đọc một chuỗi `str` từ đầu vào, sau đó **đảo ngược chuỗi** và in ra kết quả.
+
+**Quy tắc:** Không được sử dụng `Array.reverse()`.
+
+## Ví dụ
+
+| Input        | Output       |
+| ------------ | ------------ |
+| `hello`      | `olleh`      |
+| `JavaScript` | `tpircSavaJ` |
+| `abc`        | `cba`        |
+
+## Gợi ý
+
+Có nhiều cách để đảo ngược chuỗi:
+
+**Cách 1: Vòng lặp ngược**
+
+```javascript
+let result = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  result += str[i];
+}
+```
+
+**Cách 2: spread + reverse (không hợp lệ vì dùng reverse)**
+
+**Cách 3: Đệ quy**
+
+```javascript
+function reverse(s) {
+  return s === "" ? "" : reverse(s.slice(1)) + s[0];
+}
+```
+
+> ⚡ **Lưu ý:** Đọc input bằng `prompt()` và in kết quả bằng `console.log()`.

@@ -1,0 +1,59 @@
+---
+title: "Cấu trúc HTML & Semantic Elements"
+description: "Học cách tổ chức trang web với HTML5 semantic"
+difficulty: "beginner"
+language: "html"
+---
+
+# Cấu trúc HTML & Semantic Elements
+
+HTML (HyperText Markup Language) là ngôn ngữ đánh dấu dùng để xây dựng cấu trúc trang web.
+
+## Cấu trúc cơ bản
+
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang của tôi</title>
+</head>
+<body>
+  <header>
+    <nav>Menu điều hướng</nav>
+  </header>
+  <main>
+    <article>
+      <h1>Tiêu đề chính</h1>
+      <p>Nội dung bài viết</p>
+    </article>
+    <aside>Thanh bên</aside>
+  </main>
+  <footer>Chân trang</footer>
+</body>
+</html>
+```
+
+## Semantic Elements
+
+| Tag | Ý nghĩa |
+|-----|---------|
+| `<header>` | Phần đầu trang hoặc section |
+| `<nav>` | Vùng điều hướng |
+| `<main>` | Nội dung chính (duy nhất 1 trên trang) |
+| `<article>` | Nội dung độc lập |
+| `<section>` | Nhóm nội dung theo chủ đề |
+| `<aside>` | Nội dung phụ (sidebar) |
+| `<footer>` | Chân trang |
+
+## Tại sao dùng Semantic?
+
+- **SEO**: Công cụ tìm kiếm hiểu cấu trúc trang tốt hơn
+- **Accessibility**: Trình đọc màn hình điều hướng dễ dàng hơn
+- **Bảo trì**: Code dễ đọc và duy trì hơn dùng `<div>` lồng nhau
+
+## Điểm chính
+- Luôn bắt đầu với `<!DOCTYPE html>`
+- Dùng `<meta viewport>` cho responsive
+- Ưu tiên semantic tags thay vì `<div>`

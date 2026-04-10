@@ -1,0 +1,53 @@
+---
+title: "jQuery DOM Manipulation"
+description: "Thao tác DOM với jQuery"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# jQuery DOM Manipulation
+
+## Selectors & DOM
+```javascript
+// Chọn phần tử
+$("h1")              // Theo tag
+$(".card")           // Theo class
+$("#header")         // Theo id
+$("ul > li:first")   // CSS selector
+
+// Thay đổi nội dung
+$("h1").text("Tiêu đề mới");
+$(".content").html("<p>HTML mới</p>");
+$("input").val("Giá trị mới");
+
+// CSS & Class
+$(".box").css("color", "red");
+$(".box").css({ color: "red", fontSize: "1.2rem" });
+$(".btn").addClass("active");
+$(".btn").removeClass("active");
+$(".btn").toggleClass("active");
+
+// Attributes
+$("img").attr("src", "new.jpg");
+$("input").prop("disabled", true);
+```
+
+## Tạo & Xóa phần tử
+```javascript
+$("ul").append("<li>Mục mới cuối</li>");
+$("ul").prepend("<li>Mục mới đầu</li>");
+$("<div class='alert'>Thông báo</div>").insertAfter("#content");
+$(".old-item").remove();
+$(".container").empty(); // Xóa nội dung con
+```
+
+## Animation
+```javascript
+$(".box").fadeIn(400);
+$(".box").fadeOut(400);
+$(".panel").slideDown(300);
+$(".panel").slideUp(300);
+$(".element").animate({ opacity: 0.5, left: "200px" }, 500);
+```
+
+> **Lưu ý**: jQuery đang ít được dùng trong dự án mới. React/Vue thường thay thế jQuery cho DOM manipulation.

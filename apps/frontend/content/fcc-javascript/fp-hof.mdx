@@ -1,0 +1,60 @@
+---
+title: "Higher-Order Functions"
+description: "Hàm bậc cao: map, filter, reduce và ứng dụng"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Higher-Order Functions
+
+Hàm bậc cao (HOF) là hàm nhận hoặc trả về hàm khác.
+
+## Các HOF phổ biến
+
+```javascript
+const students = [
+  { name: "An", score: 85 },
+  { name: "Bình", score: 92 },
+  { name: "Chi", score: 68 },
+  { name: "Dung", score: 95 },
+];
+
+// map: biến đổi
+const names = students.map(s => s.name);
+
+// filter: lọc
+const topStudents = students.filter(s => s.score >= 90);
+
+// reduce: gộp
+const avgScore = students.reduce((sum, s) => sum + s.score, 0) / students.length;
+
+// sort: sắp xếp (immutable)
+const sorted = [...students].sort((a, b) => b.score - a.score);
+
+// Chaining
+const topNames = students
+  .filter(s => s.score >= 80)
+  .sort((a, b) => b.score - a.score)
+  .map(s => s.name);
+// ["Dung", "Bình", "An"]
+```
+
+## Tạo HOF riêng
+```javascript
+// Function factory
+const multiplyBy = factor => num => num * factor;
+const double = multiplyBy(2);
+const triple = multiplyBy(3);
+double(5); // 10
+triple(5); // 15
+
+// Memoize
+function memoize(fn) {
+  const cache = new Map();
+  return (...args) => {
+    const key = JSON.stringify(args);
+    if (!cache.has(key)) cache.set(key, fn(...args));
+    return cache.get(key);
+  };
+}
+```

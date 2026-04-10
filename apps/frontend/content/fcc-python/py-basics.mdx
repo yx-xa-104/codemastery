@@ -1,0 +1,52 @@
+---
+title: "Biến, Kiểu dữ liệu & I/O"
+description: "Cơ bản Python: biến, types, input/output"
+difficulty: "beginner"
+language: "python"
+---
+
+# Biến, Kiểu dữ liệu & I/O
+
+## Biến (Variables)
+```python
+name = "An"           # str
+age = 20              # int
+height = 1.75         # float
+is_student = True     # bool
+courses = ["HTML", "CSS"]  # list
+
+# Nhiều biến cùng lúc
+x, y, z = 1, 2, 3
+
+# Type checking
+print(type(name))  # <class 'str'>
+```
+
+## Kiểu dữ liệu
+| Kiểu | Ví dụ | Mutable? |
+|------|-------|----------|
+| `int` | `42` | Không |
+| `float` | `3.14` | Không |
+| `str` | `"hello"` | Không |
+| `bool` | `True/False` | Không |
+| `list` | `[1, 2, 3]` | Có |
+| `tuple` | `(1, 2, 3)` | Không |
+| `dict` | `{"a": 1}` | Có |
+| `set` | `{1, 2, 3}` | Có |
+
+## String Operations
+```python
+s = "Xin chào Python"
+s.upper()         # "XIN CHÀO PYTHON"
+s.lower()         # "xin chào python"
+s.split(" ")      # ["Xin", "chào", "Python"]
+s.replace("Python", "World")
+f"Tên: {name}, Tuổi: {age}"  # f-string
+```
+
+## Input/Output
+```python
+name = input("Nhập tên: ")
+age = int(input("Nhập tuổi: "))
+print(f"Xin chào {name}, bạn {age} tuổi!")
+```

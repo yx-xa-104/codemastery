@@ -1,0 +1,46 @@
+---
+title: "Hàm & Lambda"
+description: "Bài tập tính giai thừa"
+difficulty: "beginner"
+language: "python"
+---
+
+# 📝 Bài tập: Tính Giai Thừa
+
+## Yêu cầu
+
+Viết chương trình đọc một số nguyên không âm `n` từ đầu vào, tính **giai thừa** của `n` và in ra kết quả.
+
+**Công thức:**
+
+- `0! = 1`
+- `n! = n × (n-1) × (n-2) × ... × 1`
+
+## Ví dụ
+
+| Input | Cách tính           | Output |
+| ----- | ------------------- | ------ |
+| `5`   | `5 × 4 × 3 × 2 × 1` | `120`  |
+| `0`   | (theo định nghĩa)   | `1`    |
+| `3`   | `3 × 2 × 1`         | `6`    |
+
+## Gợi ý
+
+**Cách 1: Vòng lặp**
+
+```python
+result = 1
+for i in range(1, n + 1):
+    result *= i
+```
+
+**Cách 2: Đệ quy**
+
+```python
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+```
+
+> ⚡ **Lưu ý:** Đọc input bằng `input()` và in kết quả bằng `print()`.

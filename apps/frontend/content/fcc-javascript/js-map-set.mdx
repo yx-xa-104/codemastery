@@ -1,0 +1,55 @@
+---
+title: "Map, Set & Iterators"
+description: "Cấu trúc dữ liệu Map, Set và Iterator protocol"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Map, Set & Iterators
+
+## Map — Bảng ánh xạ key-value
+```javascript
+const userRoles = new Map();
+userRoles.set("an@mail.com", "admin");
+userRoles.set("binh@mail.com", "editor");
+
+console.log(userRoles.get("an@mail.com")); // "admin"
+console.log(userRoles.has("an@mail.com")); // true
+console.log(userRoles.size); // 2
+
+// Duyệt
+for (const [email, role] of userRoles) {
+  console.log(`${email}: ${role}`);
+}
+```
+
+## Set — Tập hợp giá trị duy nhất
+```javascript
+const uniqueNums = new Set([1, 2, 2, 3, 3, 3]);
+console.log(uniqueNums); // Set {1, 2, 3}
+
+uniqueNums.add(4);
+uniqueNums.delete(1);
+uniqueNums.has(2); // true
+
+// Loại bỏ trùng lặp trong array
+const unique = [...new Set(array)];
+```
+
+## Iterator Protocol
+```javascript
+// Tạo iterable tùy chỉnh
+const range = {
+  from: 1, to: 5,
+  [Symbol.iterator]() {
+    let current = this.from;
+    return {
+      next: () => current <= this.to
+        ? { value: current++, done: false }
+        : { done: true }
+    };
+  }
+};
+
+for (const n of range) console.log(n); // 1, 2, 3, 4, 5
+```

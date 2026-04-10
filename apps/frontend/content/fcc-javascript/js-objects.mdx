@@ -1,0 +1,54 @@
+---
+title: "Objects & JSON"
+description: "Object, prototype và JSON"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Objects & JSON
+
+## Tạo Object
+```javascript
+const student = {
+  name: "An",
+  age: 20,
+  grades: [9, 8, 7],
+  getAverage() {
+    return this.grades.reduce((a, b) => a + b) / this.grades.length;
+  }
+};
+
+// Truy cập
+console.log(student.name);       // "An"
+console.log(student["age"]);     // 20
+
+// Computed property
+const key = "email";
+const obj = { [key]: "an@mail.com" };
+```
+
+## Object Methods
+```javascript
+Object.keys(student);    // ["name", "age", "grades", "getAverage"]
+Object.values(student);  // ["An", 20, [9,8,7], ƒ]
+Object.entries(student);  // [["name","An"], ...]
+
+// Merge
+const merged = Object.assign({}, defaults, overrides);
+// Hoặc: const merged = { ...defaults, ...overrides };
+
+// Freeze (không thể thay đổi)
+Object.freeze(config);
+```
+
+## JSON
+```javascript
+const json = JSON.stringify(student, null, 2);
+const parsed = JSON.parse(json);
+
+// Deep clone (đơn giản)
+const clone = JSON.parse(JSON.stringify(original));
+
+// Modern deep clone
+const clone2 = structuredClone(original);
+```

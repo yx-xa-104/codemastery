@@ -1,0 +1,58 @@
+---
+title: "Arrays & Array Methods"
+description: "Mảng và các phương thức xử lý mảng"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Arrays & Array Methods
+
+## Tạo mảng
+```javascript
+const fruits = ["Táo", "Cam", "Xoài"];
+const numbers = Array.from({ length: 5 }, (_, i) => i + 1); // [1,2,3,4,5]
+```
+
+## Phương thức biến đổi (Mutating)
+```javascript
+fruits.push("Dưa");      // Thêm cuối
+fruits.pop();             // Xóa cuối
+fruits.unshift("Lê");    // Thêm đầu
+fruits.shift();           // Xóa đầu
+fruits.splice(1, 1);      // Xóa 1 phần tử tại index 1
+```
+
+## Phương thức không biến đổi (Non-mutating)
+```javascript
+const nums = [1, 2, 3, 4, 5];
+
+// map — biến đổi từng phần tử
+const doubled = nums.map(n => n * 2); // [2,4,6,8,10]
+
+// filter — lọc
+const evens = nums.filter(n => n % 2 === 0); // [2,4]
+
+// reduce — gộp
+const sum = nums.reduce((acc, n) => acc + n, 0); // 15
+
+// find / findIndex
+const found = nums.find(n => n > 3); // 4
+
+// some / every
+nums.some(n => n > 4);  // true
+nums.every(n => n > 0); // true
+
+// flat / flatMap
+[[1,2],[3,4]].flat(); // [1,2,3,4]
+
+// slice
+nums.slice(1, 3); // [2, 3]
+```
+
+## Method Chaining
+```javascript
+const result = users
+  .filter(u => u.active)
+  .map(u => u.name)
+  .sort();
+```

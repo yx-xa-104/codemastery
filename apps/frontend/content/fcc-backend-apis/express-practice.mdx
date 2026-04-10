@@ -1,0 +1,61 @@
+---
+title: "Thực hành: Express Server"
+description: "Bài tập xây dựng REST API với Express"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Thực hành: Express Server
+
+```javascript
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+let books = [
+  { id: 1, title: "Lập trình JavaScript", author: "An Nguyễn", year: 2024 },
+  { id: 2, title: "Node.js thực chiến", author: "Bình Trần", year: 2025 },
+];
+let nextId = 3;
+
+// GET all
+app.get("/api/books", (req, res) => {
+  const { author, year } = req.query;
+  let result = books;
+  if (author) result = result.filter(b => b.author.includes(author));
+  if (year) result = result.filter(b => b.year === parseInt(year));
+  res.json(result);
+});
+
+// GET by ID
+app.get("/api/books/:id", (req, res) => {
+  const book = books.find(b => b.id === parseInt(req.params.id));
+  if (!book) return res.status(404).json({ error: "Không tìm thấy sách" });
+  res.json(book);
+});
+
+// POST
+app.post("/api/books", (req, res) => {
+  const { title, author, year } = req.body;
+  if (!title || !author) return res.status(400).json({ error: "Thiếu thông tin" });
+  const book = { id: nextId++, title, author, year: year || 2025 };
+  books.push(book);
+  res.status(201).json(book);
+});
+
+// PUT
+app.put("/api/books/:id", (req, res) => {
+  const book = books.find(b => b.id === parseInt(req.params.id));
+  if (!book) return res.status(404).json({ error: "Không tìm thấy" });
+  Object.assign(book, req.body);
+  res.json(book);
+});
+
+// DELETE
+app.delete("/api/books/:id", (req, res) => {
+  books = books.filter(b => b.id !== parseInt(req.params.id));
+  res.status(204).send();
+});
+
+app.listen(3000, () => console.log("API Books chạy tại http://localhost:3000"));
+```

@@ -1,0 +1,63 @@
+---
+title: "Request, Response & Static Files"
+description: "Xử lý request, response và phục vụ file tĩnh"
+difficulty: "intermediate"
+language: "javascript"
+---
+
+# Request, Response & Static Files
+
+## Request Object
+```javascript
+app.get("/api/search", (req, res) => {
+  // Query params: /api/search?q=nodejs&page=2
+  const { q, page = 1 } = req.query;
+
+  // Headers
+  const token = req.headers["authorization"];
+
+  // Cookies (cần cookie-parser)
+  const theme = req.cookies.theme;
+
+  res.json({ query: q, page, token });
+});
+
+// Body (POST/PUT)
+app.post("/api/upload", (req, res) => {
+  const { title, content } = req.body;
+  res.status(201).json({ title, content });
+});
+```
+
+## Response Object
+```javascript
+// JSON
+res.json({ status: "ok" });
+
+// Status code
+res.status(404).json({ error: "Không tìm thấy" });
+res.status(201).json({ message: "Đã tạo" });
+
+// Redirect
+res.redirect("/login");
+
+// Send file
+res.sendFile(path.join(__dirname, "public", "index.html"));
+```
+
+## Static Files
+```javascript
+// Phục vụ thư mục public/
+app.use(express.static("public"));
+
+// Với prefix
+app.use("/assets", express.static("public"));
+```
+
+## Error Handling
+```javascript
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Lỗi server!" });
+});
+```

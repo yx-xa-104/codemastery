@@ -1,0 +1,59 @@
+---
+title: "Destructuring, Spread & Rest"
+description: "Trích xuất dữ liệu và toán tử spread/rest"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# Destructuring, Spread & Rest
+
+## Object Destructuring
+```javascript
+const user = { name: "An", age: 20, city: "HCM" };
+
+const { name, age, city } = user;
+const { name: userName, age: userAge } = user; // Đổi tên
+const { name, ...rest } = user; // rest = { age: 20, city: "HCM" }
+
+// Default values
+const { role = "student" } = user;
+
+// Nested
+const { address: { street } = {} } = user;
+```
+
+## Array Destructuring
+```javascript
+const [first, second, ...others] = [1, 2, 3, 4, 5];
+// first=1, second=2, others=[3,4,5]
+
+// Swap
+let a = 1, b = 2;
+[a, b] = [b, a]; // a=2, b=1
+
+// Skip
+const [, , third] = [1, 2, 3]; // third=3
+```
+
+## Spread Operator (...)
+```javascript
+// Clone array
+const copy = [...original];
+
+// Merge arrays
+const merged = [...arr1, ...arr2];
+
+// Clone object
+const newUser = { ...user, role: "admin" };
+
+// Function args
+Math.max(...[1, 5, 3]); // 5
+```
+
+## Rest Parameters
+```javascript
+function sum(...numbers) {
+  return numbers.reduce((total, n) => total + n, 0);
+}
+sum(1, 2, 3, 4); // 10
+```

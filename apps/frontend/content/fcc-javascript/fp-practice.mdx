@@ -1,0 +1,39 @@
+---
+title: "Thực hành: Composition & Currying"
+description: "Bài tập kết hợp hàm (function composition)"
+difficulty: "beginner"
+language: "javascript"
+---
+
+# 📝 Bài tập: Function Composition
+
+## Yêu cầu
+
+Cho hai hàm:
+
+- `double(x)` — nhân x với 2
+- `add1(x)` — cộng x với 1
+
+Viết hàm `compose(f, g)` nhận hai hàm `f` và `g`, trả về một hàm mới thực hiện `f(g(x))`.
+
+Đọc số `n` từ đầu vào, in ra kết quả `compose(double, add1)(n)`.
+
+## Ví dụ
+
+| Input | Cách tính                             | Output |
+| ----- | ------------------------------------- | ------ |
+| `3`   | `double(add1(3))` = `double(4)` = `8` | `8`    |
+| `0`   | `double(add1(0))` = `double(1)` = `2` | `2`    |
+
+## Kiến thức cần nhớ
+
+```javascript
+// Function composition: f(g(x))
+const compose = (f, g) => (x) => f(g(x));
+
+// Sử dụng
+const addAndDouble = compose(double, add1);
+addAndDouble(3); // double(add1(3)) = double(4) = 8
+```
+
+> ⚡ **Lưu ý:** Đọc input bằng `prompt()` và in kết quả bằng `console.log()`.

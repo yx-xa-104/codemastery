@@ -1,0 +1,74 @@
+---
+title: "Sass Variables, Nesting & Mixins"
+description: "Cơ bản Sass/SCSS"
+difficulty: "intermediate"
+language: "scss"
+---
+
+# Sass Variables, Nesting & Mixins
+
+Sass (SCSS) mở rộng CSS với biến, nesting, mixins và nhiều tính năng mạnh mẽ.
+
+## Variables — Biến
+```scss
+$primary: #3498db;
+$secondary: #2ecc71;
+$font-stack: 'Inter', sans-serif;
+$spacing: 1rem;
+$border-radius: 8px;
+
+body {
+  font-family: $font-stack;
+  color: #333;
+}
+.btn-primary {
+  background: $primary;
+  padding: $spacing;
+  border-radius: $border-radius;
+}
+```
+
+## Nesting — Lồng nhau
+```scss
+.navbar {
+  display: flex;
+  padding: 1rem 2rem;
+
+  .logo {
+    font-weight: bold;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      text-decoration: none;
+      &:hover { color: $primary; }    // & = parent selector
+      &.active { font-weight: bold; }
+    }
+  }
+}
+```
+
+## Mixins — Tái sử dụng
+```scss
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin responsive($bp) {
+  @if $bp == tablet { @media (min-width: 768px) { @content; } }
+  @if $bp == desktop { @media (min-width: 1024px) { @content; } }
+}
+
+.hero {
+  @include flex-center;
+  min-height: 100vh;
+
+  @include responsive(tablet) {
+    flex-direction: row;
+  }
+}
+```
