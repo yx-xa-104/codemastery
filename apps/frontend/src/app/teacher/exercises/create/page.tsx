@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { TeacherLayout } from "@/features/teacher/components/TeacherLayout";
 import { createClient } from "@/shared/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Save, Plus, Trash2, ArrowLeft, Loader2, Info } from "lucide-react";
+import { Save, Plus, Trash2, ArrowLeft, Loader2, Info, Code } from "lucide-react";
 import Link from "next/link";
 
 interface TestCase {
