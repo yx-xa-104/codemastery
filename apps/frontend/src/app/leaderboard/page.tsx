@@ -2,6 +2,8 @@ import { MainLayout } from "@/shared/components/layouts/MainLayout";
 import { Trophy } from "lucide-react";
 import { LeaderboardList } from "@/features/leaderboard/components/LeaderboardList";
 
+export const dynamic = 'force-dynamic';
+
 interface LeaderboardUser {
     rank: number;
     id: string;

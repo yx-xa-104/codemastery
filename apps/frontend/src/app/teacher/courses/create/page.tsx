@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   ArrowLeft, Plus, Save, Globe, ChevronDown, ChevronRight, Grip,
   PlayCircle, BookOpen, Code, CheckCircle, Trash2, FileText,
@@ -117,6 +117,14 @@ function MdToolbar({ textareaRef, onUpdate }: { textareaRef: React.RefObject<HTM
 // ═══════════════════════════════════════════════════════════════════
 
 export default function CourseCreatePage() {
+  return (
+    <React.Suspense fallback={<div className="flex bg-[#010816] h-screen items-center justify-center text-slate-400">Loading...</div>}>
+      <CourseCreateForm />
+    </React.Suspense>
+  );
+}
+
+function CourseCreateForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editCourseId = searchParams.get('id');
