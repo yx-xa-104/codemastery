@@ -37,15 +37,38 @@ export class ProfileRepository {
             gender?: string;
         },
     ): Promise<Tables<'profiles'>> {
-        // Use UPSERT so users without a profile row can successfully save their info
-        const { data, error } = await (this.supabase.admin as any)
+        // Try to update the existing row first
+        const { data: updatedData } = await (this.supabase.admin as any)
             .from('profiles')
-            .upsert({ id: userId, ...updates }, { onConflict: 'id' })
+            .update(updates)
+            .eq('id', userId)
+            .select()
+            .maybeSingle();
+
+        if (updatedData) {
+            return updatedData as Tables<'profiles'>;
+        }
+
+        // If no row was updated, it means the profile doesn't exist yet.
+        // We must fetch from auth.users to satisfy NOT NULL constraints like full_name and email.
+        const { data: { user } } = await this.supabase.admin.auth.admin.getUserById(userId);
+        
+        const fallbackFullName = user?.user_metadata?.full_name || 'Người dùng mới';
+        const email = user?.email || `user-${userId.substring(0, 8)}@example.com`;
+
+        const { data: insertedData, error: insertError } = await (this.supabase.admin as any)
+            .from('profiles')
+            .insert({
+                id: userId,
+                full_name: updates.full_name || fallbackFullName,
+                email: email,
+                ...updates
+            })
             .select()
             .single();
 
-        if (error) handleSupabaseError(error, 'Failed to update profile');
-        return data as Tables<'profiles'>;
+        if (insertError) handleSupabaseError(insertError, 'Failed to update profile');
+        return insertedData as Tables<'profiles'>;
     }
 
     async uploadAvatar(userId: string, file: any): Promise<string> {
