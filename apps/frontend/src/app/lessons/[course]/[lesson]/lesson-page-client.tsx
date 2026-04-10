@@ -56,6 +56,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const [testsPassed, setTestsPassed] = useState(false);
     const [quizPassed, setQuizPassed] = useState(false);
     const [isDiscussionOpen, setDiscussionOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
     const hasQuiz = quizQuestions.length > 0;
 
     const language = (lesson.exerciseConfig?.language as string) ?? "javascript";
@@ -75,6 +76,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
             ?? `// ${lesson.title}\n// Bắt đầu code tại đây\n`;
         setCurrentCode(initialCode);
         setLastSavedCode(initialCode);
+        setIsLoaded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storageKey]);
 
@@ -253,7 +255,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                                     onQuizComplete={(allCorrect) => setQuizPassed(allCorrect)}
                                     isCompleted={isCompleted}
                                 />
-                            ) : (
+                            ) : isLoaded ? (
                                 <div className="p-3 lg:p-4 h-full">
                                     <CodeEditor
                                         initialCode={currentCode}
@@ -292,6 +294,12 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                                             }
                                         }}
                                     />
+                                </div>
+                            ) : (
+                                <div className="flex justify-center items-center h-full text-slate-500 font-mono text-sm">
+                                    <div className="animate-pulse flex items-center gap-2">
+                                        <Loader2 className="w-4 h-4 animate-spin" /> Đang tải...
+                                    </div>
                                 </div>
                             )}
                             </div>
