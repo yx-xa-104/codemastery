@@ -146,3 +146,4 @@ SUPABASE.txt
 /scripts
 *.statusCode
 docs/pass.txt
+.vercel
