@@ -40,7 +40,7 @@ export function Footer() {
                         </p>
                         <div className="flex items-center gap-3 mt-4">
                             <a
-                                href="https://github.com"
+                                href="https://github.com/yx-xa-104/codemastery"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"
@@ -48,7 +48,7 @@ export function Footer() {
                                 <Github className="w-5 h-5" />
                             </a>
                             <a
-                                href="mailto:contact@codemastery.dev"
+                                href="mailto:anngo1755@gmail.com"
                                 className="p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"
                             >
                                 <Mail className="w-5 h-5" />

@@ -124,7 +124,7 @@ export default async function DashboardPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-8">
 
                     {/* Hero Banner */}
-                    <div className="w-full bg-zinc-900/30 rounded-3xl p-8 md:p-12 relative overflow-hidden backdrop-blur-xl border border-white/5">
+                    <div className="w-full bg-navy-900/60 rounded-3xl p-8 md:p-12 relative overflow-hidden backdrop-blur-xl border border-white/5 shadow-2xl">
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
                         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                             <div>
@@ -155,8 +155,8 @@ export default async function DashboardPage() {
                             { icon: Flame, label: 'Chuỗi ngày', value: `${gamStats.streak_days}` },
                             { icon: Trophy, label: 'Xếp hạng', value: `#${gamStats.rank}` },
                         ].map(({ icon: Icon, label, value }) => (
-                            <div key={label} className="rounded-2xl p-6 border border-white/5 bg-zinc-900/30 backdrop-blur-md flex flex-col gap-3 group hover:bg-white/[0.02] transition-colors">
-                                <div className="text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                            <div key={label} className="rounded-2xl p-6 border border-white/5 bg-navy-900/60 shadow-lg backdrop-blur-md flex flex-col gap-3 group hover:bg-white/[0.04] transition-all hover:-translate-y-1 hover:shadow-xl">
+                                <div className="text-zinc-500 group-hover:text-indigo-400 transition-colors">
                                     <Icon className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -169,7 +169,7 @@ export default async function DashboardPage() {
 
                     {/* Pinned Courses */}
                     {pinnedCourses.length > 0 && (
-                        <div className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">
+                        <div className="bg-navy-900/60 shadow-lg backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">
                             <div className="flex justify-between items-center p-5 md:p-6 border-b border-white/5">
                                 <h3 className="text-zinc-100 text-lg font-bold flex items-center gap-2">
                                     <Pin className="w-5 h-5 text-zinc-400" />
@@ -212,7 +212,7 @@ export default async function DashboardPage() {
                         <div className="flex-1 flex flex-col gap-8">
 
                             {/* Enrolled Courses */}
-                            <div className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">
+                            <div className="bg-navy-900/60 shadow-xl backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">
                                 <div className="flex justify-between items-center p-5 md:p-6 border-b border-white/5">
                                     <h3 className="text-zinc-100 text-lg font-bold flex items-center gap-2">
                                         <BookOpen className="w-5 h-5 text-zinc-400" />
@@ -280,7 +280,7 @@ export default async function DashboardPage() {
                             </div>
 
                             {/* Activity Chart — Real Data */}
-                            <div className="bg-zinc-900/30 backdrop-blur-md rounded-2xl p-6 border border-white/5">
+                            <div className="bg-navy-900/60 shadow-xl backdrop-blur-md rounded-2xl p-6 border border-white/5">
                                 <div className="flex justify-between items-center mb-8">
                                     <h3 className="text-zinc-100 text-lg font-bold flex items-center gap-2">
                                         <BarChart3 className="w-5 h-5 text-zinc-400" />
@@ -389,7 +389,7 @@ export default async function DashboardPage() {
                         {/* Right Sidebar */}
                         <div className="w-full lg:w-72 shrink-0 flex flex-col gap-5">
                             {/* Overall Progress */}
-                            <div className="bg-zinc-900/30 backdrop-blur-md rounded-2xl p-6 border border-white/5 flex flex-col items-center">
+                            <div className="bg-navy-900/60 shadow-xl backdrop-blur-md rounded-2xl p-6 border border-white/5 flex flex-col items-center">
                                 <h3 className="text-zinc-100 text-sm font-medium mb-8 w-full flex items-center justify-between">
                                     Tiến độ tổng thể
                                     <Clock className="w-4 h-4 text-zinc-500" /> 
@@ -399,7 +399,7 @@ export default async function DashboardPage() {
                                         className="size-full rounded-full flex items-center justify-center transition-all duration-1000 ease-in-out shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"
                                         style={{ background: `conic-gradient(#e4e4e7 ${avgProgress}%, rgba(255,255,255,0.05) 0)` }}
                                     >
-                                        <div className="bg-[#050505] rounded-full size-[140px] flex flex-col items-center justify-center border border-white/5 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                                        <div className="bg-navy-950 rounded-full size-[140px] flex flex-col items-center justify-center border border-white/5 shadow-2xl group-hover:scale-105 transition-transform duration-500">
                                             <span className="text-4xl font-bold tracking-tight text-white">{avgProgress}%</span>
                                             <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-2">Đã hoàn thành</span>
                                         </div>
@@ -411,7 +411,7 @@ export default async function DashboardPage() {
                             </div>
 
                             {/* AI Tutor CTA */}
-                            <div className="relative bg-zinc-900/30 rounded-2xl p-6 border border-white/5 overflow-hidden group backdrop-blur-md">
+                            <div className="relative bg-navy-900/60 backdrop-blur-md shadow-xl rounded-2xl p-6 border border-white/5 overflow-hidden group">
                                 <div className="absolute -right-10 -top-10 size-40 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none transition-all group-hover:bg-indigo-500/20" />
                                 <div className="absolute -left-10 -bottom-10 size-40 bg-amber-500/5 blur-[50px] rounded-full pointer-events-none" />
                                 <div className="relative z-10 flex flex-col gap-4 items-start">
@@ -432,7 +432,7 @@ export default async function DashboardPage() {
                             </div>
 
                             {/* Quick Links */}
-                            <div className="bg-zinc-900/30 rounded-2xl p-5 border border-white/5 backdrop-blur-md flex flex-col gap-2">
+                            <div className="bg-navy-900/60 shadow-lg rounded-2xl p-5 border border-white/5 backdrop-blur-md flex flex-col gap-2">
                                 <h3 className="text-zinc-100 text-sm font-medium mb-2 pl-2">Khám phá nhanh</h3>
                                 {[
                                     { label: 'Khóa học', href: '/courses', icon: BookOpen },

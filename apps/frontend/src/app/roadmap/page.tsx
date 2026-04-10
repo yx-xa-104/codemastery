@@ -219,7 +219,7 @@ export default async function RoadmapPage() {
                                                                         ? 'bg-emerald-500/20 border-2 border-emerald-500/50'
                                                                         : isNext
                                                                             ? 'bg-zinc-200 border-4 border-[#050505] shadow-[0_0_15px_rgba(255,255,255,0.3)]'
-                                                                            : 'bg-[#050505] border-2 border-white/10 group-hover:border-white/20'
+                                                                            : 'bg-navy-950 border-2 border-white/10 group-hover:border-white/20'
                                                                 }`}>
                                                                     {step.done
                                                                         ? <CheckCircle2 className="w-4 h-4 text-emerald-400" />

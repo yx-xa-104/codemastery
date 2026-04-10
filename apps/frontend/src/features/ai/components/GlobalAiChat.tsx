@@ -85,14 +85,14 @@ export function GlobalAiChat() {
             {/* ── Chat popup ── */}
             {isOpen && (
                 <div
-                    className={`fixed bottom-6 right-6 z-50 flex flex-col bg-[#0B1120] border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/50 transition-all duration-200 origin-bottom-right
+                    className={`fixed bottom-6 right-6 z-50 flex flex-col bg-navy-900 border border-slate-700/50 rounded-2xl shadow-2xl shadow-indigo-500/10 transition-all duration-200 origin-bottom-right
                         ${isMinimized
                             ? "w-72 overflow-hidden"
                             : "w-[380px] max-w-[calc(100vw-24px)] h-[520px] max-h-[calc(100vh-96px)]"
                         }`}
                 >
                     {/* Header */}
-                    <div className="flex items-center gap-3 px-4 py-3 bg-[#111827] border-b border-slate-700/60 rounded-t-2xl shrink-0">
+                    <div className="flex items-center gap-3 px-4 py-3 bg-navy-950 border-b border-slate-700/50 rounded-t-2xl shrink-0">
                         <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center relative shrink-0">
                             <Bot className="w-4 h-4 text-white" />
                             <span className="absolute -top-px -right-px size-2.5 bg-green-500 rounded-full border-2 border-[#111827]" />
@@ -165,7 +165,7 @@ export function GlobalAiChat() {
                                         <p className="text-xs text-slate-500 text-center py-4">Chưa có lịch sử</p>
                                     ) : (
                                         sessions.map(s => (
-                                            <div key={s.id} className="flex flex-col group p-2.5 rounded-lg bg-[#0d1526] hover:bg-white/5 border border-slate-800 transition-colors cursor-pointer" onClick={() => { loadSession(s.id); setView('chat'); }}>
+                                            <div key={s.id} className="flex flex-col group p-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-colors cursor-pointer" onClick={() => { loadSession(s.id); setView('chat'); }}>
                                                 <div className="flex items-start justify-between gap-2">
                                                     <p className="text-xs text-slate-300 font-medium line-clamp-2 leading-relaxed">{s.title}</p>
                                                 </div>
@@ -213,7 +213,7 @@ export function GlobalAiChat() {
                                         <div className="size-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
                                             <Bot className="w-3 h-3 text-white" />
                                         </div>
-                                        <div className="bg-[#1a2744] border border-slate-700/40 rounded-xl rounded-tl-sm px-3 py-2.5">
+                                        <div className="bg-white/5 border border-white/10 rounded-xl rounded-tl-sm px-3 py-2.5">
                                             <div className="flex gap-1 items-center">
                                                 <span className="size-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "0ms" }} />
                                                 <span className="size-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -225,8 +225,8 @@ export function GlobalAiChat() {
                             </div>
 
                             {/* Input */}
-                            <div className="px-3 pb-3 pt-2 border-t border-slate-700/60 shrink-0">
-                                <div className="flex items-end gap-2 bg-[#0d1526] border border-slate-700/60 rounded-xl p-2 focus-within:border-indigo-500/60 transition-colors">
+                            <div className="px-3 pb-3 pt-2 border-t border-slate-700/50 shrink-0">
+                                <div className="flex items-end gap-2 bg-white/5 border border-white/10 rounded-xl p-2 focus-within:border-indigo-500/60 transition-colors">
                                     <textarea
                                         ref={textareaRef}
                                         value={input}
@@ -260,7 +260,7 @@ export function GlobalAiChat() {
                                 {/* Toggle View Button */}
                                 <button
                                     onClick={() => setView('history')}
-                                    className="absolute -top-7 right-3 text-[10px] text-slate-500 hover:text-white flex items-center gap-1 bg-[#0b1120] px-2 py-1 rounded-t-lg border border-b-0 border-slate-700/60 transition-colors"
+                                    className="absolute -top-7 right-3 text-[10px] text-slate-500 hover:text-white flex items-center gap-1 bg-navy-950 px-2 py-1 rounded-t-lg border border-b-0 border-slate-700/50 transition-colors"
                                 >
                                     <><History className="w-3 h-3" /> Lịch sử</>
                                 </button>

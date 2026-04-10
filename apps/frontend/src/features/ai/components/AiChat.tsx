@@ -73,7 +73,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
                         <p className="text-xs text-slate-500 text-center py-4">Chưa có lịch sử</p>
                     ) : (
                         sessions.map((s: any) => (
-                            <div key={s.id} className="flex flex-col group p-2.5 rounded-lg bg-[#0d1526] hover:bg-white/5 border border-slate-800 transition-colors cursor-pointer" onClick={() => { loadSession(s.id); setView('chat'); }}>
+                            <div key={s.id} className="flex flex-col group p-2.5 rounded-lg bg-navy-900 hover:bg-white/5 border border-slate-800 transition-colors cursor-pointer" onClick={() => { loadSession(s.id); setView('chat'); }}>
                                 <div className="flex items-start justify-between gap-2">
                                     <p className="text-xs text-slate-300 font-medium line-clamp-2 leading-relaxed">{s.title}</p>
                                 </div>

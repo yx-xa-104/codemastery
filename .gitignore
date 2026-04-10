@@ -147,3 +147,5 @@ SUPABASE.txt
 *.statusCode
 docs/pass.txt
 .vercel
+/asset/nckh
+asset/pass.txt

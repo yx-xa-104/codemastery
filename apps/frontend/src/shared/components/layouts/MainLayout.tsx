@@ -13,7 +13,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, showFooter = true, hideAiChat = false }: MainLayoutProps) {
     return (
-        <div className="flex flex-col min-h-screen bg-[#09090b] font-sans text-slate-200 relative overflow-x-hidden">
+        <div className="flex flex-col min-h-screen bg-navy-950 font-sans text-slate-200 relative overflow-x-hidden">
             {/* Global Abstract Background */}
             <div className="fixed inset-0 pointer-events-none bg-[size:24px_24px] bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] z-0" />
             <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none z-0" />

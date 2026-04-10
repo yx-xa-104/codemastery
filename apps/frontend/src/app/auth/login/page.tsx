@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { signInWithPassword } from "@/features/auth/actions";
 import { Button } from "@/shared/components/ui/button";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 
 export default function LoginPage() {
     const [error, setError] = useState("");
@@ -47,11 +48,11 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#010816] flex font-sans antialiased text-slate-200">
+        <div className="min-h-screen bg-navy-950 flex font-sans antialiased text-slate-200">
             {/* ─── LEFT: BRANDING (SPLIT LAYOUT) ─── */}
-            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-r border-slate-800/60 bg-[#060D1A]">
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-r border-slate-800/60 bg-navy-900">
                 {/* Abstract grid & glow */}
-                <div className="absolute inset-0 opacity-[0.03] bg-[size:24px_24px] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] pointer-events-none" />
+                <div className="absolute inset-0 pointer-events-none bg-[size:24px_24px] bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] pointer-events-none" />
                 <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
                 
                 <motion.div 
@@ -94,7 +95,7 @@ export default function LoginPage() {
                     <div className="flex items-center gap-3">
                         <div className="flex -space-x-2">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className={`size-8 rounded-full border-2 border-[#060D1A] bg-linear-to-br from-indigo-${i*2}00 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shadow-sm`}>
+                                <div key={i} className={`size-8 rounded-full border-2 border-navy-900 bg-linear-to-br from-indigo-${i*2}00 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shadow-sm`}>
                                    SV
                                 </div>
                             ))}
@@ -108,6 +109,10 @@ export default function LoginPage() {
 
             {/* ─── RIGHT: LOGIN FORM ─── */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
+                <div className="absolute top-6 right-6">
+                    <ThemeToggle />
+                </div>
+                
                 {/* Mobile glow */}
                 <div className="absolute top-1/4 right-0 w-[50%] h-[50%] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none lg:hidden" />
 
@@ -156,7 +161,7 @@ export default function LoginPage() {
                                     type="text"
                                     required
                                     placeholder="Nhập email hoặc mã sinh viên"
-                                    className="w-full bg-[#0B1120]/50 border border-slate-700/50 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium backdrop-blur-xl outline-none"
+                                    className="w-full bg-navy-900/50 border border-slate-700/50 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium backdrop-blur-xl outline-none"
                                 />
                             </div>
                             <p className="text-[11px] text-slate-500 ml-1 font-medium pt-1">
@@ -178,7 +183,7 @@ export default function LoginPage() {
                                     type={showPw ? "text" : "password"}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full bg-[#0B1120]/50 border border-slate-700/50 rounded-xl py-3 pl-10 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium backdrop-blur-xl outline-none"
+                                    className="w-full bg-navy-900/50 border border-slate-700/50 rounded-xl py-3 pl-10 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium backdrop-blur-xl outline-none"
                                 />
                                 <button
                                     type="button"
@@ -195,7 +200,7 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
+                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-[#fff] font-bold py-5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/20"
                             >
                                 {isPending ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />

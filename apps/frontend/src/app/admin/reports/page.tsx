@@ -1,8 +1,8 @@
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { TrendingUp, Users, BookOpen, Star, Download } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
+import { TrendingUp, Users, BookOpen, Star } from "lucide-react";
+import { ExportReportDropdown } from "@/features/admin/components/ExportReportDropdown";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -43,9 +43,7 @@ export default async function AdminReportsPage() {
             title="Báo cáo & Thống kê"
             subtitle="Tổng quan hoạt động nền tảng"
             action={
-                <Button variant="outline" className="flex items-center gap-2 px-4 py-2 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800 text-sm font-medium rounded-lg transition-all h-auto">
-                    <Download className="w-4 h-4" /> Xuất báo cáo
-                </Button>
+                <ExportReportDropdown token={token} />
             }
         >
             {/* KPI row */}
@@ -56,7 +54,7 @@ export default async function AdminReportsPage() {
                     { icon: Star, label: 'Đánh giá TB', value: stats?.avgRating ?? '0', delta: `${stats?.reviewCount ?? 0} đánh giá` },
                     { icon: TrendingUp, label: 'Khóa học', value: stats?.totalCourses ?? 0, delta: 'Tổng' },
                 ].map(({ icon: Icon, label, value, delta }) => (
-                    <div key={label} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-5">
+                    <div key={label} className="bg-navy-950/60 border border-white/10 shadow-sm rounded-xl p-5">
                         <div className="flex justify-between items-start mb-3">
                             <p className="text-xs font-medium text-slate-400">{label}</p>
                             <Icon className="w-4 h-4 text-indigo-400" />
@@ -69,31 +67,31 @@ export default async function AdminReportsPage() {
 
             {/* Enrollment chart */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6">
+                <div className="bg-navy-950/60 border border-white/10 shadow-sm rounded-xl p-6">
                     <div className="flex justify-between items-center mb-5">
                         <h3 className="font-bold text-white text-sm">Học viên đăng ký mới</h3>
-                        <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">7 ngày qua</span>
+                        <span className="text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">7 ngày qua</span>
                     </div>
                     <div className="flex items-end gap-2 h-36">
                         {enrollChart.map((d, i) => (
                             <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
                                 <span className="text-[10px] text-slate-400">{d.count}</span>
                                 <div
-                                    className={`w-full rounded-t transition-all ${d.count === Math.max(...enrollChart.map(x => x.count)) ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'bg-slate-700 hover:bg-indigo-500/50'}`}
+                                    className={`w-full rounded-t transition-all ${d.count === Math.max(...enrollChart.map(x => x.count)) ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'bg-slate-500/40 hover:bg-indigo-500/50'}`}
                                     style={{ height: `${(d.count / maxEnroll) * 100}%`, minHeight: d.count > 0 ? '4px' : '0px' }}
                                 />
                                 <span className="text-[10px] text-slate-500">{d.label}</span>
                             </div>
                         ))}
                     </div>
-                    <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
+                    <div className="mt-4 pt-4 border-t border-white/10 flex justify-between text-xs text-slate-400">
                         <span>Tổng tuần: <strong className="text-white">{enrollChart.reduce((a, b) => a + b.count, 0)}</strong> học viên</span>
                         <span>TB/ngày: <strong className="text-white">{enrollChart.length > 0 ? Math.round(enrollChart.reduce((a, b) => a + b.count, 0) / enrollChart.length) : 0}</strong></span>
                     </div>
                 </div>
 
                 {/* Placeholder for a second chart card */}
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                <div className="bg-navy-950/60 border border-white/10 shadow-sm rounded-xl p-6 flex flex-col items-center justify-center text-center">
                     <TrendingUp className="w-10 h-10 text-slate-700 mb-3" />
                     <p className="text-slate-400 text-sm font-medium mb-1">Biểu đồ tiến độ</p>
                     <p className="text-xs text-slate-500">Đang phát triển — sẽ hiển thị tỷ lệ hoàn thành khóa học</p>
@@ -101,8 +99,8 @@ export default async function AdminReportsPage() {
             </div>
 
             {/* Top courses */}
-            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden">
-                <div className="px-6 py-4 border-b border-indigo-900/30 flex justify-between items-center">
+            <div className="bg-navy-950/60 border border-white/10 shadow-sm rounded-xl overflow-hidden">
+                <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center">
                     <h3 className="font-bold text-white text-sm">Top Khóa học phổ biến</h3>
                 </div>
                 <div className="p-5 space-y-4">
@@ -114,7 +112,7 @@ export default async function AdminReportsPage() {
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-white mb-1 truncate">{c.title}</p>
                                 <div className="flex items-center gap-2">
-                                    <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                    <div className="flex-1 h-1.5 bg-slate-500/20 rounded-full overflow-hidden">
                                         <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${((c.total_enrollments || 0) / maxEnrollTop) * 100}%` }} />
                                     </div>
                                     <span className="text-xs text-slate-400 shrink-0">{Math.round(((c.total_enrollments || 0) / maxEnrollTop) * 100)}%</span>

@@ -107,11 +107,11 @@ export default function TeacherExercisesPage() {
             <div className="relative mb-5 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input value={search} onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 bg-[#0B1120] border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
+                    className="w-full pl-9 pr-4 py-2.5 bg-navy-900 border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
                     placeholder="Tìm bài tập, ngôn ngữ..." />
             </div>
 
-            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden min-h-[300px]">
+            <div className="bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden min-h-[300px]">
                 {loading ? (
                     <div className="flex justify-center items-center h-48">
                         <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />

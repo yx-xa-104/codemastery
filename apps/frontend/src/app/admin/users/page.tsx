@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 {[
-                    { label: 'Tổng', value: stats.total, color: 'text-white bg-slate-800 border-slate-700' },
+                    { label: 'Tổng', value: stats.total, color: 'text-slate-200 bg-white/5 border-white/10' },
                     { label: 'Học viên', value: stats.students, color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' },
                     { label: 'Giảng viên', value: stats.teachers, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
                     { label: 'Admin', value: stats.admins, color: 'text-red-400 bg-red-500/10 border-red-500/20' },
@@ -172,11 +172,11 @@ export default function AdminUsersPage() {
                 <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <input value={search} onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 bg-[#0B1120] border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
+                        className="w-full pl-9 pr-4 py-2.5 bg-navy-950 border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
                         placeholder="Tìm tên, email, mã SV..." />
                 </div>
                 <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}
-                    className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                    className="bg-navy-950 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Tất cả vai trò</option>
                     <option value="student">Học viên</option>
                     <option value="teacher">Giảng viên</option>
@@ -190,11 +190,11 @@ export default function AdminUsersPage() {
                     <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
                 </div>
             ) : (
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden">
+                <div className="bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b border-indigo-900/30 bg-[#050C1F]">
+                                <tr className="border-b border-indigo-900/30 bg-navy-950">
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Tài khoản</th>
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Vai trò</th>
                                     <th className="text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider px-5 py-3.5">Mã SV/GV</th>
@@ -251,7 +251,7 @@ export default function AdminUsersPage() {
                                                             <MoreVertical className="w-4 h-4" />
                                                         </Button>
                                                         {actionMenu === u.id && (
-                                                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#0B1120] border border-slate-700 rounded-lg shadow-xl z-30 py-1 overflow-hidden">
+                                                            <div className="absolute right-0 top-full mt-1 w-48 bg-navy-950 border border-slate-700/50 rounded-lg shadow-xl z-30 py-1 overflow-hidden">
                                                                 {u.role !== 'student' && (
                                                                     <button onClick={() => changeRole(u.id, 'student')} className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white">→ Đổi thành Học viên</button>
                                                                 )}

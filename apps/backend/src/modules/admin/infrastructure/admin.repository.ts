@@ -153,6 +153,55 @@ export class AdminRepository {
         return result;
     }
 
+    async getExportDataForRange(range: string) {
+        const limitDate = new Date();
+        if (range === 'week') limitDate.setDate(limitDate.getDate() - 7);
+        else if (range === 'month') limitDate.setMonth(limitDate.getMonth() - 1);
+        else if (range === 'quarter') limitDate.setMonth(limitDate.getMonth() - 3);
+        else if (range === 'year') limitDate.setFullYear(limitDate.getFullYear() - 1);
+        else limitDate.setMonth(limitDate.getMonth() - 1); // default month
+
+        const limitDateStr = limitDate.toISOString();
+
+        // Extract Stats Limited by date
+        const { count: studentCount } = await (this.supabase.admin as any).from('profiles')
+            .select('*', { count: 'exact', head: true })
+            .eq('role', 'student')
+            .gte('created_at', limitDateStr);
+
+        const { count: enrollCount } = await (this.supabase.admin as any).from('enrollments')
+            .select('*', { count: 'exact', head: true })
+            .gte('enrolled_at', limitDateStr);
+
+        const { count: courseCount } = await (this.supabase.admin as any).from('courses')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', limitDateStr);
+
+        const { data: reviews } = await (this.supabase.admin as any).from('course_reviews')
+            .select('rating')
+            .gte('created_at', limitDateStr);
+
+        const avgRating = reviews?.length
+            ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+            : '0';
+
+        const stats = {
+            studentCount: studentCount || 0,
+            enrollCount: enrollCount || 0,
+            courseCount: courseCount || 0,
+            avgRating,
+            reviewCount: reviews?.length || 0,
+        };
+
+        // Get enrollments detail 
+        const { data: enrollments } = await (this.supabase.admin as any).from('enrollments')
+            .select('id, enrolled_at, progress_percent, user_id, profiles(full_name, email), courses(title, level)')
+            .gte('enrolled_at', limitDateStr)
+            .order('enrolled_at', { ascending: false });
+
+        return { stats, limitDateStr, enrollments: enrollments || [] };
+    }
+
     async updateUserRole(userId: string, role: string) {
         const { error } = await (this.supabase.admin as any)
             .from('profiles')

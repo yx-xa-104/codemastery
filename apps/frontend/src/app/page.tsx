@@ -28,7 +28,7 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-bold uppercase tracking-wider text-indigo-400 mb-6 shadow-[0_0_15px_rgba(79,70,229,0.15)]">
-                <Sparkles className="w-4 h-4 text-amber-400" /> Bắt đầu hành trình
+              Bắt đầu hành trình
               </div>
               <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
                 Lộ trình của các <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-400 to-indigo-400">Chuyên gia</span>
@@ -38,7 +38,7 @@ export default async function HomePage() {
               </p>
             </div>
             <Link href="/courses">
-                <Button className="hidden md:flex bg-[#0B1120]/50 hover:bg-indigo-600/20 text-indigo-300 font-bold py-2.5 px-6 rounded-xl border border-indigo-500/30 transition-all backdrop-blur-xl group">
+                <Button className="hidden md:flex bg-navy-900/50 hover:bg-indigo-600/20 text-indigo-300 font-bold py-2.5 px-6 rounded-xl border border-indigo-500/30 transition-all backdrop-blur-xl group">
                     Xem tất cả <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
             </Link>
@@ -63,7 +63,7 @@ export default async function HomePage() {
           
           <div className="mt-10 flex justify-center md:hidden">
             <Link href="/courses">
-                <Button className="bg-[#0B1120]/50 hover:bg-indigo-600/20 text-indigo-300 font-bold py-2.5 px-8 rounded-xl border border-indigo-500/30 transition-all backdrop-blur-xl">
+                <Button className="bg-navy-900/50 hover:bg-indigo-600/20 text-indigo-300 font-bold py-2.5 px-8 rounded-xl border border-indigo-500/30 transition-all backdrop-blur-xl">
                     Xem tất cả khoá học
                 </Button>
             </Link>

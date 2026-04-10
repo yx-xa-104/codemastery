@@ -144,8 +144,8 @@ export function ClassroomDiscussionDrawer({ courseId, isOpen, onClose }: Props) 
                 className="fixed inset-0 z-50 bg-transparent sm:bg-black/20 transition-opacity" 
                 onClick={onClose} 
             />
-            <div className="fixed inset-y-0 right-0 z-60 w-full sm:w-[400px] bg-[#050C1F] border-l border-indigo-900/40 shadow-2xl flex flex-col animate-in slide-in-from-right-full duration-300">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-indigo-900/40 bg-slate-900/50 shrink-0">
+            <div className="fixed inset-y-0 right-0 z-60 w-full sm:w-[400px] bg-navy-950 border-l border-indigo-900/40 shadow-2xl flex flex-col animate-in slide-in-from-right-full duration-300">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-indigo-900/40 bg-navy-900/50 shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="size-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300">
                         <MessageSquare className="w-4 h-4" />
@@ -175,7 +175,7 @@ export function ClassroomDiscussionDrawer({ courseId, isOpen, onClose }: Props) 
                         const isMyPost = msg.author_id === currentUser?.id;
                         
                         return (
-                            <div key={msg.id} className={`flex flex-col mb-4 p-3 rounded-xl border border-indigo-900/30 ${isMyPost ? 'bg-indigo-900/20' : 'bg-[#010816]/50'}`}>
+                            <div key={msg.id} className={`flex flex-col mb-4 p-3 rounded-xl border border-indigo-900/30 ${isMyPost ? 'bg-indigo-900/20' : 'bg-navy-950/50'}`}>
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-center gap-2">
                                         <div className="size-6 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
@@ -208,7 +208,7 @@ export function ClassroomDiscussionDrawer({ courseId, isOpen, onClose }: Props) 
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-indigo-900/40 bg-slate-900/50 shrink-0">
+            <div className="p-4 border-t border-indigo-900/40 bg-navy-900/50 shrink-0">
                 <div className="flex items-end gap-2">
                     <textarea 
                         value={messageInput} 
@@ -217,7 +217,7 @@ export function ClassroomDiscussionDrawer({ courseId, isOpen, onClose }: Props) 
                         rows={2} 
                         placeholder="Nhập câu hỏi của bạn..."
                         disabled={sending}
-                        className="flex-1 bg-[#010816] border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none disabled:opacity-50" 
+                        className="flex-1 bg-navy-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none disabled:opacity-50" 
                     />
                     <Button onClick={handleSend} disabled={sending || !messageInput.trim()} size="icon" className="size-11 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center transition-colors shrink-0">
                         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}

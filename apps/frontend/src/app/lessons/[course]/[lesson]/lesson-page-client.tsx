@@ -127,7 +127,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
     const isCodeChanged = currentCode !== lastSavedCode && currentCode.trim() !== "";
 
     return (
-        <div className="flex flex-col h-[100dvh] bg-[#09090b] text-slate-200 overflow-hidden font-sans">
+        <div className="flex flex-col h-[100dvh] bg-background text-slate-200 overflow-hidden font-sans">
             {/* Global Abstract Background */}
             <div className="fixed inset-0 pointer-events-none bg-size-[24px_24px] bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] z-0" />
             <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none z-0" />
@@ -144,7 +144,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                 </div>
             )}
             {/* Top Bar */}
-            <div className="flex h-14 bg-zinc-900/80 backdrop-blur-md border-b border-white/10 items-center justify-between px-4 shrink-0 z-50">
+            <div className="flex h-14 bg-navy-950/80 backdrop-blur-md border-b border-white/10 items-center justify-between px-4 shrink-0 z-50">
                 <div className="flex items-center gap-3 min-w-0">
                     <Button
                         variant="ghost"
@@ -156,7 +156,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                     </Button>
                     <Link
                         href={`/courses/${course.slug}`}
-                        className="flex size-8 rounded-full border border-white/10 bg-[#0a0a0a] items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                        className="flex size-8 rounded-full border border-white/10 bg-background items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </Link>

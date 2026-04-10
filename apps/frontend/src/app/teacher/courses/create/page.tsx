@@ -101,7 +101,7 @@ function MdToolbar({ textareaRef, onUpdate }: { textareaRef: React.RefObject<HTM
   ];
 
   return (
-    <div className="flex gap-0.5 p-1.5 border-b border-slate-800 bg-[#0d1526]">
+    <div className="flex gap-0.5 p-1.5 border-b border-slate-800 bg-navy-950">
       {btns.map(([icon, b, a, title], i) => (
         <button key={i} onClick={() => insert(b, a)} title={title}
           className="p-1.5 rounded text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
@@ -118,7 +118,7 @@ function MdToolbar({ textareaRef, onUpdate }: { textareaRef: React.RefObject<HTM
 
 export default function CourseCreatePage() {
   return (
-    <React.Suspense fallback={<div className="flex bg-[#010816] h-screen items-center justify-center text-slate-400">Loading...</div>}>
+    <React.Suspense fallback={<div className="flex bg-navy-950 h-screen items-center justify-center text-slate-400">Loading...</div>}>
       <CourseCreateForm />
     </React.Suspense>
   );
@@ -585,7 +585,7 @@ function CourseCreateForm() {
 
   if (initialLoading) {
     return (
-      <div className="flex flex-col h-screen bg-[#010816] items-center justify-center text-slate-400">
+      <div className="flex flex-col h-screen bg-navy-950 items-center justify-center text-slate-400">
         <Loader2 className="w-8 h-8 animate-spin mb-4 text-indigo-500" />
         <p>Đang tải dữ liệu khóa học...</p>
       </div>
@@ -593,9 +593,9 @@ function CourseCreateForm() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#010816] text-slate-100 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-navy-950 text-slate-100 overflow-hidden font-sans">
       {/* ── Top Nav ─────────────────────────────────────────────── */}
-      <nav className="bg-[#0B1120] border-b border-slate-800 h-14 flex items-center justify-between px-4 z-20 shrink-0">
+      <nav className="bg-navy-900 border-b border-slate-800 h-14 flex items-center justify-between px-4 z-20 shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/teacher/courses" className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-white/5 transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -624,7 +624,7 @@ function CourseCreateForm() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* ── Left Sidebar: Course Structure ─────────────────────── */}
-        <aside className="w-64 bg-[#0B1120] border-r border-slate-800 flex flex-col shrink-0 overflow-hidden">
+        <aside className="w-64 bg-navy-900 border-r border-slate-800 flex flex-col shrink-0 overflow-hidden">
           <div className="p-3 border-b border-slate-800">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cấu trúc khóa học</span>
@@ -697,7 +697,7 @@ function CourseCreateForm() {
         </aside>
 
         {/* ── Right Panel ────────────────────────────────────────── */}
-        <main className="flex-1 overflow-y-auto bg-[#010816]">
+        <main className="flex-1 overflow-y-auto bg-navy-950">
           {/* Course Settings Panel */}
           {(showCourseSettings || selectedLessonIdx === -1) && (
             <div className="max-w-2xl mx-auto p-6 space-y-6 mt-4">
@@ -751,7 +751,7 @@ function CourseCreateForm() {
           {currentLesson && !showCourseSettings && (
             <div className="flex flex-col h-full">
               {/* Lesson tabs */}
-              <div className="border-b border-slate-800 bg-[#0B1120]/50 px-4 flex items-center gap-0.5 shrink-0">
+              <div className="border-b border-slate-800 bg-navy-900/50 px-4 flex items-center gap-0.5 shrink-0">
                 {([
                   ['content', 'Nội dung', FileText],
                   ['code', 'Bài tập Code', Code],
@@ -778,7 +778,7 @@ function CourseCreateForm() {
               <div className="flex-1 overflow-y-auto p-4">
                 {/* ── Content Tab ──────────────────────────────── */}
                 {lessonTab === 'content' && (
-                  <div className="max-w-4xl mx-auto bg-[#0B1120] rounded-xl border border-slate-800 overflow-hidden">
+                  <div className="max-w-4xl mx-auto bg-navy-900 rounded-xl border border-slate-800 overflow-hidden">
                     {previewMode ? (
                       <div className="p-6 prose prose-invert prose-sm max-w-none min-h-[400px]">
                         <ReactMarkdown>{currentLesson.content || '*Chưa có nội dung...*'}</ReactMarkdown>
@@ -790,7 +790,7 @@ function CourseCreateForm() {
                           ref={textareaRef}
                           value={currentLesson.content}
                           onChange={e => updateCurrentLesson({ content: e.target.value })}
-                          className="w-full min-h-[400px] bg-[#0B1120] text-slate-300 text-sm font-mono px-4 py-3 focus:outline-none resize-y border-0"
+                          className="w-full min-h-[400px] bg-navy-900 text-slate-300 text-sm font-mono px-4 py-3 focus:outline-none resize-y border-0"
                           placeholder="Nhập nội dung bài học bằng Markdown..."
                         />
                       </>
@@ -812,7 +812,7 @@ function CourseCreateForm() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <div className="bg-[#0B1120] rounded-xl border border-slate-800 overflow-hidden">
+                      <div className="bg-navy-900 rounded-xl border border-slate-800 overflow-hidden">
                         <div className="px-3 py-2 border-b border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-[#0d1526]">
                           Starter Code
                         </div>
@@ -823,7 +823,7 @@ function CourseCreateForm() {
                           placeholder="# Code mẫu cho học viên..."
                         />
                       </div>
-                      <div className="bg-[#0B1120] rounded-xl border border-slate-800 overflow-hidden">
+                      <div className="bg-navy-900 rounded-xl border border-slate-800 overflow-hidden">
                         <div className="px-3 py-2 border-b border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-[#0d1526]">
                           Solution Code
                         </div>
@@ -856,7 +856,7 @@ function CourseCreateForm() {
                     )}
 
                     {currentLesson.quizQuestions.map((q, qi) => (
-                      <div key={q.id} className="bg-[#0B1120] rounded-xl border border-slate-800 p-4 group">
+                      <div key={q.id} className="bg-navy-900 rounded-xl border border-slate-800 p-4 group">
                         <div className="flex justify-between mb-2">
                           <span className="text-[10px] font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded">CÂU {qi + 1}</span>
                           <button onClick={() => removeQuizQuestion(q.id)}

@@ -96,14 +96,14 @@ export default function TeacherCoursesPage() {
                     <input 
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-[#0B1120] border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                        className="w-full pl-10 pr-4 py-2.5 bg-navy-900 border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
                         placeholder="Tìm kiếm khóa học..." 
                     />
                 </div>
                 <select 
                     value={levelFilter}
                     onChange={e => setLevelFilter(e.target.value)}
-                    className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="bg-navy-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                     <option value="">Tất cả cấp độ</option>
                     <option value="beginner">Cơ bản</option>
@@ -121,7 +121,7 @@ export default function TeacherCoursesPage() {
                     {filteredCourses.map((course: any) => {
                         const category = (course.categories as unknown as { name: string } | null)?.name ?? '';
                         return (
-                            <div key={course.id} className="flex flex-col bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all group">
+                            <div key={course.id} className="flex flex-col bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all group">
                                 <div className="h-40 bg-[#050C1F] relative overflow-hidden shrink-0">
                                     {course.thumbnail_url
                                         ? <img src={course.thumbnail_url} alt="" className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity" />

@@ -83,9 +83,9 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
     const [activeTab, setActiveTab] = useState<'all' | 'homework' | 'discussion'>('all');
 
     return (
-        <div className="flex h-screen bg-[#010816] text-slate-100 overflow-hidden font-sans">
+        <div className="flex h-screen bg-navy-950 text-slate-100 overflow-hidden font-sans">
             {/* Left Sidebar Nav */}
-            <aside className="w-60 bg-[#0B1120] border-r border-indigo-900/30 flex-col hidden md:flex">
+            <aside className="w-60 bg-navy-900 border-r border-indigo-900/30 flex-col hidden md:flex">
                 <div className="h-16 flex items-center px-5 border-b border-indigo-900/30">
                     <Link href="/" className="text-xl font-bold tracking-tighter text-white">
                         Code<span className="text-indigo-500">Mastery</span>
@@ -105,7 +105,7 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
             {/* Main Area */}
             <div className="flex-1 flex flex-col h-full">
                 {/* Header */}
-                <header className="h-16 bg-[#0B1120]/80 backdrop-blur-md border-b border-indigo-900/30 flex justify-between items-center px-6 z-20">
+                <header className="h-16 bg-navy-900/80 backdrop-blur-md border-b border-indigo-900/30 flex justify-between items-center px-6 z-20">
                     <div className="flex items-center gap-3">
                         <h2 className="text-base font-bold text-white hidden sm:block">Lớp: Lập trình Web Frontend Cơ bản</h2>
                         <span className="text-slate-600 hidden sm:block">|</span>
@@ -115,7 +115,7 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
                         </span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button variant="outline" size="icon" className="relative size-9 bg-[#010816] rounded-full border border-slate-700 hover:border-amber-500/50 text-slate-400 hover:text-amber-400 hover:bg-transparent flex items-center justify-center transition-colors">
+                        <Button variant="outline" size="icon" className="relative size-9 bg-navy-950 rounded-full border border-slate-700 hover:border-amber-500/50 text-slate-400 hover:text-amber-400 hover:bg-transparent flex items-center justify-center transition-colors">
                             <Bell className="w-4 h-4" />
                             <span className="absolute top-0.5 right-1 size-2 bg-red-500 rounded-full" />
                         </Button>
@@ -164,14 +164,14 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
                         </div>
 
                         {/* Post composer */}
-                        <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-4 mb-6">
+                        <div className="bg-navy-900 border border-indigo-900/30 rounded-xl p-4 mb-6">
                             <div className="flex gap-3">
                                 <div className="size-9 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-xs shrink-0">TN</div>
                                 <div className="flex-1">
                                     <textarea
                                         value={postContent}
                                         onChange={e => setPostContent(e.target.value)}
-                                        className="w-full bg-[#010816] border border-slate-700 rounded-lg p-3 text-sm text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-colors resize-none"
+                                        className="w-full bg-navy-950 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-colors resize-none"
                                         placeholder="Chia sẻ thắc mắc hoặc thảo luận với lớp..."
                                         rows={2}
                                     />
@@ -217,7 +217,7 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
                         {/* Posts */}
                         <div className="space-y-4">
                             {MOCK_POSTS.map(post => (
-                                <div key={post.id} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-5 hover:border-indigo-500/30 transition-all">
+                                <div key={post.id} className="bg-navy-900 border border-indigo-900/30 rounded-xl p-5 hover:border-indigo-500/30 transition-all">
                                     <div className="flex items-start gap-3">
                                         <div className={`size-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${post.isSystem ? 'bg-linear-to-br from-indigo-600 to-indigo-900' : 'bg-slate-700'}`}>
                                             {post.isSystem ? '🤖' : post.author.split(' ').map(p => p[0]).join('').slice(0, 2)}
@@ -250,7 +250,7 @@ export default function ClassroomPage({ params }: { params: { id: string } }) {
                     </div>
 
                     {/* Right: Member list */}
-                    <aside className="w-64 bg-[#0B1120] border-l border-indigo-900/30 flex-col hidden lg:flex">
+                    <aside className="w-64 bg-navy-900 border-l border-indigo-900/30 flex-col hidden lg:flex">
                         <div className="p-4 border-b border-indigo-900/30">
                             <h3 className="font-bold text-white flex items-center gap-2 text-sm">
                                 <Users className="w-4 h-4 text-green-400" />

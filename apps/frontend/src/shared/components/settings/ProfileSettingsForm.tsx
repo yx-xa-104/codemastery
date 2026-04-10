@@ -198,7 +198,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
       </div>
 
       {activeTab === "profile" && (
-        <div className="bg-[#111827] rounded-2xl border border-indigo-900/50 overflow-hidden">
+        <div className="bg-navy-950/60 shadow-sm rounded-2xl border border-white/10 overflow-hidden">
           {/* Avatar */}
           <div className="p-6 border-b border-indigo-900/30 flex items-center gap-5">
             <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
@@ -247,7 +247,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
                     value={form[key as keyof typeof form]}
                     onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                     placeholder={placeholder}
-                    className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                    className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
                   />
                 </div>
               ))}
@@ -259,12 +259,12 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
                 <select
                   value={form.gender}
                   onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
-                  className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm appearance-none cursor-pointer"
+                  className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm appearance-none cursor-pointer"
                 >
-                  <option value="" className="bg-[#0B1120]">Chưa chọn</option>
-                  <option value="male" className="bg-[#0B1120]">Nam</option>
-                  <option value="female" className="bg-[#0B1120]">Nữ</option>
-                  <option value="other" className="bg-[#0B1120]">Khác</option>
+                  <option value="" className="bg-navy-950">Chưa chọn</option>
+                  <option value="male" className="bg-navy-950">Nam</option>
+                  <option value="female" className="bg-navy-950">Nữ</option>
+                  <option value="other" className="bg-navy-950">Khác</option>
                 </select>
               </div>
             </div>
@@ -276,7 +276,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
                 value={form.bio}
                 onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                 placeholder="Viết vài dòng về bản thân..."
-                className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm resize-none"
+                className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm resize-none"
               />
             </div>
 
@@ -294,7 +294,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
       )}
 
       {activeTab === "security" && (
-        <div className="bg-[#111827] rounded-2xl border border-indigo-900/50 p-6">
+        <div className="bg-navy-950/60 shadow-sm rounded-2xl border border-white/10 p-6">
           <div className="mb-6">
             <h3 className="text-white font-bold mb-1">Đổi mật khẩu</h3>
             <p className="text-slate-400 text-sm">Cập nhật mật khẩu định kỳ để bảo vệ tài khoản</p>
@@ -312,7 +312,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
               <div className="relative">
                 <input type={showCurrentPw ? "text" : "password"} value={pwForm.current}
                   onChange={(e) => setPwForm((f) => ({ ...f, current: e.target.value }))} required placeholder="••••••••"
-                  className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
+                  className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
                 <button type="button" onClick={() => setShowCurrentPw(!showCurrentPw)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
                   {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -325,7 +325,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
               <div className="relative">
                 <input type={showNewPw ? "text" : "password"} value={pwForm.newPw}
                   onChange={(e) => setPwForm((f) => ({ ...f, newPw: e.target.value }))} required minLength={6} placeholder="Tối thiểu 6 ký tự"
-                  className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
+                  className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
                 <button type="button" onClick={() => setShowNewPw(!showNewPw)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
                   {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -352,7 +352,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Xác nhận mật khẩu mới</label>
               <input type="password" value={pwForm.confirm}
                 onChange={(e) => setPwForm((f) => ({ ...f, confirm: e.target.value }))} required placeholder="Nhập lại mật khẩu mới"
-                className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
+                className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
               {pwForm.confirm && pwForm.newPw !== pwForm.confirm && (
                 <p className="text-xs text-red-400 mt-1">Mật khẩu không khớp</p>
               )}

@@ -12,6 +12,7 @@ import { signOut } from "@/features/auth/actions";
 import { NotificationBell } from "@/shared/components/NotificationBell";
 import { createClient } from "@/shared/lib/supabase/client";
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 
 const NAV_ITEMS = [
     { label: 'Tổng quan', href: '/teacher/dashboard', icon: LayoutDashboard },
@@ -85,9 +86,9 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
     }, [pathname, unreadMessages, user]);
 
     return (
-        <div className="flex h-screen bg-[#010816] text-slate-100 overflow-hidden font-sans">
+        <div className="flex h-screen bg-navy-950 text-slate-100 overflow-hidden font-sans">
             {/* Sidebar */}
-            <aside className="w-60 bg-[#0B1120] border-r border-indigo-900/30 flex-col hidden md:flex shrink-0">
+            <aside className="w-60 bg-navy-900 border-r border-indigo-900/30 flex-col hidden md:flex shrink-0">
                 <div className="h-16 flex items-center px-5 border-b border-indigo-900/30 gap-2">
                     <Link href="/" className="text-xl font-bold tracking-tighter text-white font-heading">
                         Code<span className="text-indigo-500">Mastery</span>
@@ -138,14 +139,15 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
             {/* Main */}
             <div className="flex-1 flex flex-col h-full min-w-0">
                 {/* Header */}
-                <header className="h-16 bg-[#0B1120]/80 backdrop-blur-md border-b border-indigo-900/30 flex items-center justify-between px-6 z-20 shrink-0">
+                <header className="h-16 bg-navy-900/80 backdrop-blur-md border-b border-indigo-900/30 flex items-center justify-between px-6 z-20 shrink-0">
                     <div className="flex-1 max-w-lg hidden md:block">
                         <input
-                            className="block w-full pl-4 pr-4 py-2 border border-slate-700 rounded-full bg-[#010816] text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                            className="block w-full pl-4 pr-4 py-2 border border-slate-700 rounded-full bg-navy-950 text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
                             placeholder="Tìm kiếm..."
                         />
                     </div>
                     <div className="flex items-center gap-3 ml-4">
+                        <ThemeToggle />
                         <NotificationBell />
                         <Link href="/teacher/courses/create"
                             className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-all shadow-md shrink-0">
@@ -155,7 +157,7 @@ export function TeacherLayout({ children, title, subtitle, action }: TeacherLayo
                 </header>
 
                 {/* Page content */}
-                <main className="flex-1 overflow-y-auto bg-[#010816]">
+                <main className="flex-1 overflow-y-auto bg-navy-950">
                     {(title || action) && (
                         <div className="px-6 lg:px-8 pt-8 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>

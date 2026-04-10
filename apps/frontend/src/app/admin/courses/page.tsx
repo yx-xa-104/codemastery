@@ -120,7 +120,7 @@ export default function AdminCoursesPage() {
                     { label: "Đình chỉ", key: "suspended", color: "text-orange-400" },
                     { label: "Nháp", key: "draft", color: "text-slate-400" },
                 ].map(({ label, key, color }) => (
-                    <div key={key} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-4 text-center">
+                    <div key={key} className="bg-navy-900 border border-indigo-900/30 rounded-xl p-4 text-center">
                         <p className={`text-2xl font-bold ${color}`}>{counts[key] || 0}</p>
                         <p className="text-xs text-slate-500 mt-1">{label}</p>
                     </div>
@@ -145,7 +145,7 @@ export default function AdminCoursesPage() {
                 <div className="relative flex-1 max-w-xs ml-auto">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm khóa học..."
-                        className="w-full pl-9 pr-4 py-2 bg-[#0B1120] border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 transition-colors" />
+                        className="w-full pl-9 pr-4 py-2 bg-navy-900 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 transition-colors" />
                 </div>
             </div>
 
@@ -158,7 +158,7 @@ export default function AdminCoursesPage() {
                     Không có khóa học nào
                 </div>
             ) : (
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl overflow-hidden">
+                <div className="bg-navy-900 border border-indigo-900/30 rounded-2xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
@@ -240,7 +240,7 @@ export default function AdminCoursesPage() {
                         <p className="text-sm text-slate-400 mb-4 truncate">{rejectModal.title}</p>
                         <textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)}
                             placeholder="Nhập lý do từ chối..." rows={3}
-                            className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 text-sm resize-none focus:border-indigo-500 transition-colors" />
+                            className="w-full bg-navy-900 border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 text-sm resize-none focus:border-indigo-500 transition-colors" />
                         <div className="flex gap-3 mt-4 justify-end">
                             <Button variant="ghost" onClick={() => setRejectModal(null)} className="text-slate-400 hover:text-white text-sm">Hủy</Button>
                             <Button onClick={async () => { await doAction(rejectModal.courseId, "reject", { reason: rejectReason || "Không đạt yêu cầu" }); setRejectModal(null); }}
@@ -260,7 +260,7 @@ export default function AdminCoursesPage() {
                         <p className="text-sm text-slate-400 mb-4 truncate">{transferModal.title}</p>
                         <input value={transferTeacherId} onChange={(e) => setTransferTeacherId(e.target.value)}
                             placeholder="Nhập UUID của giảng viên mới"
-                            className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 text-sm focus:border-indigo-500 transition-colors" />
+                            className="w-full bg-navy-900 border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white placeholder:text-slate-600 text-sm focus:border-indigo-500 transition-colors" />
                         <div className="flex gap-3 mt-4 justify-end">
                             <Button variant="ghost" onClick={() => setTransferModal(null)} className="text-slate-400 hover:text-white text-sm">Hủy</Button>
                             <Button onClick={async () => { if (!transferTeacherId.trim()) return; await doAction(transferModal.courseId, "transfer", { new_teacher_id: transferTeacherId.trim() }); setTransferModal(null); }}
@@ -279,9 +279,9 @@ export default function AdminCoursesPage() {
                         <h3 className="text-white font-bold mb-1">Gán danh mục</h3>
                         <p className="text-sm text-slate-400 mb-4 truncate">{categoryModal.title}</p>
                         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white text-sm focus:border-indigo-500 transition-colors appearance-none cursor-pointer">
+                            className="w-full bg-navy-900 border border-indigo-900/50 rounded-lg py-2.5 px-4 text-white text-sm focus:border-indigo-500 transition-colors appearance-none cursor-pointer">
                             <option value="">Chọn danh mục</option>
-                            {categories.map((cat) => <option key={cat.id} value={cat.id} className="bg-[#0B1120]">{cat.name}</option>)}
+                            {categories.map((cat) => <option key={cat.id} value={cat.id} className="bg-navy-900">{cat.name}</option>)}
                         </select>
                         <div className="flex gap-3 mt-4 justify-end">
                             <Button variant="ghost" onClick={() => setCategoryModal(null)} className="text-slate-400 hover:text-white text-sm">Hủy</Button>

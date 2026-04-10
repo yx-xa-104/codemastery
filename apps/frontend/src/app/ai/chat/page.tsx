@@ -100,7 +100,7 @@ export default function AiChatPage() {
                             { icon: BookOpen, label: "Giải thích khái niệm", desc: "Từ cơ bản đến nâng cao" },
                             { icon: Zap, label: "Gợi ý giải thuật", desc: "Cách tiếp cận tối ưu" },
                         ].map(({ icon: Icon, label, desc }) => (
-                            <div key={label} className="flex items-start gap-3 p-3 rounded-xl bg-[#0B1120] border border-indigo-900/30">
+                            <div key={label} className="flex items-start gap-3 p-3 rounded-xl bg-navy-900 border border-indigo-900/30">
                                 <Icon className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
                                 <div>
                                     <p className="text-xs font-semibold text-white">{label}</p>
@@ -125,7 +125,7 @@ export default function AiChatPage() {
                                 <button
                                     key={s.id}
                                     onClick={() => loadSession(s.id)}
-                                    className={`w-full text-left text-xs text-slate-400 group hover:text-white bg-[#0B1120] border rounded-xl px-3 py-2.5 transition-all outline-none flex items-start justify-between gap-2 ${
+                                    className={`w-full text-left text-xs text-slate-400 group hover:text-white bg-navy-900 border rounded-xl px-3 py-2.5 transition-all outline-none flex items-start justify-between gap-2 ${
                                         currentSessionId === s.id 
                                             ? "border-indigo-500/80 bg-indigo-500/10 text-white" 
                                             : "border-indigo-900/30 hover:border-indigo-500/40 hover:bg-indigo-500/5"
@@ -159,7 +159,7 @@ export default function AiChatPage() {
                 {/* ── Right: Chat area ── */}
                 <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                     {/* Mobile header */}
-                    <div className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-slate-800/60 bg-[#0B1120]">
+                    <div className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-slate-800/60 bg-navy-900">
                         <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center relative shrink-0">
                             <Bot className="w-4 h-4 text-white" />
                             <span className="absolute -top-px -right-px size-2.5 bg-green-500 rounded-full border-2 border-[#0B1120]" />
@@ -189,7 +189,7 @@ export default function AiChatPage() {
                                 <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
                                     <Bot className="w-4 h-4 text-white" />
                                 </div>
-                                <div className="bg-[#0B1120] border border-slate-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div className="bg-navy-900 border border-slate-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
                                     <div className="flex gap-1 items-center h-4">
                                         <span className="size-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "0ms" }} />
                                         <span className="size-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -208,13 +208,13 @@ export default function AiChatPage() {
                             {SUGGESTIONS.slice(0, 3).map(s => (
                                 <button key={s} onClick={() => handleSend(s)}
                                     disabled={isTyping}
-                                    className="shrink-0 text-[11px] text-slate-400 bg-[#0B1120] border border-slate-700 rounded-full px-3 py-1.5 hover:border-indigo-500/50 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                    className="shrink-0 text-[11px] text-slate-400 bg-navy-900 border border-slate-700 rounded-full px-3 py-1.5 hover:border-indigo-500/50 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                     {s}
                                 </button>
                             ))}
                         </div>
 
-                        <div className="relative flex items-end gap-2 bg-[#0B1120] border border-slate-700 rounded-2xl p-2 focus-within:border-indigo-500 transition-colors">
+                        <div className="relative flex items-end gap-2 bg-navy-900 border border-slate-700 rounded-2xl p-2 focus-within:border-indigo-500 transition-colors">
                             <textarea
                                 ref={textareaRef}
                                 value={input}

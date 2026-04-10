@@ -139,7 +139,7 @@ export default function PracticeProblemPage() {
 
   if (loading) {
     return (
-      <div className="h-screen bg-[#010816] flex items-center justify-center">
+      <div className="h-screen bg-navy-950 flex items-center justify-center">
         <div className="flex items-center gap-3 text-slate-500 text-sm">
           <div className="w-5 h-5 border-2 border-slate-700 border-t-indigo-500 rounded-full animate-spin" />
           Đang tải bài tập...
@@ -150,7 +150,7 @@ export default function PracticeProblemPage() {
 
   if (!problem) {
     return (
-      <div className="h-screen bg-[#010816] flex flex-col items-center justify-center gap-4">
+      <div className="h-screen bg-navy-950 flex flex-col items-center justify-center gap-4">
         <div className="w-12 h-12 rounded-xl bg-slate-800/50 flex items-center justify-center">
           <FileText className="w-6 h-6 text-slate-600" />
         </div>
@@ -167,7 +167,7 @@ export default function PracticeProblemPage() {
     ? Math.round((problem.total_accepted / problem.total_submissions) * 100) : 0;
 
   return (
-    <div className="flex flex-col h-screen bg-[#010816] text-slate-300 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-navy-950 text-slate-300 overflow-hidden font-sans">
       {/* XP Toast */}
       {xpToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-100 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -179,7 +179,7 @@ export default function PracticeProblemPage() {
       )}
 
       {/* Top Bar — matching lesson page style */}
-      <div className="flex h-14 bg-[#010816] border-b border-slate-800 items-center justify-between px-4 shrink-0 z-50">
+      <div className="flex h-14 bg-navy-950 border-b border-slate-800 items-center justify-between px-4 shrink-0 z-50">
         <div className="flex items-center gap-3 min-w-0">
           <Link
             href="/practice"
@@ -307,7 +307,7 @@ export default function PracticeProblemPage() {
                     </div>
                     <div className="p-4 space-y-3">
                       {problem.test_cases.filter(tc => !tc.hidden).map((tc, i) => (
-                        <div key={i} className="rounded-lg overflow-hidden border border-slate-700/30 bg-[#010816]">
+                        <div key={i} className="rounded-lg overflow-hidden border border-slate-700/30 bg-navy-950">
                           <div className="grid grid-cols-2">
                             <div className="p-3.5 border-r border-slate-700/30">
                               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Input</span>

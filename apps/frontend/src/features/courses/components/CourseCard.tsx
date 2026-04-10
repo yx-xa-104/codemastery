@@ -56,16 +56,16 @@ export function CourseCard({
             )}
 
             {/* Image Container */}
-            <div className="h-52 relative overflow-hidden bg-[#010816] border-b border-white/5">
+            <div className="h-52 relative overflow-hidden bg-navy-950 border-b border-white/5">
                 <img
                     src={image}
                     alt={title}
                     className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-[#010816] to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-navy-950 to-transparent"></div>
             </div>
 
-            <div className="p-6 flex flex-col grow relative z-10 bg-[#060D1F]/40 backdrop-blur-md">
+            <div className="p-6 flex flex-col grow relative z-10 bg-navy-950/40 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-wider text-indigo-300 uppercase bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">
                         {category}
@@ -103,7 +103,7 @@ export function CourseCard({
                                 <span>Tiến độ học tập</span>
                                 <span className="text-indigo-400 font-bold">{progress}%</span>
                             </div>
-                            <div className="w-full bg-[#010816] rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
+                            <div className="w-full bg-navy-950 rounded-full h-2 mb-4 overflow-hidden border border-slate-800">
                                 <div
                                     className="bg-linear-to-r from-indigo-500 to-purple-500 h-full rounded-full relative shadow-[0_0_10px_rgba(99,102,241,0.8)]"
                                     style={{ width: `${progress}%` }}

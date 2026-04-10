@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
 import { Mail, ArrowLeft, CheckCircle, Code2, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -35,16 +36,19 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#010816] flex items-center justify-center p-4 relative overflow-hidden font-sans antialiased">
+        <div className="min-h-screen bg-navy-950 flex items-center justify-center p-4 relative overflow-hidden font-sans antialiased">
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-6 right-6 z-50">
+                <ThemeToggle />
+            </div>
 
             <div className="w-full max-w-[480px] relative z-10">
                 <Link href="/auth/login" className="flex items-center gap-2 text-sm text-slate-400 hover:text-white mb-6 transition-colors">
                     <ArrowLeft className="w-4 h-4" /> Quay lại đăng nhập
                 </Link>
 
-                <div className="bg-gray-900 rounded-2xl shadow-2xl border border-indigo-900/50 overflow-hidden">
+                <div className="bg-navy-900 rounded-2xl shadow-2xl border border-indigo-900/50 overflow-hidden">
                     <div className="h-1 w-full bg-linear-to-r from-indigo-700 via-indigo-600 to-amber-500" />
 
                     {sent ? (
@@ -81,7 +85,7 @@ export default function ForgotPasswordPage() {
                                             value={email}
                                             onChange={e => setEmail(e.target.value)}
                                             required
-                                            className="w-full bg-[#0B1120] border border-indigo-900/50 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-gray-600 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all text-sm"
+                                            className="w-full bg-navy-900 border border-indigo-900/50 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-gray-600 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all text-sm"
                                             placeholder="email@example.com"
                                         />
                                     </div>
@@ -94,7 +98,7 @@ export default function ForgotPasswordPage() {
                                 <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-3 bg-indigo-600 hover:bg-amber-500 text-white font-bold rounded-lg transition-colors duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-[#fff] font-bold rounded-lg transition-colors duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Gửi link đặt lại'}
                                 </Button>

@@ -1,4 +1,5 @@
-import { Controller, Get, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, Query, UseGuards, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SupabaseAuthGuard, RolesGuard, Roles } from '@common/index';
 import { AdminService } from '../application/admin.service';
@@ -45,6 +46,12 @@ export class AdminController {
     @ApiOperation({ summary: 'Get enrollment chart data' })
     async getEnrollmentsChart(@Query('days') days?: string) {
         return this.adminService.getEnrollmentsByDay(days ? parseInt(days) : 7);
+    }
+
+    @Get('reports/export')
+    @ApiOperation({ summary: 'Export dashboard reports to Excel' })
+    async exportReports(@Res() res: Response, @Query('range') range: string) {
+        return this.adminService.exportAdminReports(res, range || 'month');
     }
 
     @Get('students')

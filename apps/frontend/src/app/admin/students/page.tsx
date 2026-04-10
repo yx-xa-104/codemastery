@@ -70,7 +70,7 @@ export default async function AdminStudentsPage() {
                     { icon: BookOpen, label: 'Lượt đăng ký', value: totalEnrollments ?? 0, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
                     { icon: TrendingUp, label: 'Học viên mới (tuần)', value: 12, color: 'text-green-400 bg-green-500/10 border-green-500/20' },
                 ].map(({ icon: Icon, label, value, color }) => (
-                    <div key={label} className={`bg-[#0B1120] border rounded-xl p-5 flex items-center gap-4 ${color.split(' ').slice(1).join(' ')}`}>
+                    <div key={label} className={`bg-navy-900 border rounded-xl p-5 flex items-center gap-4 ${color.split(' ').slice(1).join(' ')}`}>
                         <div className={`p-3 rounded-lg border ${color}`}><Icon className="w-5 h-5" /></div>
                         <div>
                             <p className="text-xs text-slate-400">{label}</p>
@@ -84,15 +84,15 @@ export default async function AdminStudentsPage() {
             <div className="flex gap-3 mb-5">
                 <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input className="w-full pl-9 pr-4 py-2.5 bg-[#0B1120] border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm" placeholder="Tìm học viên..." />
+                    <input className="w-full pl-9 pr-4 py-2.5 bg-navy-900 border border-slate-700 rounded-lg text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm" placeholder="Tìm học viên..." />
                 </div>
-                <select className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                <select className="bg-navy-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                     <option>Tất cả khóa học</option>
                 </select>
             </div>
 
             {/* Table */}
-            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden">
+            <div className="bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>

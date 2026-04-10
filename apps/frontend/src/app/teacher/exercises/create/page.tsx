@@ -159,7 +159,7 @@ function CreateExerciseContent() {
             subtitle="Cấu hình chi tiết bài toán và các Test Cases"
             action={
                 <div className="flex items-center gap-3">
-                    <Link href="/teacher/exercises" className="flex items-center gap-2 px-4 py-2 bg-[#0B1120] hover:bg-slate-800 border border-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition-all">
+                    <Link href="/teacher/exercises" className="flex items-center gap-2 px-4 py-2 bg-navy-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition-all">
                         <ArrowLeft className="w-4 h-4" /> Bỏ qua
                     </Link>
                     <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-all shadow-lg shadow-indigo-500/20">
@@ -172,20 +172,20 @@ function CreateExerciseContent() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     {/* General Info */}
-                    <div className="bg-[#0B1120] border border-slate-800 rounded-xl p-6">
+                    <div className="bg-navy-900 border border-slate-800 rounded-xl p-6">
                         <h3 className="text-white font-semibold mb-4">Thông tin chung</h3>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-1">Tên bài tập *</label>
                                 <input value={title} onChange={e => setTitle(e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-[#050C1F] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                    className="w-full px-4 py-2.5 bg-navy-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
                                     placeholder="Vd: Tìm số nguyên tố..." />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-400 mb-1">Mức độ</label>
                                     <select value={difficulty} onChange={e => setDifficulty(e.target.value)}
-                                        className="w-full px-4 py-2.5 bg-[#050C1F] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500">
+                                        className="w-full px-4 py-2.5 bg-navy-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500">
                                         <option value="easy">Cơ bản</option>
                                         <option value="medium">Trung bình</option>
                                         <option value="hard">Nâng cao</option>
@@ -194,7 +194,7 @@ function CreateExerciseContent() {
                                 <div>
                                     <label className="block text-sm font-medium text-slate-400 mb-1">Ngôn ngữ *</label>
                                     <select value={language} onChange={e => setLanguage(e.target.value)}
-                                        className="w-full px-4 py-2.5 bg-[#050C1F] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500">
+                                        className="w-full px-4 py-2.5 bg-navy-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500">
                                         <option value="javascript">JavaScript</option>
                                         <option value="python">Python</option>
                                         <option value="cpp">C++</option>
@@ -204,7 +204,7 @@ function CreateExerciseContent() {
                                 <div>
                                     <label className="block text-sm font-medium text-slate-400 mb-1">Danh mục</label>
                                     <input value={category} onChange={e => setCategory(e.target.value)}
-                                        className="w-full px-4 py-2.5 bg-[#050C1F] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                        className="w-full px-4 py-2.5 bg-navy-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
                                         placeholder="Vd: arrays, strings..." />
                                 </div>
                             </div>
@@ -212,30 +212,30 @@ function CreateExerciseContent() {
                     </div>
 
                     {/* Description */}
-                    <div className="bg-[#0B1120] border border-slate-800 rounded-xl p-6">
+                    <div className="bg-navy-900 border border-slate-800 rounded-xl p-6">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-white font-semibold">Nội dung đề bài</h3>
                             <span className="text-xs text-slate-500 flex items-center gap-1"><Info className="w-3 h-3"/> Hỗ trợ Markdown</span>
                         </div>
                         <textarea value={description} onChange={e => setDescription(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#050C1F] border border-slate-700 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[250px]"
+                            className="w-full px-4 py-3 bg-navy-950 border border-slate-700 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[250px]"
                             placeholder="Mô tả đề bài..." />
                     </div>
 
                     {/* Code Templates */}
-                    <div className="bg-[#0B1120] border border-slate-800 rounded-xl p-6">
+                    <div className="bg-navy-900 border border-slate-800 rounded-xl p-6">
                         <h3 className="text-white font-semibold mb-4">Code Template</h3>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Code mẫu (Starter code)</label>
                                 <textarea value={starterCode} onChange={e => setStarterCode(e.target.value)}
-                                    className="w-full px-4 py-3 bg-[#050C1F] border border-slate-700 rounded-lg text-emerald-400 font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[150px] whitespace-pre"
+                                    className="w-full px-4 py-3 bg-navy-950 border border-slate-700 rounded-lg text-emerald-400 font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[150px] whitespace-pre"
                                     placeholder="def solution(n):&#10;    pass" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Đáp án (Solution code để tham khảo)</label>
                                 <textarea value={solutionCode} onChange={e => setSolutionCode(e.target.value)}
-                                    className="w-full px-4 py-3 bg-[#050C1F] border border-slate-700 rounded-lg text-green-400 font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[150px] whitespace-pre"
+                                    className="w-full px-4 py-3 bg-navy-950 border border-slate-700 rounded-lg text-green-400 font-mono text-sm focus:outline-none focus:border-indigo-500 min-h-[150px] whitespace-pre"
                                     placeholder="def solution(n):&#10;    return n * 2" />
                             </div>
                         </div>
@@ -244,7 +244,7 @@ function CreateExerciseContent() {
 
                 <div className="space-y-6">
                     {/* Test Cases */}
-                    <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-5 shadow-lg shadow-indigo-900/10">
+                    <div className="bg-navy-900 border border-indigo-900/30 rounded-xl p-5 shadow-lg shadow-indigo-900/10">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-white font-semibold flex items-center gap-2">
                                 <Code className="w-4 h-4 text-indigo-400" /> Test Cases
@@ -256,7 +256,7 @@ function CreateExerciseContent() {
                         
                         <div className="space-y-4">
                             {testCases.map((tc, idx) => (
-                                <div key={idx} className="p-3 bg-[#050C1F] border border-slate-800 rounded-lg relative group">
+                                <div key={idx} className="p-3 bg-navy-950 border border-slate-800 rounded-lg relative group">
                                     <button onClick={() => removeTestCase(idx)} className="absolute top-2 right-2 p-1 text-slate-600 hover:text-red-400 bg-slate-800 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-all">
                                         <Trash2 className="w-3 h-3" />
                                     </button>
@@ -267,15 +267,15 @@ function CreateExerciseContent() {
                                         <div>
                                             <label className="text-xs text-slate-400 block mb-1">Input (Tham số gọi hàm / std in)</label>
                                             <textarea value={tc.input} onChange={e => updateTestCase(idx, 'input', e.target.value)}
-                                                className="w-full px-3 py-1.5 bg-[#0B1120] border border-slate-700 rounded text-slate-300 font-mono text-xs focus:outline-none focus:border-indigo-500 min-h-[50px] whitespace-pre" />
+                                                className="w-full px-3 py-1.5 bg-navy-900 border border-slate-700 rounded text-slate-300 font-mono text-xs focus:outline-none focus:border-indigo-500 min-h-[50px] whitespace-pre" />
                                         </div>
                                         <div>
                                             <label className="text-xs text-slate-400 block mb-1">Cửa sổ / Kết quả mong đợi (Output)</label>
                                             <textarea value={tc.expected_output} onChange={e => updateTestCase(idx, 'expected_output', e.target.value)}
-                                                className="w-full px-3 py-1.5 bg-[#0B1120] border border-slate-700 rounded text-green-400 font-mono text-xs focus:outline-none focus:border-indigo-500 min-h-[50px] whitespace-pre" />
+                                                className="w-full px-3 py-1.5 bg-navy-900 border border-slate-700 rounded text-green-400 font-mono text-xs focus:outline-none focus:border-indigo-500 min-h-[50px] whitespace-pre" />
                                         </div>
                                         <label className="flex items-center gap-2 mt-2 cursor-pointer">
-                                            <input type="checkbox" checked={tc.is_hidden} onChange={e => updateTestCase(idx, 'is_hidden', e.target.checked)} className="rounded border-slate-700 bg-[#0B1120] text-indigo-500 focus:ring-0 focus:ring-offset-0" />
+                                            <input type="checkbox" checked={tc.is_hidden} onChange={e => updateTestCase(idx, 'is_hidden', e.target.checked)} className="rounded border-slate-700 bg-navy-900 text-indigo-500 focus:ring-0 focus:ring-offset-0" />
                                             <span className="text-xs text-slate-400">Ẩn Test Case (Hidden)</span>
                                         </label>
                                     </div>
@@ -288,21 +288,21 @@ function CreateExerciseContent() {
                     </div>
 
                     {/* Hints */}
-                    <div className="bg-[#0B1120] border border-slate-800 rounded-xl p-5">
+                    <div className="bg-navy-900 border border-slate-800 rounded-xl p-5">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-white font-semibold flex items-center gap-2">Gợi ý (Hints)</h3>
-                            <button onClick={addHint} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition-colors flex items-center gap-1 border border-slate-700">
+                            <button onClick={addHint} className="text-xs bg-navy-900 hover:bg-navy-800 text-slate-300 px-2 py-1 rounded transition-colors flex items-center gap-1 border border-slate-700">
                                 <Plus className="w-3 h-3" /> Thêm
                             </button>
                         </div>
                         <div className="space-y-2">
                             {hints.map((hint, idx) => (
                                 <div key={idx} className="flex gap-2 items-start">
-                                    <div className="w-6 h-6 shrink-0 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs font-bold mt-1">{idx + 1}</div>
+                                    <div className="w-6 h-6 shrink-0 rounded-full bg-navy-900 text-slate-400 flex items-center justify-center text-xs font-bold mt-1">{idx + 1}</div>
                                     <input value={hint} onChange={e => updateHint(idx, e.target.value)}
-                                        className="flex-1 px-3 py-1.5 bg-[#050C1F] border border-slate-700 rounded text-slate-300 text-sm focus:outline-none focus:border-indigo-500"
+                                        className="flex-1 px-3 py-1.5 bg-navy-950 border border-slate-700 rounded text-slate-300 text-sm focus:outline-none focus:border-indigo-500"
                                         placeholder="Ví dụ: Sử dụng mảng để giải quyết..." />
-                                    <button onClick={() => removeHint(idx)} className="p-2 text-slate-600 hover:text-red-400 bg-slate-800 hover:bg-slate-700 rounded mt-0.5">
+                                    <button onClick={() => removeHint(idx)} className="p-2 text-slate-600 hover:text-red-400 bg-navy-900 hover:bg-navy-800 rounded mt-0.5">
                                         <Trash2 className="w-3 h-3" />
                                     </button>
                                 </div>

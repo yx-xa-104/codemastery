@@ -72,7 +72,7 @@ export function Hero() {
                         </Link>
                         <Link
                             href="/roadmap"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-slate-700/50 bg-[#0B1120]/50 backdrop-blur-md text-slate-300 hover:text-white hover:border-slate-500 hover:bg-white/10 font-bold text-base transition-all"
+                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-slate-700/50 bg-navy-900/50 backdrop-blur-md text-slate-300 hover:text-white hover:border-slate-500 hover:bg-white/10 font-bold text-base transition-all"
                         >
                             Xem lộ trình
                         </Link>

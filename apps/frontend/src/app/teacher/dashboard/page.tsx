@@ -50,7 +50,7 @@ export default async function TeacherDashboardPage() {
                     { icon: Users, label: 'Tổng ghi danh', value: enrollmentCount, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
                     { icon: TrendingUp, label: 'Đánh giá TB', value: averageRatingStr, color: 'text-green-400 bg-green-500/10 border-green-500/20' },
                 ].map(({ icon: Icon, label, value, color }) => (
-                    <div key={label} className={`bg-[#0B1120] border rounded-xl p-5 flex items-center gap-4 ${color.split(' ').slice(1).join(' ')}`}>
+                    <div key={label} className={`bg-navy-900 border rounded-xl p-5 flex items-center gap-4 ${color.split(' ').slice(1).join(' ')}`}>
                         <div className={`p-3 rounded-lg border ${color}`}><Icon className="w-5 h-5" /></div>
                         <div>
                             <p className="text-xs text-slate-400">{label}</p>
@@ -61,7 +61,7 @@ export default async function TeacherDashboardPage() {
             </div>
 
             {/* Recent courses */}
-            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-6">
+            <div className="bg-navy-900 border border-indigo-900/30 rounded-xl p-6">
                 <div className="flex justify-between items-center mb-5">
                     <h3 className="font-bold text-white">Khóa học gần đây</h3>
                     <Link href="/teacher/courses" className="text-xs text-indigo-400 hover:text-indigo-300">Xem tất cả →</Link>
@@ -78,7 +78,7 @@ export default async function TeacherDashboardPage() {
                     <div className="space-y-3">
                         {courses.slice(0, 5).map((c: any) => (
                             <Link key={c.id} href={`/teacher/courses`}
-                                className="flex items-center gap-4 p-3 bg-[#010816] rounded-xl border border-indigo-900/20 hover:border-indigo-500/30 transition-colors">
+                                className="flex items-center gap-4 p-3 bg-navy-950 rounded-xl border border-indigo-900/20 hover:border-indigo-500/30 transition-colors">
                                 <div className="size-10 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
                                     <BookOpen className="w-4 h-4 text-slate-600" />
                                 </div>

@@ -246,9 +246,9 @@ export default function TeacherMessagesPage() {
 
     return (
         <TeacherLayout title="Hỏi đáp Lớp học">
-            <div className="-mx-6 -my-6 lg:-mx-8 h-[calc(100vh-8rem)] flex border border-indigo-900/30 rounded-xl overflow-hidden bg-[#0B1120]">
+            <div className="-mx-6 -my-6 lg:-mx-8 h-[calc(100vh-8rem)] flex border border-indigo-900/30 rounded-xl overflow-hidden bg-navy-900">
                 {/* Left Sidebar - Classrooms list */}
-                <div className="w-72 border-r border-indigo-900/30 flex flex-col shrink-0 bg-[#050C1F]">
+                <div className="w-72 border-r border-indigo-900/30 flex flex-col shrink-0 bg-navy-950">
                     <div className="p-4 border-b border-indigo-900/30">
                         <h2 className="font-bold text-white text-sm mb-3">Lớp học / Khóa học</h2>
                     </div>
@@ -288,7 +288,7 @@ export default function TeacherMessagesPage() {
                 <div className="flex-1 flex flex-col min-w-0">
                     {activeClassroomFull ? (
                         <>
-                            <div className="h-14 border-b border-indigo-900/30 flex items-center justify-between px-5 bg-slate-900/50">
+                            <div className="h-14 border-b border-indigo-900/30 flex items-center justify-between px-5 bg-navy-950/60">
                                 <div className="flex items-center gap-3">
                                     <div className="size-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xs font-bold text-indigo-300">
                                         <BookOpen className="w-4 h-4" />
@@ -322,7 +322,7 @@ export default function TeacherMessagesPage() {
                                         const isMyPost = msg.author_id === currentUser?.id;
                                         
                                         return (
-                                            <div key={msg.id} className={`flex flex-col mb-4 bg-[#010816]/50 p-4 rounded-xl border border-indigo-900/30`}>
+                                            <div key={msg.id} className={`flex flex-col mb-4 bg-navy-950/60 p-4 rounded-xl border border-indigo-900/30 shadow-sm`}>
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div className="flex items-center gap-2">
                                                         <div className="size-6 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
@@ -368,7 +368,7 @@ export default function TeacherMessagesPage() {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            <div className="p-4 border-t border-indigo-900/30 bg-slate-900/50">
+                            <div className="p-4 border-t border-indigo-900/30 bg-navy-950/40">
                                 <div className="flex items-end gap-3 max-w-4xl mx-auto">
                                     <textarea 
                                         value={messageInput} 
@@ -377,7 +377,7 @@ export default function TeacherMessagesPage() {
                                         rows={2} 
                                         placeholder="Nhắn tin vào lớp học..."
                                         disabled={sending}
-                                        className="flex-1 bg-[#010816] border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none disabled:opacity-50" 
+                                        className="flex-1 bg-navy-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none disabled:opacity-50" 
                                     />
                                     <Button onClick={handleSend} disabled={sending || !messageInput.trim()} size="icon" className="size-12 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center transition-colors shrink-0">
                                         {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
@@ -397,8 +397,8 @@ export default function TeacherMessagesPage() {
             {/* Blocked Students Modal */}
             {showBlockedModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-[#0B1120] border border-indigo-500/30 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
-                        <div className="flex items-center justify-between p-5 border-b border-indigo-900/40 bg-[#050C1F]">
+                    <div className="bg-navy-900 border border-indigo-500/30 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
+                        <div className="flex items-center justify-between p-5 border-b border-indigo-900/40 bg-navy-950">
                             <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                 <ShieldAlert className="w-5 h-5 text-indigo-400" />
                                 Danh sách học viên bị chặn thảo luận
@@ -419,7 +419,7 @@ export default function TeacherMessagesPage() {
                             ) : (
                                 <div className="space-y-3">
                                     {blockedStudents.map((blocked) => (
-                                        <div key={blocked.user_id} className="flex items-center justify-between bg-slate-900/50 p-3 rounded-xl border border-indigo-900/30">
+                                        <div key={blocked.user_id} className="flex items-center justify-between bg-navy-950/40 p-3 rounded-xl border border-indigo-900/30">
                                             <div className="flex items-center gap-3">
                                                 <div className="size-10 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
                                                     {blocked.profiles?.avatar_url ? (

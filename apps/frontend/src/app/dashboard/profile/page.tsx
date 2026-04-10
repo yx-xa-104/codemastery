@@ -115,7 +115,7 @@ export default async function DashboardProfilePage() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Profile card */}
-                        <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl p-6 h-fit">
+                        <div className="bg-navy-900 border border-indigo-900/30 rounded-2xl p-6 h-fit">
                             <div className="flex flex-col items-center text-center mb-6">
                                 <div className="relative group mb-4">
                                     {avatarUrl ? (
@@ -144,7 +144,7 @@ export default async function DashboardProfilePage() {
                                     { label: 'Chuỗi ngày', value: gamStats.streak_days, icon: Flame },
                                     { label: 'Huy hiệu', value: myBadges.length, icon: Award },
                                 ].map(({ label, value, icon: Icon }) => (
-                                    <div key={label} className="text-center bg-[#010816] rounded-xl p-3 border border-indigo-900/20">
+                                    <div key={label} className="text-center bg-navy-950 rounded-xl p-3 border border-indigo-900/20">
                                         <Icon className="w-4 h-4 text-indigo-400 mx-auto mb-1" />
                                         <p className="text-sm font-bold text-white">{value}</p>
                                         <p className="text-[10px] text-slate-500">{label}</p>
@@ -160,7 +160,7 @@ export default async function DashboardProfilePage() {
 
                         {/* Main content */}
                         <div className="lg:col-span-2 space-y-5">
-                            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl p-6">
+                            <div className="bg-navy-900 border border-indigo-900/30 rounded-2xl p-6">
                                 <h3 className="font-bold text-white mb-5">Thông tin cá nhân</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {[
@@ -179,7 +179,7 @@ export default async function DashboardProfilePage() {
                                 </div>
                             </div>
 
-                            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl p-6">
+                            <div className="bg-navy-900 border border-indigo-900/30 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-5">
                                     <h3 className="font-bold text-white">Khóa học đang học</h3>
                                     <Link href="/courses" className="text-xs text-indigo-400 hover:text-indigo-300">Xem tất cả →</Link>
@@ -201,7 +201,7 @@ export default async function DashboardProfilePage() {
                                             if (!course) return null;
                                             return (
                                                 <Link key={i} href={`/courses/${course.slug}`}
-                                                    className="flex items-center gap-4 p-3 bg-[#010816] rounded-xl border border-indigo-900/20 hover:border-indigo-500/30 transition-colors group">
+                                                    className="flex items-center gap-4 p-3 bg-navy-950 rounded-xl border border-indigo-900/20 hover:border-indigo-500/30 transition-colors group">
                                                     <div className="size-12 rounded-lg bg-slate-800 overflow-hidden shrink-0">
                                                         {course.thumbnail_url
                                                             ? <img src={course.thumbnail_url} className="w-full h-full object-cover" alt="" />
@@ -225,7 +225,7 @@ export default async function DashboardProfilePage() {
                             </div>
 
                             {/* Badges Section */}
-                            <div className="bg-[#0B1120] border border-indigo-900/30 rounded-2xl p-6">
+                            <div className="bg-navy-900 border border-indigo-900/30 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-5">
                                     <h3 className="font-bold text-white flex items-center gap-2">
                                         <Award className="w-4 h-4 text-amber-400" />
@@ -246,7 +246,7 @@ export default async function DashboardProfilePage() {
                                                     className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
                                                         earned
                                                             ? 'bg-amber-500/5 border-amber-500/20'
-                                                            : 'bg-[#010816] border-slate-800/50 opacity-50'
+                                                            : 'bg-navy-950 border-slate-800/50 opacity-50'
                                                     }`}
                                                 >
                                                     <div className={`size-10 rounded-lg flex items-center justify-center text-xl shrink-0 ${

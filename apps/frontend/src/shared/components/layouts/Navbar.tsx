@@ -12,6 +12,7 @@ import { Button } from "@/shared/components/ui/button";
 
 // Extracted Sub-Components
 import { UserDropdown } from "./navbar/UserDropdown";
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 
 export function Navbar() {
     const pathname = usePathname();
@@ -101,6 +102,8 @@ export function Navbar() {
                             <span className="group-hover/cmd:text-slate-300">Tìm kiếm...</span>
                             <kbd className="px-1.5 py-0.5 rounded-md bg-black/40 border border-white/10 text-[10px] font-mono text-slate-400">⌘K</kbd>
                         </button>
+                        
+                        <ThemeToggle />
 
                         {loading ? (
                             <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />

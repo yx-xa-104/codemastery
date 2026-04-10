@@ -51,7 +51,7 @@ export function Sidebar({ courseTitle, modules, courseSlug, isOpen }: SidebarPro
 
     return (
         <aside
-            className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-80 bg-[#050505] border-r border-white/5 flex flex-col transition-transform duration-300 lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-80 bg-navy-950 border-r border-white/5 flex flex-col transition-transform duration-300 lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
                 }`}
         >
             {/* Course header */}

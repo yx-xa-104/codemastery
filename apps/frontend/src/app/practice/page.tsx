@@ -113,12 +113,12 @@ export default function PracticePage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Tìm bài tập..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:border-indigo-500 focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 bg-navy-950 border border-slate-700 rounded-lg text-sm text-white focus:border-indigo-500 focus:outline-none"
             />
           </div>
 
           <select value={difficulty} onChange={e => setDifficulty(e.target.value)}
-            className="bg-slate-900 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
+            className="bg-navy-950 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
             <option value="">Tất cả độ khó</option>
             <option value="easy">Dễ</option>
             <option value="medium">Trung bình</option>
@@ -126,7 +126,7 @@ export default function PracticePage() {
           </select>
 
           <select value={language} onChange={e => setLanguage(e.target.value)}
-            className="bg-slate-900 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
+            className="bg-navy-950 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
             <option value="">Tất cả ngôn ngữ</option>
             <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
@@ -136,7 +136,7 @@ export default function PracticePage() {
           </select>
 
           <select value={category} onChange={e => setCategory(e.target.value)}
-            className="bg-slate-900 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
+            className="bg-navy-950 border border-slate-700 rounded-lg text-sm text-white px-3 py-2 focus:border-indigo-500">
             {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </div>
@@ -164,7 +164,7 @@ export default function PracticePage() {
               const dc = DIFFICULTY_CONFIG[p.difficulty] || DIFFICULTY_CONFIG.easy;
               return (
                 <Link key={p.id} href={`/practice/${p.slug}`}
-                  className="group grid grid-cols-12 gap-3 items-center px-4 py-3 bg-[#0B1120] hover:bg-[#0f1a2e] border border-slate-800 hover:border-indigo-500/30 rounded-xl transition-all cursor-pointer">
+                  className="group grid grid-cols-12 gap-3 items-center px-4 py-3 bg-navy-900 hover:bg-navy-800 border border-slate-800 hover:border-indigo-500/30 rounded-xl transition-all cursor-pointer">
                   <div className="col-span-1 text-xs text-slate-500 font-mono">{i + 1}</div>
                   <div className="col-span-5 flex items-center gap-2 min-w-0">
                     <span className="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors truncate">

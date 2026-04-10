@@ -114,7 +114,7 @@ export function CodeEditor({
     const langopt = LANGUAGE_OPTIONS.find(l => l.value === selectedLang) ?? LANGUAGE_OPTIONS[0];
 
     return (
-        <div ref={containerRef} className="flex flex-col h-full bg-[#050505] rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
+        <div ref={containerRef} className="flex flex-col h-full bg-navy-950 rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
             {/* Toolbar */}
             <div className="flex items-center justify-between px-4 py-3 bg-white/5 backdrop-blur-md border-b border-white/5 shrink-0">
                 <div className="flex items-center gap-3">
@@ -207,7 +207,7 @@ export function CodeEditor({
             {/* Resize Handle */}
             <div
                 onMouseDown={onMouseDown}
-                className="h-2 bg-[#050505] border-t border-b border-white/5 cursor-ns-resize flex items-center justify-center shrink-0 hover:bg-white/[0.02] transition-colors group"
+                className="h-2 bg-navy-950 border-t border-b border-white/5 cursor-ns-resize flex items-center justify-center shrink-0 hover:bg-white/[0.02] transition-colors group"
             >
                 <GripHorizontal className="w-4 h-3 text-zinc-700 group-hover:text-zinc-500 transition-colors" />
             </div>
@@ -215,7 +215,7 @@ export function CodeEditor({
             {/* Console / Test Results Panel — tabbed */}
             <div
                 style={{ height: consoleHeight }}
-                className="bg-[#050505] flex flex-col shrink-0"
+                className="bg-navy-950 flex flex-col shrink-0"
             >
                 {hasTests ? (
                     <>

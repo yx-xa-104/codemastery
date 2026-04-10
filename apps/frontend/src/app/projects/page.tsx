@@ -69,7 +69,7 @@ const DIFF_COLOR: Record<string, string> = {
 export default async function ProjectsPage() {
     return (
         <MainLayout>
-            <div className="min-h-screen bg-[#010816]">
+            <div className="min-h-screen bg-navy-950">
                 {/* Hero */}
                 <div className="text-center py-16 px-4 border-b border-indigo-900/30">
                     <Folder className="w-12 h-12 text-amber-400 mx-auto mb-4" />

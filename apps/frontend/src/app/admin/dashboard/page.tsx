@@ -70,7 +70,7 @@ export default async function AdminDashboardPage() {
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
                 {statCards.map(({ label, value, change, icon: Icon, color }) => (
-                    <div key={label} className="bg-[#0B1120] border border-indigo-900/30 rounded-xl p-5 hover:border-indigo-500/30 transition-colors">
+                    <div key={label} className="bg-navy-900 border border-indigo-900/30 rounded-xl p-5 hover:border-indigo-500/30 transition-colors">
                         <div className="flex items-center gap-4">
                             <div className={`p-3 rounded-lg border ${color}`}><Icon className="w-5 h-5" /></div>
                             <div>
@@ -90,7 +90,7 @@ export default async function AdminDashboardPage() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 {/* Left: courses */}
                 <div className="xl:col-span-2 space-y-6">
-                    <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden">
+                    <div className="bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden">
                         <div className="px-6 py-4 border-b border-indigo-900/30 flex justify-between items-center">
                             <h3 className="text-base font-semibold text-white flex items-center gap-2">
                                 <Video className="w-4 h-4 text-indigo-400" /> Khóa học gần đây
@@ -130,7 +130,7 @@ export default async function AdminDashboardPage() {
                 </div>
 
                 {/* Right: new students */}
-                <div className="bg-[#0B1120] border border-indigo-900/30 rounded-xl overflow-hidden flex flex-col">
+                <div className="bg-navy-900 border border-indigo-900/30 rounded-xl overflow-hidden flex flex-col">
                     <div className="px-5 py-4 border-b border-indigo-900/30 flex items-center gap-2">
                         <Users className="w-4 h-4 text-green-400" />
                         <h3 className="text-base font-semibold text-white">Đăng ký gần đây</h3>

@@ -3,9 +3,9 @@ import { MainLayout } from "@/shared/components/layouts/MainLayout";
 export default function TermsPage() {
     return (
         <MainLayout>
-            <div className="min-h-screen bg-[#010816]">
+            <div className="min-h-screen">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-                    <h1 className="text-3xl font-bold text-white mb-2">Điều khoản Sử dụng</h1>
+                    <h1 className="text-3xl font-bold font-heading text-foreground mb-2">Điều khoản Sử dụng</h1>
                     <p className="text-slate-400 text-sm mb-10">Cập nhật lần cuối: 01/03/2026</p>
 
                     {[
@@ -39,15 +39,15 @@ export default function TermsPage() {
                         },
                     ].map(({ title, content }) => (
                         <section key={title} className="mb-8">
-                            <h2 className="text-lg font-bold text-white mb-3">{title}</h2>
+                            <h2 className="text-lg font-bold text-foreground mb-3">{title}</h2>
                             <p className="text-slate-400 leading-relaxed">{content}</p>
                         </section>
                     ))}
 
-                    <div className="mt-10 p-5 bg-[#0B1120] border border-indigo-900/30 rounded-xl">
+                    <div className="mt-10 p-5 bg-navy-900 border border-indigo-900/30 rounded-xl">
                         <p className="text-sm text-slate-400">
                             Nếu bạn có câu hỏi về Điều khoản Sử dụng này, vui lòng liên hệ:{" "}
-                            <a href="mailto:legal@codemastery.vn" className="text-indigo-400 hover:text-indigo-300">legal@codemastery.vn</a>
+                            <a href="mailto:anngo1755@gmail.com" className="text-indigo-400 hover:text-indigo-300">anngo1755@gmail.com</a>
                         </p>
                     </div>
                 </div>

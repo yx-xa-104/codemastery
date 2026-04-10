@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function RefundPage() {
     return (
         <MainLayout>
-            <div className="min-h-screen bg-[#010816]">
+            <div className="min-h-screen bg-navy-950">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
                     <h1 className="text-3xl font-bold text-white mb-2">Chính sách Hoàn tiền</h1>
                     <p className="text-slate-400 text-sm mb-10">Cập nhật lần cuối: 01/03/2026</p>
@@ -57,7 +57,7 @@ export default function RefundPage() {
                         </section>
                     ))}
 
-                    <div className="mt-10 p-5 bg-[#0B1120] border border-indigo-900/30 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="mt-10 p-5 bg-navy-900 border border-indigo-900/30 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                             <p className="text-sm font-medium text-white">Cần hỗ trợ hoàn tiền?</p>
                             <p className="text-xs text-slate-400 mt-0.5">Liên hệ ngay, đội ngũ phản hồi trong 24h</p>

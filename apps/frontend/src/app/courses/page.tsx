@@ -104,7 +104,7 @@ export default function CoursesPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="mt-12 bg-[#0B1120]/60 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl max-w-4xl mx-auto"
+                        className="mt-12 bg-navy-900/60 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl max-w-4xl mx-auto"
                     >
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -133,10 +133,10 @@ export default function CoursesPage() {
                             <select
                                 value={activeFilter}
                                 onChange={(e) => setActiveFilter(e.target.value)}
-                                className="px-5 py-2 h-auto rounded-full text-sm font-medium bg-[#0B1120]/50 backdrop-blur-md text-slate-300 border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer appearance-none pr-10 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[position:right_15px_center] bg-no-repeat shadow-lg"
+                                className="px-5 py-2 h-auto rounded-full text-sm font-medium bg-navy-900/50 backdrop-blur-md text-slate-300 border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer appearance-none pr-10 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[position:right_15px_center] bg-no-repeat shadow-lg"
                             >
                                 {categoryNames.map((cat) => (
-                                    <option key={cat} value={cat} className="bg-[#0B1120] text-slate-200">
+                                    <option key={cat} value={cat} className="bg-navy-900 text-slate-200">
                                         {cat}
                                     </option>
                                 ))}
