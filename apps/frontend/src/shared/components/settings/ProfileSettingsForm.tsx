@@ -146,13 +146,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
     setPwLoading(true);
     try {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      const email = session?.user?.email;
-      if (!email) { setPwError("Không tìm thấy phiên đăng nhập"); setPwLoading(false); return; }
-
-      const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password: pwForm.current });
-      if (signInErr) { setPwError("Mật khẩu hiện tại không đúng"); setPwLoading(false); return; }
-
+      
       const { error } = await supabase.auth.updateUser({ password: pwForm.newPw });
       if (error) { setPwError(error.message); }
       else {
@@ -307,18 +301,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mật khẩu hiện tại</label>
-              <div className="relative">
-                <input type={showCurrentPw ? "text" : "password"} value={pwForm.current}
-                  onChange={(e) => setPwForm((f) => ({ ...f, current: e.target.value }))} required placeholder="••••••••"
-                  className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 pr-10 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" />
-                <button type="button" onClick={() => setShowCurrentPw(!showCurrentPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
-                  {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
+
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mật khẩu mới</label>
@@ -359,7 +342,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={pwLoading || !pwForm.current || !pwForm.newPw || !pwForm.confirm}
+              <Button type="submit" disabled={pwLoading || !pwForm.newPw || !pwForm.confirm}
                 className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50">
                 {pwLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                 Cập nhật mật khẩu

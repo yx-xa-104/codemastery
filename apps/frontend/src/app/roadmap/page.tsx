@@ -127,7 +127,7 @@ export default async function RoadmapPage() {
 
                             {/* Stats pill */}
                             {user && totalCourses > 0 && (
-                                <div className="flex items-center gap-5 px-6 py-4 bg-zinc-900/30 backdrop-blur-md border border-white/5 rounded-2xl shrink-0 shadow-xl">
+                                <div className="flex items-center gap-5 px-6 py-4 bg-navy-900/60 backdrop-blur-md border border-white/5 rounded-2xl shrink-0 shadow-xl">
                                     <div className="text-center">
                                         <p className="text-2xl font-bold text-zinc-100">{totalCompleted}</p>
                                         <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Hoàn thành</p>
@@ -151,7 +151,7 @@ export default async function RoadmapPage() {
                 {/* Roadmap tracks */}
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
                     {roadmaps.length === 0 ? (
-                        <div className="text-center py-20 bg-zinc-900/20 backdrop-blur-sm rounded-3xl border border-white/5">
+                        <div className="text-center py-20 bg-navy-900/60 backdrop-blur-sm rounded-3xl border border-white/5">
                             <BookOpen className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
                             <h3 className="text-lg font-bold text-zinc-300 mb-2">Chưa có lộ trình nào</h3>
                             <p className="text-zinc-500 text-sm">Các khóa học chưa được đăng tải lên hệ thống.</p>
@@ -163,7 +163,7 @@ export default async function RoadmapPage() {
                                 const pct = roadmap.avgProgress;
 
                                 return (
-                                    <div key={roadmap.slug} className="bg-zinc-900/30 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden transition-all hover:border-white/10 shadow-2xl">
+                                    <div key={roadmap.slug} className="bg-navy-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden transition-all hover:border-white/10 shadow-2xl">
                                         {/* Track header — clean layout */}
                                         <div className="px-6 py-6 sm:px-8 sm:py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                             <div className="flex items-center gap-4">
@@ -218,7 +218,7 @@ export default async function RoadmapPage() {
                                                                     step.done
                                                                         ? 'bg-emerald-500/20 border-2 border-emerald-500/50'
                                                                         : isNext
-                                                                            ? 'bg-zinc-200 border-4 border-[#050505] shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                                                                            ? 'bg-zinc-200 border-4 border-navy-900 shadow-glow-indigo'
                                                                             : 'bg-navy-950 border-2 border-white/10 group-hover:border-white/20'
                                                                 }`}>
                                                                     {step.done
