@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { LessonPageClient } from "./lesson-page-client";
 import { createClient } from "@/shared/lib/supabase/server";
 import { readMdxContent } from "@/shared/lib/mdx-reader";
@@ -46,6 +46,11 @@ export default async function LessonPage({ params }: Props) {
         }
     } catch { /* auth failed or no session */ }
 
+    // Redirect to course page if user is not enrolled and lesson is not free preview
+    if (!enrollmentId && !lesson.is_free_preview) {
+        redirect(`/courses/${courseSlug}`);
+    }
+
     // Check if lesson is initially completed
     let isInitiallyCompleted = false;
     try {
@@ -83,6 +88,7 @@ export default async function LessonPage({ params }: Props) {
         lessons: (mod.lessons as unknown as Array<{
             id: string; title: string; slug: string;
             lesson_type: string; duration_minutes: number | null;
+            is_free_preview: boolean;
         }>).map(l => ({
             id: l.id,
             title: l.title,
@@ -90,6 +96,7 @@ export default async function LessonPage({ params }: Props) {
             duration: l.duration_minutes ? `${l.duration_minutes}:00` : '—',
             isCompleted: completedLessonIds.includes(l.id),
             type: (l.lesson_type === 'video' ? 'video' : 'interactive') as 'video' | 'interactive',
+            isLocked: !enrollmentId && !l.is_free_preview,
         })),
     }));
 

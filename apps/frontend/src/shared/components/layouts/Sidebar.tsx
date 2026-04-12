@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, ChevronDown, CheckCircle2, PlayCircle } from "lucide-react";
+import { BookOpen, ChevronDown, CheckCircle2, PlayCircle, Lock } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -13,6 +13,7 @@ interface LessonItem {
     duration: string;
     isCompleted: boolean;
     type: "video" | "interactive";
+    isLocked?: boolean;
 }
 
 interface SidebarModule {
@@ -101,13 +102,21 @@ export function Sidebar({ courseTitle, modules, courseSlug, isOpen }: SidebarPro
                                     return (
                                         <li key={lesson.id}>
                                             <Link
-                                                href={lessonPath}
-                                                className={`flex items-start gap-3 px-5 py-3 text-sm transition-colors ${isActive
+                                                href={lesson.isLocked ? '#' : lessonPath}
+                                                onClick={(e) => {
+                                                    if (lesson.isLocked) {
+                                                        e.preventDefault();
+                                                        alert('Bạn cần ghi danh khóa học để xem bài học này.');
+                                                    }
+                                                }}
+                                                className={`flex items-start gap-3 px-5 py-3 text-sm transition-colors ${lesson.isLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${isActive
                                                     ? "bg-white/5 text-white border-l-2 border-zinc-400"
                                                     : "text-zinc-400 hover:text-white hover:bg-white/[0.02] border-l-2 border-transparent"
                                                     }`}
                                             >
-                                                {lesson.isCompleted ? (
+                                                {lesson.isLocked ? (
+                                                    <Lock className="w-4 h-4 text-zinc-600 shrink-0 mt-0.5" />
+                                                ) : lesson.isCompleted ? (
                                                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                                                 ) : (
                                                     <PlayCircle className="w-4 h-4 text-zinc-600 shrink-0 mt-0.5" />
