@@ -28,7 +28,13 @@ export default function ForgotPasswordPage() {
         });
 
         if (error) {
-            setError(error.message);
+            let errorMsg = error.message;
+            if (errorMsg.toLowerCase().includes('rate limit') || errorMsg.toLowerCase().includes('too many requests')) {
+                errorMsg = 'Bạn đã gửi yêu cầu quá nhiều lần. Vui lòng thử lại sau ít phút.';
+            } else if (errorMsg.toLowerCase().includes('not found')) {
+                errorMsg = 'Không tìm thấy tài khoản với email này.';
+            }
+            setError(errorMsg);
         } else {
             setSent(true);
         }
