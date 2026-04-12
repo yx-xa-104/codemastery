@@ -16,7 +16,7 @@ interface LeaderboardUser {
 async function getLeaderboard(): Promise<LeaderboardUser[]> {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     try {
-        const res = await fetch(`${API_URL}/api/gamification/leaderboard?limit=20`, {
+        const res = await fetch(`${API_URL}/api/gamification/leaderboard?limit=10`, {
             cache: 'no-store',
         });
         if (res.ok) return await res.json();
