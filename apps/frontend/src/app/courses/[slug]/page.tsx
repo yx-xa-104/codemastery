@@ -13,9 +13,10 @@ const levelMap: Record<string, string> = {
 };
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+    try {
+        const { slug } = await params;
 
-    // Get auth for protected endpoints
+        // Get auth for protected endpoints
     let authHeaders: Record<string, string> = {};
     let session = null;
     try {
@@ -336,4 +337,28 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
             </div>
         </MainLayout>
     );
+
+    } catch (error: any) {
+        if (error?.digest?.toString().startsWith('NEXT_') || error?.message?.includes('NEXT_')) {
+            throw error;
+        }
+        console.error("Critical Render Error:", error);
+        return (
+            <div className="flex flex-col flex-1 min-h-screen bg-navy-950 text-white p-6 justify-center items-center">
+                <div className="max-w-4xl w-full bg-navy-900 border border-red-500/50 rounded-xl p-8 shadow-2xl relative z-50 overflow-hidden">
+                    <h1 className="text-2xl font-bold text-red-500 mb-4 flex items-center gap-2">
+                        ⚠️ Lỗi Render Server Component
+                    </h1>
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 font-mono text-sm mb-6 text-red-300 break-words">
+                        {error?.message || "Unknown error"}
+                    </div>
+                    {error?.stack && (
+                        <div className="bg-black/50 border border-slate-800 rounded-lg p-4 font-mono text-[11px] text-slate-400 overflow-auto max-h-96 break-all whitespace-pre-wrap">
+                            {error.stack}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
 }
