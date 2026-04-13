@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { EnrollButton } from "@/shared/components/enrollment/EnrollButton";
 import { createClient } from "@/shared/lib/supabase/server";
 import { CourseReviews } from "@/features/courses/components/CourseReviews";
-
+import { LessonLink } from "@/features/courses/components/LessonLink";
 const levelMap: Record<string, string> = {
     beginner: 'Cơ bản',
     intermediate: 'Trung bình',
@@ -13,10 +13,9 @@ const levelMap: Record<string, string> = {
 };
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-    try {
-        const { slug } = await params;
+    const { slug } = await params;
 
-        // Get auth for protected endpoints
+    // Get auth for protected endpoints
     let authHeaders: Record<string, string> = {};
     let session = null;
     try {
@@ -217,52 +216,16 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                             {lessons.map((lesson, lessonIdx) => {
                                                                 const hasAccess = isEnrolled || lesson.is_free_preview;
                                                                 return (
-                                                                <Link
+                                                                <LessonLink
                                                                     key={lesson.id}
-                                                                    href={hasAccess ? `/lessons/${slug}/${lesson.slug ?? lesson.id}` : '#'}
-                                                                    onClick={(e) => {
-                                                                        if (!hasAccess) {
-                                                                            e.preventDefault();
-                                                                            alert('Bạn cần ghi danh khóa học (và cập nhật mã sinh viên/mã lớp) để xem bài học này.');
-                                                                        }
-                                                                    }}
-                                                                    className={`flex items-center justify-between p-4 transition-all group ${hasAccess ? "hover:bg-white/5 cursor-pointer" : "opacity-60 cursor-not-allowed"} ${lessonIdx !== lessons.length - 1 ? "border-b border-slate-800/50" : ""}`}
-                                                                >
-                                                                    <div className="flex items-center gap-3 w-full pr-4">
-                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                                                                            completedLessonIds.includes(lesson.id)
-                                                                                ? 'bg-green-500/20 border border-green-500/30'
-                                                                                : hasAccess ? 'bg-navy-950 border border-slate-800 group-hover:bg-indigo-600/20 group-hover:border-indigo-500/30'
-                                                                                : 'bg-navy-950 border border-slate-800/50'
-                                                                        }`}>
-                                                                            {completedLessonIds.includes(lesson.id) ? (
-                                                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                                                            ) : !hasAccess ? (
-                                                                                <Lock className="w-4 h-4 text-slate-500" />
-                                                                            ) : lesson.lesson_type === 'video' ? (
-                                                                                <PlayCircle className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                                                                            ) : (
-                                                                                <Code2 className="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors" />
-                                                                            )}
-                                                                        </div>
-                                                                        <span className={`text-sm font-medium transition-colors truncate flex-1 ${hasAccess ? "text-slate-300 group-hover:text-white" : "text-slate-500"}`}>
-                                                                            {lessonIdx + 1}. {lesson.title}
-                                                                        </span>
-                                                                        {lesson.is_free_preview && !isEnrolled && (
-                                                                            <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0 ml-2">
-                                                                                Học thử
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                    <div className="flex items-center gap-4 shrink-0">
-                                                                        <span className="text-xs text-slate-500 font-mono tracking-wide">
-                                                                            {lesson.duration_minutes ? `${lesson.duration_minutes}:00` : '—'}
-                                                                        </span>
-                                                                        {hasAccess && (
-                                                                            <ArrowRight className="w-4 h-4 text-slate-600 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-indigo-400 transition-all duration-300" />
-                                                                        )}
-                                                                    </div>
-                                                                </Link>
+                                                                    courseSlug={slug}
+                                                                    lesson={lesson}
+                                                                    lessonIdx={lessonIdx}
+                                                                    hasAccess={hasAccess}
+                                                                    isCompleted={completedLessonIds.includes(lesson.id)}
+                                                                    isEnrolled={isEnrolled}
+                                                                    totalLessons={lessons.length}
+                                                                />
                                                             )})}
                                                         </div>
                                                     </div>
@@ -337,28 +300,4 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
             </div>
         </MainLayout>
     );
-
-    } catch (error: any) {
-        if (error?.digest?.toString().startsWith('NEXT_') || error?.message?.includes('NEXT_')) {
-            throw error;
-        }
-        console.error("Critical Render Error:", error);
-        return (
-            <div className="flex flex-col flex-1 min-h-screen bg-navy-950 text-white p-6 justify-center items-center">
-                <div className="max-w-4xl w-full bg-navy-900 border border-red-500/50 rounded-xl p-8 shadow-2xl relative z-50 overflow-hidden">
-                    <h1 className="text-2xl font-bold text-red-500 mb-4 flex items-center gap-2">
-                        ⚠️ Lỗi Render Server Component
-                    </h1>
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 font-mono text-sm mb-6 text-red-300 break-words">
-                        {error?.message || "Unknown error"}
-                    </div>
-                    {error?.stack && (
-                        <div className="bg-black/50 border border-slate-800 rounded-lg p-4 font-mono text-[11px] text-slate-400 overflow-auto max-h-96 break-all whitespace-pre-wrap">
-                            {error.stack}
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    }
 }
