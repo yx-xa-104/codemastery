@@ -202,7 +202,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                         <h2 className="text-xl font-bold text-white mb-6">Nội dung khóa học</h2>
                                         <div className="space-y-4">
                                             {safeModules.map((mod: any, idx: number) => {
-                                                const lessons = Array.isArray(mod.lessons) ? mod.lessons : [];
+                                                const lessons = (Array.isArray(mod.lessons) ? mod.lessons : []) as { id: string; title: string; slug: string | null; duration_minutes: number | null; lesson_type: string; sort_order: number; is_free_preview: boolean }[];
                                                 return (
                                                     <div key={mod.id} className="rounded-2xl overflow-hidden border border-slate-800/80 bg-navy-900/30">
                                                         <div className="p-5 flex justify-between items-center bg-navy-900 border-b border-slate-800/80">
