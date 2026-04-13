@@ -16,11 +16,18 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     const { slug } = await params;
 
     // Get auth for protected endpoints
-    const supabase = await createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const authHeaders: Record<string, string> = session?.access_token
-        ? { Authorization: `Bearer ${session.access_token}` }
-        : {};
+    let authHeaders: Record<string, string> = {};
+    let session = null;
+    try {
+        const supabase = await createClient();
+        const { data } = await supabase.auth.getSession();
+        session = data.session;
+        if (session?.access_token) {
+            authHeaders = { Authorization: `Bearer ${session.access_token}` };
+        }
+    } catch (err) {
+        console.warn("Failed to get session", err);
+    }
 
     let course: any = null;
     let modules: any[] = [];
@@ -40,14 +47,18 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     try {
         const resModules = await fetch(`${API_URL}/api/courses/${slug}/modules`, { next: { revalidate: 60 } });
         if (resModules.ok) {
-            modules = await resModules.json();
+            const data = await resModules.json();
+            modules = Array.isArray(data) ? data : [];
         }
     } catch (err) {
         console.error("Failed to fetch modules", err);
     }
 
     const categoryName = course.category?.name ?? course.categories?.name ?? 'Khác';
-    const totalLessons = modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length ?? 0), 0) ?? 0;
+    const safeModules = Array.isArray(modules) ? modules : [];
+    const totalLessons = safeModules.reduce((sum: number, m: any) => sum + (Array.isArray(m.lessons) ? m.lessons.length : 0), 0);
+    const learningOutcomes = Array.isArray(course.learning_outcomes) ? course.learning_outcomes : [];
+    const requirements = Array.isArray(course.requirements) ? course.requirements : [];
 
     // Fetch completed lesson IDs for this course
     let completedLessonIds: string[] = [];
@@ -57,7 +68,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
             cache: 'no-store'
         });
         if (resCompleted.ok) {
-            completedLessonIds = await resCompleted.json();
+            const data = await resCompleted.json();
+            completedLessonIds = Array.isArray(data) ? data : [];
         }
     } catch { /* not enrolled or no session */ }
 
@@ -144,7 +156,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                             <div className="w-full lg:w-[60%] space-y-12">
 
                                 {/* What you will learn */}
-                                {course.learning_outcomes && course.learning_outcomes.length > 0 && (
+                                {learningOutcomes.length > 0 && (
                                     <div className="p-8 rounded-3xl bg-navy-900/50 border border-slate-800/80 shadow-sm relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-5">
                                             <Code2 className="w-32 h-32" />
@@ -154,7 +166,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                             Bạn sẽ học được gì?
                                         </h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                                            {course.learning_outcomes.map((outcome: any, idx: number) => (
+                                            {learningOutcomes.map((outcome: any, idx: number) => (
                                                 <div key={idx} className="flex items-start gap-3">
                                                     <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
                                                         <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -167,14 +179,14 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                 )}
 
                                 {/* Requirements */}
-                                {course.requirements && course.requirements.length > 0 && (
+                                {requirements.length > 0 && (
                                     <div className="p-8 rounded-3xl bg-navy-900/50 border border-slate-800/80">
                                         <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
                                             <ShieldCheck className="w-6 h-6 text-amber-400" />
                                             Yêu cầu trước khi học
                                         </h2>
                                         <ul className="space-y-3">
-                                            {course.requirements.map((req: any, idx: number) => (
+                                            {requirements.map((req: any, idx: number) => (
                                                 <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm">
                                                     <span className="text-amber-400 mt-1">•</span>
                                                     {req}
@@ -185,12 +197,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                 )}
 
                                 {/* Course Syllabus */}
-                                {modules && modules.length > 0 && (
+                                {safeModules.length > 0 && (
                                     <div>
                                         <h2 className="text-xl font-bold text-white mb-6">Nội dung khóa học</h2>
                                         <div className="space-y-4">
-                                            {modules.map((mod: any, idx: number) => {
-                                                const lessons = (mod.lessons as unknown as { id: string; title: string; slug: string | null; duration_minutes: number | null; lesson_type: string; sort_order: number; is_free_preview: boolean }[]) ?? [];
+                                            {safeModules.map((mod: any, idx: number) => {
+                                                const lessons = Array.isArray(mod.lessons) ? mod.lessons : [];
                                                 return (
                                                     <div key={mod.id} className="rounded-2xl overflow-hidden border border-slate-800/80 bg-navy-900/30">
                                                         <div className="p-5 flex justify-between items-center bg-navy-900 border-b border-slate-800/80">
@@ -297,8 +309,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                                                 courseId={course.id}
                                                 courseSlug={slug}
                                                 firstLessonSlug={
-                                                    modules && modules.length > 0
-                                                        ? ((modules[0].lessons as unknown as { slug: string | null }[])?.[0]?.slug) ?? undefined
+                                                    safeModules.length > 0 && Array.isArray(safeModules[0].lessons)
+                                                        ? safeModules[0].lessons[0]?.slug ?? undefined
                                                         : undefined
                                                 }
                                             />
