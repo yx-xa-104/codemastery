@@ -34,7 +34,7 @@ export default async function HomePage() {
                 Lộ trình của các <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-400 to-indigo-400">Chuyên gia</span>
               </h2>
               <p className="mt-4 text-lg text-slate-400 max-w-2xl font-light">
-                Chọn khoá học phù hợp với cấp độ của bạn. CodeMastery cung cấp những dự án thực tế nhất giúp bạn tự tin ứng tuyển.
+                Chọn khoá học phù hợp với bạn. CodeMastery cung cấp những khóa học thực tế nhất giúp bạn tự tin hơn trong học tập.
               </p>
             </div>
             <Link href="/courses">
