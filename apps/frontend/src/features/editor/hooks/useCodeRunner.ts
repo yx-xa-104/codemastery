@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
 import { usePythonRunner } from "./usePythonRunner";
@@ -32,7 +32,11 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
         if (!code.trim()) return;
         setIsRunning(true);
         setActiveRunnerResult(null);
-
+        pythonRunner.setResult(null);
+        jsRunner.setResult(null);
+        sqlRunner.setResult(null);
+        htmlRunner.setResult(null);
+        serverRunner.setResult(null);
         try {
             switch (language) {
                 case 'python':
@@ -44,22 +48,21 @@ export function useCodeRunner(initialCode: string = "// Code here...") {
                     break;
                 case 'sql':
                 case 'sqlite':
+                case 'postgresql':
+                case 'mysql':
+                case 'sqlserver':
                     await sqlRunner.handleRun(code);
                     break;
                 case 'html':
                 case 'css':
                     await htmlRunner.handleRun(code, language);
                     break;
-                case 'typescript':
                 case 'java':
                 case 'cpp':
                 case 'csharp':
                 case 'php':
                 case 'pascal':
-                case 'postgresql':
-                case 'mysql':
-                case 'sqlserver':
-                    await serverRunner.handleRun(code, language);
+                    await serverRunner.handleRun(code, language, stdin);
                     break;
                 default:
                     setActiveRunnerResult({

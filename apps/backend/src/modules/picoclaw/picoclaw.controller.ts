@@ -15,6 +15,9 @@ export class ChatDto {
   @IsString()
   @IsOptional()
   session_id?: string;
+
+  @IsOptional()
+  metadata?: any;
 }
 
 @Controller('picoclaw')
@@ -45,7 +48,7 @@ export class PicoclawController {
   @Post('chat')
   @Throttle({ default: { limit: 1, ttl: 5000 } })
   async chat(@Body() body: ChatDto) {
-    const { reply, session_id } = await this.picoclawService.chat(body.user_id, body.prompt, body.session_id);
+    const { reply, session_id } = await this.picoclawService.chat(body.user_id, body.prompt, body.session_id, body.metadata);
     return { status: 'success', reply, session_id };
   }
 }

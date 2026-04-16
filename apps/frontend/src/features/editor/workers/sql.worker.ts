@@ -19,70 +19,69 @@ export interface WorkerOutput {
 
 const SQL_JS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js";
 
-let sqlInstance: any = null;
+let SqlJsEngine: any = null;
 let sqlLoading: Promise<any> | null = null;
 
 /**
- * Load sql.js and create an in-memory database with sample tables.
- * Cached for subsequent queries.
+ * Load sql.js engine (cached) and create a fresh in-memory database with sample tables.
+ * This guarantees a clean state for every execution run.
  */
 async function getSqlDb(): Promise<any> {
-    if (sqlInstance) return sqlInstance;
-
-    if (!sqlLoading) {
-        sqlLoading = (async () => {
-            importScripts(SQL_JS_CDN);
-            const SQL = await (self as any).initSqlJs({
-                locateFile: (file: string) =>
-                    `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`,
-            });
-
-            const db = new SQL.Database();
-
-            // Create sample tables for learning SQL
-            db.run(`
-                CREATE TABLE students (
-                    id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    email TEXT,
-                    age INTEGER,
-                    grade REAL
-                );
-                INSERT INTO students VALUES (1, 'Nguyen Van A', 'a@email.com', 20, 8.5);
-                INSERT INTO students VALUES (2, 'Tran Thi B', 'b@email.com', 21, 9.0);
-                INSERT INTO students VALUES (3, 'Le Van C', 'c@email.com', 19, 7.5);
-                INSERT INTO students VALUES (4, 'Pham Thi D', 'd@email.com', 22, 8.8);
-                INSERT INTO students VALUES (5, 'Hoang Van E', 'e@email.com', 20, 6.5);
-
-                CREATE TABLE courses (
-                    id INTEGER PRIMARY KEY,
-                    title TEXT NOT NULL,
-                    credits INTEGER
-                );
-                INSERT INTO courses VALUES (1, 'Lap trinh Python', 3);
-                INSERT INTO courses VALUES (2, 'Co so du lieu', 4);
-                INSERT INTO courses VALUES (3, 'Toan roi rac', 3);
-
-                CREATE TABLE enrollments (
-                    student_id INTEGER,
-                    course_id INTEGER,
-                    semester TEXT,
-                    FOREIGN KEY(student_id) REFERENCES students(id),
-                    FOREIGN KEY(course_id) REFERENCES courses(id)
-                );
-                INSERT INTO enrollments VALUES (1, 1, '2024A');
-                INSERT INTO enrollments VALUES (1, 2, '2024A');
-                INSERT INTO enrollments VALUES (2, 1, '2024A');
-                INSERT INTO enrollments VALUES (3, 3, '2024B');
-                INSERT INTO enrollments VALUES (4, 2, '2024A');
-            `);
-
-            sqlInstance = db;
-            return db;
-        })();
+    if (!SqlJsEngine) {
+        if (!sqlLoading) {
+            sqlLoading = (async () => {
+                importScripts(SQL_JS_CDN);
+                SqlJsEngine = await (self as any).initSqlJs({
+                    locateFile: (file: string) =>
+                        `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`,
+                });
+                return SqlJsEngine;
+            })();
+        }
+        await sqlLoading;
     }
 
-    return sqlLoading;
+    const db = new SqlJsEngine.Database();
+
+    // Create sample tables for learning SQL
+    db.run(`
+        CREATE TABLE students (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT,
+            age INTEGER,
+            grade REAL
+        );
+        INSERT INTO students VALUES (1, 'Nguyen Van A', 'a@email.com', 20, 8.5);
+        INSERT INTO students VALUES (2, 'Tran Thi B', 'b@email.com', 21, 9.0);
+        INSERT INTO students VALUES (3, 'Le Van C', 'c@email.com', 19, 7.5);
+        INSERT INTO students VALUES (4, 'Pham Thi D', 'd@email.com', 22, 8.8);
+        INSERT INTO students VALUES (5, 'Hoang Van E', 'e@email.com', 20, 6.5);
+
+        CREATE TABLE courses (
+            id INTEGER PRIMARY KEY,
+            title TEXT NOT NULL,
+            credits INTEGER
+        );
+        INSERT INTO courses VALUES (1, 'Lap trinh Python', 3);
+        INSERT INTO courses VALUES (2, 'Co so du lieu', 4);
+        INSERT INTO courses VALUES (3, 'Toan roi rac', 3);
+
+        CREATE TABLE enrollments (
+            student_id INTEGER,
+            course_id INTEGER,
+            semester TEXT,
+            FOREIGN KEY(student_id) REFERENCES students(id),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        );
+        INSERT INTO enrollments VALUES (1, 1, '2024A');
+        INSERT INTO enrollments VALUES (1, 2, '2024A');
+        INSERT INTO enrollments VALUES (2, 1, '2024A');
+        INSERT INTO enrollments VALUES (3, 3, '2024B');
+        INSERT INTO enrollments VALUES (4, 2, '2024A');
+    `);
+
+    return db;
 }
 
 /** Format query results as a readable ASCII table */
@@ -96,13 +95,13 @@ function formatTable(columns: string[], values: any[][]): string {
         return Math.max(col.length, maxVal);
     });
 
-    const separator = widths.map((w) => "-".repeat(w)).join("-+-");
-    const header = columns.map((col, i) => col.padEnd(widths[i])).join(" | ");
+    const separator = "+" + widths.map((w) => "-".repeat(w + 2)).join("+") + "+";
+    const header = "|" + columns.map((col, i) => " " + col.padEnd(widths[i]) + " ").join("|") + "|";
     const rows = values.map((row) =>
-        row.map((val, i) => String(val ?? "NULL").padEnd(widths[i])).join(" | ")
+        "|" + row.map((val, i) => " " + String(val ?? "NULL").padEnd(widths[i]) + " ").join("|") + "|"
     );
 
-    return [header, separator, ...rows, `\n(${values.length} rows)`].join("\n");
+    return [separator, header, separator, ...rows, separator].join("\n") + `\n(${values.length} rows)`;
 }
 
 self.onmessage = async function (event: MessageEvent<WorkerInput>) {
@@ -114,11 +113,18 @@ self.onmessage = async function (event: MessageEvent<WorkerInput>) {
         const results: string[] = [];
 
         // Simple split of multiple queries by semicolon
-        // Not perfect for comments, but good enough for generic SQL code execution tasks
+        // We filter out CREATE DATABASE and USE to seamlessly support MySQL script examples
+        // without crashing the internal SQLite WebAssembly runner.
         const statements = code
             .split(";")
             .map((s) => s.trim())
-            .filter(Boolean);
+            .filter((s) => {
+                const upper = s.toUpperCase();
+                if (upper.startsWith("CREATE DATABASE ") || upper.startsWith("USE ")) {
+                    return false;
+                }
+                return Boolean(s);
+            });
 
         for (const stmt of statements) {
             const res = db.exec(stmt);

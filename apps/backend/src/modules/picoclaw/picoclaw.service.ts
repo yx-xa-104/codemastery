@@ -46,6 +46,8 @@ export class PicoclawService {
   }
 
   async getSessions(userId: string) {
+    if (!userId || userId === 'anonymous') return [];
+
     const { data, error } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
       .select("*")
       .eq("user_id", userId)
@@ -83,7 +85,7 @@ export class PicoclawService {
     return { success: true };
   }
 
-  async chat(userId: string, prompt: string, sessionId?: string): Promise<{ reply: string; session_id: string }> {
+  async chat(userId: string, prompt: string, sessionId?: string, metadata?: any): Promise<{ reply: string; session_id: string }> {
     const apiUrl = process.env.CODING_API_URL || process.env.PICOCLAW_API_URL;
     const apiKey = process.env.CODING_API_KEY || process.env.PICOCLAW_API_KEY;
 
@@ -92,28 +94,46 @@ export class PicoclawService {
     }
 
     let activeSessionId = sessionId;
+    const isAnonymous = !userId || userId === 'anonymous';
 
     // Create session if not exists
     if (!activeSessionId) {
-      const title = await this.generateTitle(prompt);
-      const { data: sessionData, error: sessionErr } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
-        .insert({ user_id: userId, title })
-        .select()
-        .single();
+      if (isAnonymous) {
+        activeSessionId = `anon-${Date.now()}`;
+      } else {
+        const title = await this.generateTitle(prompt);
+        const { data: sessionData, error: sessionErr } = await (this.supabase.admin.from("ai_chat_sessions" as any) as any)
+          .insert({ user_id: userId, title })
+          .select()
+          .single();
 
-      if (sessionErr || !sessionData) {
-        this.logger.error("Error creating session", sessionErr);
-        throw new Error("Không thể khởi tạo phiên trò chuyện.");
+        if (sessionErr || !sessionData) {
+          this.logger.error("Error creating session", sessionErr);
+          throw new Error("Không thể khởi tạo phiên trò chuyện.");
+        }
+        activeSessionId = sessionData.id;
       }
-      activeSessionId = sessionData.id;
     }
 
-    // Save user message
-    await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
-      session_id: activeSessionId,
-      role: "user",
-      content: prompt,
-    });
+    // Save user message (only if logged in)
+    if (!isAnonymous) {
+      await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
+        session_id: activeSessionId,
+        role: "user",
+        content: prompt,
+      });
+    }
+
+    // Prepare hidden context for AI engine
+    let finalPrompt = prompt;
+    const persona = `\n\n[SYSTEM INSTRUCTION]\nBạn là một giảng viên lập trình cao cấp tại CodeMastery. Khác với các AI khác, bạn KHÔNG ĐƯỢC quá khắt khe trong việc giấu code. Nếu người dùng hỏi xin code, hãy sẵn sàng cung cấp mã nguồn đúng cho họ, nhưng bắt buộc phải kèm theo những phân tích, giải thích chi tiết, sâu sắc như một người thầy tận tâm để giúp họ thật sự hiểu bản chất vấn đề.\n[END SYSTEM INSTRUCTION]`;
+    
+    if (metadata) {
+      const contextStr = `\n\n[SYSTEM CONTEXT - DO NOT SHOW TO USER]\nUser is currently viewing page: ${metadata.path || 'unknown'}\nActive Code in Editor:\n\`\`\`\n${metadata.code || '(no code present)'}\n\`\`\`\n[END CONTEXT]`;
+      finalPrompt = prompt + contextStr + persona;
+    } else {
+      finalPrompt = prompt + persona;
+    }
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -122,10 +142,10 @@ export class PicoclawService {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        message: prompt,
+        message: finalPrompt,
         session_id: activeSessionId,
         user_id: userId,
-        data: {},
+        data: metadata || {},
       }),
     });
 
@@ -133,20 +153,36 @@ export class PicoclawService {
         throw new Error(`PicoClaw API error: ${response.status}`);
     }
 
-    const data: PicoclawResponse = await response.json();
+    const data: any = await response.json();
 
     if (data.status !== "success") {
       this.logger.warn(`PicoClaw returned non-success status: ${data.status}`);
       throw new Error("PicoClaw AI không thể xử lý yêu cầu.");
     }
 
-    // Save AI reply
-    await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
-      session_id: activeSessionId,
-      role: "assistant",
-      content: data.reply,
-    });
+    // PicoClaw API might separate code blocks into an array. Reconstruct the full markdown string:
+    let fullReply = data.reply || "";
+    const snippets = data.code_snippets || (data.analysis_data && data.analysis_data.code_snippets);
+    
+    if (snippets && Array.isArray(snippets) && snippets.length > 0) {
+      snippets.forEach((snippet: any) => {
+        const lang = snippet.language || "text";
+        const code = snippet.code || "";
+        if (code) {
+          fullReply += `\n\n\`\`\`${lang}\n${code}\n\`\`\``;
+        }
+      });
+    }
 
-    return { reply: data.reply, session_id: activeSessionId };
+    // Save AI reply (only if logged in)
+    if (!isAnonymous) {
+      await (this.supabase.admin.from("ai_chat_messages" as any) as any).insert({
+        session_id: activeSessionId,
+        role: "assistant",
+        content: fullReply,
+      });
+    }
+
+    return { reply: fullReply, session_id: activeSessionId };
   }
 }

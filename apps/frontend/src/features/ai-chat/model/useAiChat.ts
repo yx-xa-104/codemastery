@@ -85,7 +85,28 @@ export function useAiChat(initialMessage?: Message) {
     if (!prompt.trim() || isLoading) return;
 
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
+    
+    let isLimitReached = false;
+    if (userId === 'anonymous' && typeof window !== 'undefined') {
+      const currentCount = parseInt(window.localStorage.getItem('anon_chat_count') || '0', 10);
+      if (currentCount >= 5) {
+        isLimitReached = true;
+      } else {
+        window.localStorage.setItem('anon_chat_count', (currentCount + 1).toString());
+      }
+    }
+
     setMessages((prev) => [...prev, userMessage]);
+
+    if (isLimitReached) {
+      setMessages((prev) => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Xin lỗi, bạn đã đạt giới hạn 5 câu hỏi miễn phí. Vui lòng **đăng nhập** để tiếp tục sử dụng AI Tutor không giới hạn nhé!',
+      }]);
+      return;
+    }
+
     setIsLoading(true);
 
     const assistantMsgId = (Date.now() + 1).toString();
@@ -98,6 +119,13 @@ export function useAiChat(initialMessage?: Message) {
     try {
       const bodyParams: any = { user_id: userId, prompt };
       if (currentSessionId) bodyParams.session_id = currentSessionId;
+
+      if (typeof window !== 'undefined') {
+        bodyParams.metadata = {
+          path: window.location.pathname,
+          code: window.localStorage.getItem('codemastery_active_code') || ''
+        };
+      }
 
       const response = await fetch(`${baseUrl}/api/picoclaw/chat`, {
         method: 'POST',

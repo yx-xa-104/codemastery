@@ -54,20 +54,27 @@ export function ChatMessage({ message, isTyping, isLast }: ChatMessageProps) {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 code({ inline, className, children, ...props }: any) {
                                     const match = /language-(\w+)/.exec(className || "");
-                                    return !inline && match ? (
-                                        <div className="rounded-lg overflow-hidden my-2 border border-slate-700">
-                                            <SyntaxHighlighter
-                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                                style={vscDarkPlus as any}
-                                                language={match[1]}
-                                                PreTag="div"
-                                                customStyle={{ margin: 0, background: '#050d1f', padding: '0.75rem', fontSize: '12px' }}
-                                                {...props}
-                                            >
-                                                {String(children).replace(/\n$/, "")}
-                                            </SyntaxHighlighter>
-                                        </div>
-                                    ) : (
+                                    const isBlock = !inline && match; // Strict block with language
+                                    const isOrphanBlock = !inline && !match && String(children).includes('\n'); // Block without language but has multi-lines
+                                    
+                                    if (isBlock || isOrphanBlock) {
+                                        return (
+                                            <div className="rounded-lg overflow-hidden my-2 border border-slate-700">
+                                                <SyntaxHighlighter
+                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                                    style={vscDarkPlus as any}
+                                                    language={match ? match[1] : "text"}
+                                                    PreTag="div"
+                                                    customStyle={{ margin: 0, background: '#050d1f', padding: '0.75rem', fontSize: '12px' }}
+                                                    {...props}
+                                                >
+                                                    {String(children).replace(/\n$/, "")}
+                                                </SyntaxHighlighter>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
                                         <code className="px-1.5 py-0.5 rounded bg-slate-800 font-mono text-xs text-amber-300 border border-slate-700" {...props}>
                                             {children}
                                         </code>

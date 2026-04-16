@@ -76,6 +76,13 @@ export function CodeEditor({
         }
     }, [testRunner.allPassed, onTestResults, hasTests]);
 
+    // Sync code to localStorage for AI context injection
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("codemastery_active_code", code || "");
+        }
+    }, [code]);
+
     // Drag-to-resize handlers
     const onMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();

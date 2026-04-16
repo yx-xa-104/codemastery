@@ -7,7 +7,7 @@ export function useServerRunner() {
     const [result, setResult] = useState<RunResult | null>(null);
     const [isRunning, setIsRunning] = useState(false);
 
-    const handleRun = useCallback(async (code: string, language: string) => {
+    const handleRun = useCallback(async (code: string, language: string, stdin?: string) => {
         if (!code.trim()) return;
 
         setIsRunning(true);
@@ -20,8 +20,7 @@ export function useServerRunner() {
 
             // Using standard Fetch API to match existing BFF proxy patterns or standard API call
             // We use apiClient here since it auto-handles auth/cookies if configured
-            const response = await apiClient.post('/execute', { code, language }) as { data: any };
-            const responseData = response.data;
+            const responseData: any = await apiClient.post('/api/execute', { code, language, stdin });
 
             setResult({
                 output: responseData.output || "(No output)",

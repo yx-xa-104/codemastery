@@ -15,8 +15,8 @@ export class ExecutionService {
                 'javascript': 'javascript',
                 'python': 'python',
                 'java': 'java',
-                'cpp': 'cpp',
-                'csharp': 'csharp',
+                'cpp': 'c++',
+                'csharp': 'mono',
                 'php': 'php',
                 'pascal': 'pascal',
                 'postgresql': 'postgresql',
@@ -39,14 +39,16 @@ export class ExecutionService {
                 version: '*',
                 files: [{ content: code }],
                 compile_timeout: 10000,
-                run_timeout: 10000,
+                run_timeout: 3000,
             };
 
             if (stdin) {
                 payload.stdin = stdin;
             }
 
-            const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+            const apiUrl = process.env.PISTON_API_URL || 'https://emkc.org/api/v2/piston/execute';
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

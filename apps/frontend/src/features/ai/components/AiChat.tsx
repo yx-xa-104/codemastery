@@ -33,7 +33,7 @@ export function AiChat({ embedded = false }: AiChatProps) {
 
     const handleSend = () => {
         if (!input.trim() || isTyping) return;
-        sendMessage(input.trim());
+        sendMessage(input.trim(), user?.id);
         setInput("");
     };
 
