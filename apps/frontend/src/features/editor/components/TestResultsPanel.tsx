@@ -58,7 +58,7 @@ export function TestResultsPanel({ results, totalTests, isRunning, testCases = [
                                 onClick={() => setSelectedTest(i)}
                                 className={`w-full flex items-center gap-1.5 px-2.5 py-2 text-[11px] font-medium transition-colors border-b border-slate-800/20 ${
                                     activeIdx === i
-                                        ? "bg-slate-800/60 text-white"
+                                        ? "bg-slate-800/60 text-slate-50"
                                         : "text-slate-400 hover:bg-slate-800/30 hover:text-slate-300"
                                 }`}
                             >
@@ -127,7 +127,7 @@ export function TestResultsPanel({ results, totalTests, isRunning, testCases = [
                                     onClick={() => setSelectedTest(i)}
                                     className={`w-full flex items-center gap-1.5 px-2.5 py-2 text-[11px] font-medium transition-colors border-b border-slate-800/20 ${
                                         isActive
-                                            ? "bg-slate-800/60 text-white"
+                                            ? "bg-slate-800/60 text-slate-50"
                                             : "text-slate-400 hover:bg-slate-800/30 hover:text-slate-300"
                                     }`}
                                 >

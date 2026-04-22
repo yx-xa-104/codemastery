@@ -4,6 +4,7 @@ import { Send, Bot, Sparkles, History, MessageSquarePlus, X } from "lucide-react
 import { useAiChat } from "@/features/ai-chat/model/useAiChat";
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/features/ai-chat/ui/ChatMessage";
+import { IntelligentLoader } from "@/features/ai-chat/ui/IntelligentLoader";
 import { useUser } from "@/shared/stores/useAuthStore";
 
 import { Button } from "@/shared/components/ui/button";
@@ -101,16 +102,12 @@ export function AiChat({ embedded = false }: AiChatProps) {
                         ))}
 
                         {isTyping && messages[messages.length - 1]?.role !== 'assistant' && (
-                            <div className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
-                                    <Bot className="w-3.5 h-3.5 text-white" />
+                            <div className="flex gap-3 max-w-4xl mx-auto w-full">
+                                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-1">
+                                    <Bot className="w-4 h-4 text-white" />
                                 </div>
-                                <div className="bg-navy-800 border border-slate-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
-                                    <div className="flex gap-1 items-center h-4">
-                                        <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                                        <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                                        <span className="w-2 h-2 rounded-full bg-slate-500 animate-bounce" style={{ animationDelay: "300ms" }}></span>
-                                    </div>
+                                <div className="bg-navy-800 border border-slate-700/50 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm">
+                                    <IntelligentLoader />
                                 </div>
                             </div>
                         )}

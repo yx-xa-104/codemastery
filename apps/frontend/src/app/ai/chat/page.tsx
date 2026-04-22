@@ -83,7 +83,7 @@ export default function AiChatPage() {
                     {/* Branding */}
                     <div className="flex items-center gap-3">
                         <div className="size-10 rounded-xl bg-indigo-600 flex items-center justify-center relative shrink-0">
-                            <Bot className="w-5 h-5 text-white" />
+                            <Bot className="w-5 h-5 text-slate-50" />
                             <span className="absolute -top-0.5 -right-0.5 size-3 bg-green-500 rounded-full border-2 border-[#010816]" />
                         </div>
                         <div>
@@ -161,7 +161,7 @@ export default function AiChatPage() {
                     {/* Mobile header */}
                     <div className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-slate-800/60 bg-navy-900">
                         <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center relative shrink-0">
-                            <Bot className="w-4 h-4 text-white" />
+                            <Bot className="w-4 h-4 text-slate-50" />
                             <span className="absolute -top-px -right-px size-2.5 bg-green-500 rounded-full border-2 border-[#0B1120]" />
                         </div>
                         <div>
@@ -187,7 +187,7 @@ export default function AiChatPage() {
                         {isTyping && messages[messages.length - 1]?.role !== 'assistant' && (
                             <div className="flex gap-3">
                                 <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
-                                    <Bot className="w-4 h-4 text-white" />
+                                    <Bot className="w-4 h-4 text-slate-50" />
                                 </div>
                                 <div className="bg-navy-900 border border-slate-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
                                     <div className="flex gap-1 items-center h-4">
@@ -233,7 +233,7 @@ export default function AiChatPage() {
                             <button
                                 onClick={() => handleSend()}
                                 disabled={!input.trim() || isTyping}
-                                className="shrink-0 size-9 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-all"
+                                className="shrink-0 size-9 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-slate-50 rounded-xl flex items-center justify-center transition-all"
                             >
                                 <Send className="w-4 h-4" />
                             </button>

@@ -202,7 +202,7 @@ export function LessonPageClient({ course, lesson, modules, enrollmentId, isInit
                         className={`h-auto px-3 lg:px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-xs lg:text-sm font-semibold ${isCompleted
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 cursor-default hover:bg-emerald-500/10'
                             : (hasQuiz ? quizPassed : (testsPassed || !hasTests || !isCodeExercise))
-                                ? 'bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 shadow-glow-indigo'
+                                ? 'bg-indigo-600 text-slate-50 border border-indigo-500 hover:bg-indigo-500 shadow-glow-indigo'
                                 : 'bg-white/5 text-slate-400 border border-white/10 cursor-not-allowed'
                             } disabled:opacity-50`}
                     >

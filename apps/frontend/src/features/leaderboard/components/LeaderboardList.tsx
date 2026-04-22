@@ -39,10 +39,10 @@ export function LeaderboardList({ leaders }: { leaders: LeaderboardUser[] }) {
                         transition={{ delay: index * 0.03, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         whileHover={{ scale: 1.01 }}
                         className={`group flex items-center gap-4 px-5 py-3.5 rounded-2xl border transition-all duration-300 backdrop-blur-md ${
-                            leader.rank === 1 ? "bg-amber-500/[0.03] border-amber-500/20 hover:bg-amber-500/[0.05]" :
-                            leader.rank === 2 ? "bg-zinc-300/[0.03] border-zinc-400/20 hover:bg-zinc-300/[0.05]" :
-                            leader.rank === 3 ? "bg-orange-500/[0.03] border-orange-500/20 hover:bg-orange-500/[0.05]" :
-                            "bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1]"
+                            leader.rank === 1 ? "bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]" :
+                            leader.rank === 2 ? "bg-slate-400/10 border-slate-400/30 hover:bg-slate-400/20 shadow-[0_0_15px_rgba(148,163,184,0.1)]" :
+                            leader.rank === 3 ? "bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.1)]" :
+                            "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 shadow-sm"
                         }`}
                     >
                         <div className="w-10 flex items-center justify-center">

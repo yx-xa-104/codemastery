@@ -11,6 +11,7 @@ const QUICK_PROMPTS = ["Closure là gì?", "Debug lỗi TypeScript", "Giải th�
 import { useAiChat } from "@/features/ai-chat/model/useAiChat";
 import { useUser } from "@/shared/stores/useAuthStore";
 import { History, MessageSquarePlus } from "lucide-react";
+import { IntelligentLoader } from "@/features/ai-chat/ui/IntelligentLoader";
 
 export function GlobalAiChat() {
     const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +74,7 @@ export function GlobalAiChat() {
                     {/* Pulse ring */}
                     <span className="absolute inset-0 rounded-full bg-indigo-500 opacity-30 animate-ping" />
 
-                    <span className="relative flex items-center gap-2.5 bg-indigo-600 hover:bg-indigo-500 text-white pl-4 pr-5 py-3.5 rounded-full shadow-2xl shadow-indigo-600/40 transition-all duration-200 group-hover:scale-105 group-hover:shadow-indigo-500/50">
+                    <span className="relative flex items-center gap-2.5 bg-indigo-600 hover:bg-indigo-500 text-slate-50 pl-4 pr-5 py-3.5 rounded-full shadow-2xl shadow-indigo-600/40 transition-all duration-200 group-hover:scale-105 group-hover:shadow-indigo-500/50">
                         <Bot className="w-5 h-5 shrink-0" />
                         <span className="text-sm font-semibold tracking-tight">AI Tutor</span>
                         {/* Online dot */}
@@ -94,7 +95,7 @@ export function GlobalAiChat() {
                     {/* Header */}
                     <div className="flex items-center gap-3 px-4 py-3 bg-navy-950 border-b border-slate-700/50 rounded-t-2xl shrink-0">
                         <div className="size-8 rounded-full bg-indigo-600 flex items-center justify-center relative shrink-0">
-                            <Bot className="w-4 h-4 text-white" />
+                            <Bot className="w-4 h-4 text-slate-50" />
                             <span className="absolute -top-px -right-px size-2.5 bg-green-500 rounded-full border-2 border-[#111827]" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -211,14 +212,10 @@ export function GlobalAiChat() {
                                 {isTyping && messages[messages.length -1]?.role !== 'assistant' && (
                                     <div className="flex gap-2">
                                         <div className="size-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                                            <Bot className="w-3 h-3 text-white" />
+                                            <Bot className="w-3 h-3 text-slate-50" />
                                         </div>
-                                        <div className="bg-white/5 border border-white/10 rounded-xl rounded-tl-sm px-3 py-2.5">
-                                            <div className="flex gap-1 items-center">
-                                                <span className="size-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                                                <span className="size-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                                                <span className="size-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "300ms" }} />
-                                            </div>
+                                        <div className="bg-white/5 border border-white/10 rounded-xl rounded-tl-sm px-4 py-2 shadow-sm">
+                                            <IntelligentLoader />
                                         </div>
                                     </div>
                                 )}
@@ -252,7 +249,7 @@ export function GlobalAiChat() {
                                         size="icon"
                                         onClick={() => handleSend()}
                                         disabled={!input.trim() || isTyping}
-                                        className="shrink-0 size-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg transition-all"
+                                        className="shrink-0 size-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-slate-50 rounded-lg transition-all"
                                     >
                                         <Send className="w-3.5 h-3.5" />
                                     </Button>
