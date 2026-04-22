@@ -79,7 +79,7 @@ export function TestResultsPanel({ results, totalTests, isRunning, testCases = [
                                 </div>
                             ) : (
                                 <div className="space-y-2.5">
-                                    <div className="flex items-center gap-1.5 text-[11px] text-amber-400/80 mb-3">
+                                    <div className="flex items-center gap-1.5 text-[11px] text-amber-500 mb-3">
                                         <Lightbulb className="w-3.5 h-3.5" />
                                         <span className="font-sans font-medium">Gợi ý: Input / Output mẫu</span>
                                     </div>
@@ -87,11 +87,11 @@ export function TestResultsPanel({ results, totalTests, isRunning, testCases = [
                                     <DetailRow
                                         label="Đầu ra mong đợi"
                                         value={activeTestCase.expectedOutput}
-                                        color="text-green-300/70"
+                                        color="text-green-300"
                                     />
-                                    <div className="mt-4 px-3 py-2 bg-slate-800/30 rounded-lg border border-slate-700/30">
-                                        <p className="text-[11px] text-slate-400 font-sans">
-                                            💡 Nhấn <span className="text-indigo-300 font-medium">&quot;Kiểm tra&quot;</span> để chạy code với các test case này.
+                                    <div className="mt-4 px-3 py-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+                                        <p className="text-[11px] text-indigo-400 font-sans">
+                                            💡 Nhấn <span className="font-bold">&quot;Kiểm tra&quot;</span> để chạy code với các test case này.
                                         </p>
                                     </div>
                                 </div>
@@ -170,7 +170,7 @@ export function TestResultsPanel({ results, totalTests, isRunning, testCases = [
                                     <DetailRow
                                         label="Đầu ra mong đợi"
                                         value={activeResult.expectedOutput}
-                                        color="text-green-300/70"
+                                        color="text-green-300"
                                     />
                                     <DetailRow label="Giới hạn thời gian" value="5000 ms" />
                                     {activeResult.executionTime !== undefined && (
