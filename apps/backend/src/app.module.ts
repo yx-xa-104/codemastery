@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ScheduleModule } from '@nestjs/schedule';
 import { SupabaseModule } from './infrastructure/database/supabase.module';
 import { EventBusModule } from './infrastructure/event-bus/event-bus.module';
 import { LearningModule } from './modules/learning/learning.module';
@@ -15,6 +16,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { PicoclawModule } from './modules/picoclaw/picoclaw.module';
 import { CommunityModule } from './modules/community/community.module';
+import { CronModule } from './modules/cron/cron.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { CommunityModule } from './modules/community/community.module';
     GamificationModule,
     PicoclawModule,
     CommunityModule,
+    ScheduleModule.forRoot(),
+    CronModule,
   ],
   providers: [
     {

@@ -57,7 +57,7 @@ export class EnrollmentRepository {
     async findByUser(userId: string): Promise<EnrollmentWithCourse[]> {
         const { data, error } = await this.supabase.admin
             .from('enrollments')
-            .select('*, courses(id, title, slug, thumbnail_url, level, duration_hours, total_lessons, categories(name))')
+            .select('*, courses(id, title, slug, thumbnail_url, level, duration_hours, total_lessons, category_id, categories(name))')
             .eq('user_id', userId)
             .order('enrolled_at', { ascending: false });
 

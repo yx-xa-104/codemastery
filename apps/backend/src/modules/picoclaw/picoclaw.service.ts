@@ -157,7 +157,7 @@ export class PicoclawService {
 
     if (data.status !== "success") {
       this.logger.warn(`PicoClaw returned non-success status: ${data.status}`);
-      throw new Error("PicoClaw AI không thể xử lý yêu cầu.");
+      throw new Error("AI Tutor không thể xử lý yêu cầu.");
     }
 
     // PicoClaw API might separate code blocks into an array. Reconstruct the full markdown string:

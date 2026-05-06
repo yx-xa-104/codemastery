@@ -18,7 +18,7 @@ export function useAiChat(initialMessage?: Message) {
     {
       id: 'greeting',
       role: 'assistant',
-      content: 'Xin chào! Tôi là PicoClaw AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
+      content: 'Xin chào! Tôi là AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
     }
   ]);
   const [sessions, setSessions] = useState<AiSession[]>([]);
@@ -189,7 +189,7 @@ export function useAiChat(initialMessage?: Message) {
       {
         id: 'greeting',
         role: 'assistant',
-        content: 'Xin chào! Tôi là PicoClaw AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
+        content: 'Xin chào! Tôi là AI Tutor của CodeMastery. Bạn cần giúp gì về lập trình hôm nay?'
       }
     ]);
     setIsLoading(false);
