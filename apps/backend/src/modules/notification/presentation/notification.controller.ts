@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Patch, Delete, Param, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, UseGuards, Body, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { SupabaseAuthGuard, CurrentUser } from '@common/index';
+import { SupabaseAuthGuard, CurrentUser, RolesGuard, Roles } from '@common/index';
 import { NotificationService } from '../application/notification.service';
 import { WebPushService } from '../application/web-push.service';
 
@@ -18,6 +18,19 @@ export class NotificationController {
     @ApiOperation({ summary: 'Subscribe to web push notifications' })
     async subscribeToWebPush(@CurrentUser('id') userId: string, @Body() subscription: any) {
         return this.webPushService.saveSubscription(userId, subscription);
+    }
+
+    @Post('web-push/test-broadcast')
+    @ApiOperation({ summary: 'Admin testing: Broadcast custom push' })
+    @UseGuards(RolesGuard)
+    @Roles('admin')
+    async testBroadcastPush(@Body() payload: any) {
+        
+        return this.webPushService.broadcastPush({
+            title: payload.title || '🔔 Kiểm tra hệ thống Web Push',
+            body: payload.body || 'Đây là tin nhắn thử nghiệm gửi đến tất cả các thiết bị đã đăng ký!',
+            url: payload.url || '/'
+        }, payload.targetRole || 'all');
     }
 
     @Get()

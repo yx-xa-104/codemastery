@@ -80,7 +80,7 @@ export function useWebPush() {
 
             // Gửi lên server
             if (user) {
-                await apiClient.post('/notifications/web-push/subscribe', subscription);
+                await apiClient.post('/api/notifications/web-push/subscribe', subscription);
                 setIsSubscribed(true);
                 return true;
             }

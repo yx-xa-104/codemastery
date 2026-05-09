@@ -3,10 +3,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  User, Lock, Camera, Save, Loader2, CheckCircle, Eye, EyeOff,
+  User, Lock, Camera, Save, Loader2, CheckCircle, Eye, EyeOff, Bell, Send
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { createClient } from "@/shared/lib/supabase/client";
+import { useWebPush } from "@/shared/hooks/useWebPush";
+import { apiClient } from "@/shared/lib/api-client";
 
 async function getToken() {
   const sb = createClient();
@@ -19,7 +21,7 @@ interface ProfileSettingsFormProps {
 }
 
 export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps) {
-  const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
+  const [activeTab, setActiveTab] = useState<"profile" | "security" | "notifications">("profile");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [profileError, setProfileError] = useState("");
@@ -44,6 +46,28 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
   const [pwSuccess, setPwSuccess] = useState("");
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
+
+  // Web Push Hook
+  const { isSupported, isSubscribed, permission, subscribe } = useWebPush();
+  const [broadcastLoading, setBroadcastLoading] = useState(false);
+
+  const [broadcastForm, setBroadcastForm] = useState({
+    title: "🔔 Thông báo từ Admin",
+    body: "Hệ thống Web Push đã hoạt động hoàn hảo! Chúc bạn học tập vui vẻ.",
+    url: "/dashboard",
+    targetRole: "all",
+  });
+
+  const handleTestBroadcast = async () => {
+    setBroadcastLoading(true);
+    try {
+      const res = await apiClient.post("/api/notifications/web-push/test-broadcast", broadcastForm);
+      alert(`Đã gửi thông báo thành công tới ${res?.total || 0} thiết bị!`);
+    } catch (e: any) {
+      alert("Lỗi khi gửi thông báo: " + e.message);
+    }
+    setBroadcastLoading(false);
+  };
 
   useEffect(() => {
     async function load() {
@@ -170,6 +194,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
   const TABS = [
     { id: "profile" as const, label: "Hồ sơ", icon: User },
     { id: "security" as const, label: "Bảo mật", icon: Lock },
+    { id: "notifications" as const, label: "Thông báo", icon: Bell },
   ];
 
   return (
@@ -349,6 +374,116 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
               </Button>
             </div>
           </form>
+        </div>
+      )}
+
+      {activeTab === "notifications" && (
+        <div className="bg-navy-950/60 shadow-sm rounded-2xl border border-white/10 p-6">
+          <div className="mb-6">
+            <h3 className="text-white font-bold mb-1">Cài đặt thông báo</h3>
+            <p className="text-slate-400 text-sm">Quản lý việc nhận thông báo đẩy trên thiết bị này</p>
+          </div>
+
+          <div className="space-y-6">
+            {/* Đăng ký nhận thông báo */}
+            <div className="p-5 border border-indigo-500/20 bg-indigo-500/5 rounded-xl">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    Nhận thông báo đẩy (Web Push)
+                    {isSubscribed && <CheckCircle className="w-4 h-4 text-green-500" />}
+                  </h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    {!isSupported 
+                      ? "Trình duyệt của bạn không hỗ trợ tính năng này." 
+                      : isSubscribed 
+                        ? "Thiết bị này đã được đăng ký nhận thông báo."
+                        : "Bật để nhận nhắc nhở học tập ngay cả khi đã tắt trang web."}
+                  </p>
+                </div>
+                <Button 
+                  onClick={subscribe} 
+                  disabled={!isSupported || isSubscribed}
+                  className={`px-5 py-2 whitespace-nowrap ${isSubscribed ? 'bg-green-600/20 text-green-400 border border-green-500/30' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  {isSubscribed ? "Đã đăng ký" : "Bật thông báo"}
+                </Button>
+              </div>
+            </div>
+
+            {/* Gửi thông báo Custom */}
+            {effectiveRole === "admin" && (
+              <div className="p-5 border border-amber-500/20 bg-amber-500/5 rounded-xl space-y-4">
+                <div>
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    Gửi thông báo (Admin Broadcast)
+                  </h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Gửi thông báo đẩy tùy chỉnh đến nhóm người dùng cụ thể.
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tiêu đề</label>
+                    <input
+                      type="text"
+                      value={broadcastForm.title}
+                      onChange={(e) => setBroadcastForm(f => ({ ...f, title: e.target.value }))}
+                      className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Nội dung</label>
+                    <textarea
+                      rows={2}
+                      value={broadcastForm.body}
+                      onChange={(e) => setBroadcastForm(f => ({ ...f, body: e.target.value }))}
+                      className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm resize-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Đường dẫn (URL)</label>
+                      <input
+                        type="text"
+                        value={broadcastForm.url}
+                        onChange={(e) => setBroadcastForm(f => ({ ...f, url: e.target.value }))}
+                        className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2 px-4 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Đối tượng nhận</label>
+                      <select
+                        value={broadcastForm.targetRole}
+                        onChange={(e) => setBroadcastForm(f => ({ ...f, targetRole: e.target.value }))}
+                        className="w-full bg-navy-950 border border-slate-700 rounded-lg py-2.5 px-4 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm appearance-none cursor-pointer"
+                      >
+                        <option value="all" className="bg-navy-950">Tất cả mọi người</option>
+                        <option value="student" className="bg-navy-950">Chỉ Học viên (Student)</option>
+                        <option value="teacher" className="bg-navy-950">Chỉ Giáo viên (Teacher)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Button 
+                    onClick={handleTestBroadcast} 
+                    disabled={broadcastLoading || !broadcastForm.title || !broadcastForm.body}
+                    className="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {broadcastLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                    Phát sóng thông báo
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -88,4 +88,53 @@ export class WebPushService {
 
         await Promise.allSettled(sendPromises);
     }
+
+    async broadcastPush(payload: any, targetRole: string = 'all') {
+        let query = (this.supabase.admin
+            .from('web_push_subscriptions' as any) as any)
+            .select('*, profiles!inner(role)');
+
+        if (targetRole !== 'all') {
+            query = query.eq('profiles.role', targetRole);
+        }
+
+        const { data: subsData, error } = await query;
+
+        const subs = subsData as any[];
+        if (error || !subs || subs.length === 0) {
+            this.logger.warn('No subscriptions found for broadcast.');
+            return { success: false, message: 'No subscriptions found' };
+        }
+
+        const payloadString = JSON.stringify(payload);
+        let successCount = 0;
+        let failCount = 0;
+
+        const sendPromises = subs.map(async (sub) => {
+            const pushSubscription = {
+                endpoint: sub.endpoint,
+                keys: {
+                    p256dh: sub.p256dh,
+                    auth: sub.auth,
+                },
+            };
+
+            try {
+                await webPush.sendNotification(pushSubscription, payloadString);
+                successCount++;
+            } catch (err: any) {
+                failCount++;
+                if (err.statusCode === 404 || err.statusCode === 410) {
+                    this.logger.log(`Subscription expired, deleting endpoint: ${sub.endpoint}`);
+                    await (this.supabase.admin
+                        .from('web_push_subscriptions' as any) as any)
+                        .delete()
+                        .eq('id', sub.id);
+                }
+            }
+        });
+
+        await Promise.allSettled(sendPromises);
+        return { success: true, successCount, failCount, total: subs.length };
+    }
 }
