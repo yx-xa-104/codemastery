@@ -26,15 +26,13 @@ export class NotificationController {
     @ApiOperation({ summary: 'Admin testing: Broadcast custom push' })
     async testBroadcastPush(@Body() payload: any) {
 
-        const title = payload.title || '🔔 Kiểm tra hệ thống Web Push';
+        const title = payload.title || '🔔 Thông báo hệ thống';
         const body = payload.body;
         const url = payload.url || '/';
         const targetRole = payload.targetRole || 'all';
 
-        // 1. Tạo thông báo trong CSDL (In-app notification bell) cho TẤT CẢ user phù hợp role
         await this.notificationService.broadcast(title, body, targetRole, url);
-        
-        // 2. Kích hoạt Web Push gửi đến các trình duyệt có đăng ký (Web Push)
+
         return this.webPushService.broadcastPush({
             title, body, url
         }, targetRole);

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Bell, Check, CheckCheck, Trash2, X } from 'lucide-react';
+import { Bell, Check, CheckCheck, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
+import Link from 'next/link';
 
 interface Notification {
     id: string;
@@ -19,6 +20,7 @@ export function NotificationBell() {
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -143,6 +145,10 @@ export function NotificationBell() {
         }
     }
 
+    const toggleExpand = (id: string) => {
+        setExpandedId(prev => prev === id ? null : id);
+    };
+
     function formatTime(dateStr: string) {
         const diff = Date.now() - new Date(dateStr).getTime();
         const minutes = Math.floor(diff / 60000);
@@ -201,11 +207,44 @@ export function NotificationBell() {
                                     <div className="flex items-start gap-3">
                                         <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${!notification.is_read ? 'bg-indigo-400' : 'bg-transparent'}`} />
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm text-white font-medium truncate">{notification.title}</p>
-                                            {notification.body && (
-                                                <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{notification.body}</p>
+                                            <div 
+                                                className="cursor-pointer group"
+                                                onClick={() => toggleExpand(notification.id)}
+                                            >
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <p className={`text-sm text-white font-medium transition-all ${expandedId === notification.id ? '' : 'truncate'}`}>
+                                                        {notification.title}
+                                                    </p>
+                                                    {notification.body && (
+                                                        <span className="text-slate-500 group-hover:text-slate-300 mt-0.5 shrink-0 transition-colors">
+                                                            {expandedId === notification.id ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
+                                                {notification.body && (
+                                                    <div className={`text-xs text-slate-400 mt-1 transition-all duration-200 ${expandedId === notification.id ? 'whitespace-pre-wrap text-slate-300' : 'line-clamp-2'}`}>
+                                                        {notification.body}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
+                                            {expandedId === notification.id && notification.link_url && (
+                                                <div className="mt-3">
+                                                    <Link 
+                                                        href={notification.link_url}
+                                                        onClick={() => {
+                                                            if (!notification.is_read) markAsRead(notification.id);
+                                                            setIsOpen(false);
+                                                        }}
+                                                        className="inline-flex items-center justify-center px-4 py-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg transition-colors border border-indigo-400/20 shadow-sm"
+                                                    >
+                                                        Xem chi tiết
+                                                    </Link>
+                                                </div>
                                             )}
-                                            <p className="text-[10px] text-slate-500 mt-1">{formatTime(notification.created_at)}</p>
+                                            
+                                            <p className="text-[10px] text-slate-500 mt-1.5">{formatTime(notification.created_at)}</p>
                                         </div>
                                         <div className="flex items-center gap-1 shrink-0">
                                             {!notification.is_read && (
