@@ -48,7 +48,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
   const [showNewPw, setShowNewPw] = useState(false);
 
   // Web Push Hook
-  const { isSupported, isSubscribed, permission, subscribe } = useWebPush();
+  const { isSupported, isSubscribed, isSubscribing, permission, subscribe } = useWebPush();
   const [broadcastLoading, setBroadcastLoading] = useState(false);
 
   const [broadcastForm, setBroadcastForm] = useState({
@@ -403,11 +403,15 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
                 </div>
                 <Button 
                   onClick={subscribe} 
-                  disabled={!isSupported || isSubscribed}
-                  className={`px-5 py-2 whitespace-nowrap ${isSubscribed ? 'bg-green-600/20 text-green-400 border border-green-500/30' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
+                  disabled={!isSupported || isSubscribed || isSubscribing}
+                  className={`px-5 py-2 whitespace-nowrap ${isSubscribed ? 'bg-green-600/20 text-green-400 border border-green-500/30' : 'bg-indigo-600 hover:bg-indigo-500 text-white'} transition-colors`}
                 >
-                  <Bell className="w-4 h-4 mr-2" />
-                  {isSubscribed ? "Đã đăng ký" : "Bật thông báo"}
+                  {isSubscribing ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Bell className="w-4 h-4 mr-2" />
+                  )}
+                  {isSubscribing ? "Đang xử lý..." : isSubscribed ? "Đã đăng ký" : "Bật thông báo"}
                 </Button>
               </div>
             </div>

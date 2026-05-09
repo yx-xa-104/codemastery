@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/shared/lib/utils";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 import { ThemeProvider } from "@/shared/providers/ThemeProvider";
+import { PushNotificationPopup } from "@/shared/components/PushNotificationPopup";
 
 const chakraPetch = Chakra_Petch({
   variable: "--font-heading",
@@ -38,6 +39,7 @@ export default function RootLayout({
           <AuthProvider>
             <ErrorBoundary>
               {children}
+              <PushNotificationPopup />
             </ErrorBoundary>
           </AuthProvider>
         </ThemeProvider>

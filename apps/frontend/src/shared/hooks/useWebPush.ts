@@ -23,6 +23,7 @@ function urlBase64ToUint8Array(base64String: string) {
 export function useWebPush() {
     const [isSupported, setIsSupported] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [isSubscribing, setIsSubscribing] = useState(false);
     const [permission, setPermission] = useState<NotificationPermission>('default');
     const { user } = useAuthStore(); // Check if user is logged in
 
@@ -46,6 +47,7 @@ export function useWebPush() {
 
     const subscribe = async () => {
         if (!isSupported) return false;
+        setIsSubscribing(true);
 
         try {
             // Xin quyền nếu chưa có
@@ -88,12 +90,15 @@ export function useWebPush() {
         } catch (error) {
             console.error('Failed to subscribe to web push', error);
             return false;
+        } finally {
+            setIsSubscribing(false);
         }
     };
 
     return {
         isSupported,
         isSubscribed,
+        isSubscribing,
         permission,
         subscribe
     };
