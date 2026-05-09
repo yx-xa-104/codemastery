@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Param, UseGuards, Body, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { SupabaseAuthGuard, CurrentUser } from '@common/index';
+import { SupabaseAuthGuard, CurrentUser, RolesGuard, Roles } from '@common/index';
 import { NotificationService } from '../application/notification.service';
 import { WebPushService } from '../application/web-push.service';
 
@@ -21,11 +21,10 @@ export class NotificationController {
     }
 
     @Post('web-push/test-broadcast')
+    @UseGuards(RolesGuard)
+    @Roles('admin')
     @ApiOperation({ summary: 'Admin testing: Broadcast custom push' })
-    async testBroadcastPush(@CurrentUser('role') role: string, @Body() payload: any) {
-        if (role !== 'admin') {
-            throw new ForbiddenException('Only administrators can broadcast notifications.');
-        }
+    async testBroadcastPush(@Body() payload: any) {
 
         const title = payload.title || '🔔 Kiểm tra hệ thống Web Push';
         const body = payload.body;
