@@ -61,7 +61,7 @@ export function ProfileSettingsForm({ role: roleProp }: ProfileSettingsFormProps
   const handleTestBroadcast = async () => {
     setBroadcastLoading(true);
     try {
-      const res = await apiClient.post("/api/notifications/web-push/test-broadcast", broadcastForm);
+      const res = await apiClient.post<any>("/api/notifications/web-push/test-broadcast", broadcastForm);
       alert(`Đã gửi thông báo thành công tới ${res?.total || 0} thiết bị!`);
     } catch (e: any) {
       alert("Lỗi khi gửi thông báo: " + e.message);
