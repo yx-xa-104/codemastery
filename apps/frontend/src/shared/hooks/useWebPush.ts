@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores/useAuthStore';
-import { api } from '../api/client'; // Assuming an API client exists
+import { apiClient } from '../lib/api-client';
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
@@ -24,7 +24,7 @@ export function useWebPush() {
     const [isSupported, setIsSupported] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [permission, setPermission] = useState<NotificationPermission>('default');
-    const { token } = useAuthStore();
+    const { user } = useAuthStore(); // Check if user is logged in
 
     useEffect(() => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -79,15 +79,8 @@ export function useWebPush() {
             }
 
             // Gửi lên server
-            if (token) {
-                await fetch(process.env.NEXT_PUBLIC_API_URL + '/notifications/web-push/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(subscription)
-                });
+            if (user) {
+                await apiClient.post('/notifications/web-push/subscribe', subscription);
                 setIsSubscribed(true);
                 return true;
             }

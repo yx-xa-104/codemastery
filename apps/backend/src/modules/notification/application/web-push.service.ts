@@ -31,8 +31,8 @@ export class WebPushService {
             throw new Error('Invalid subscription payload');
         }
 
-        const { data, error } = await this.supabase.admin
-            .from('web_push_subscriptions')
+        const { data, error } = await (this.supabase.admin
+            .from('web_push_subscriptions' as any) as any)
             .upsert({
                 user_id: userId,
                 endpoint: endpoint,
@@ -48,11 +48,12 @@ export class WebPushService {
     }
 
     async sendPushToUser(userId: string, payload: any) {
-        const { data: subs, error } = await this.supabase.admin
-            .from('web_push_subscriptions')
+        const { data: subsData, error } = await (this.supabase.admin
+            .from('web_push_subscriptions' as any) as any)
             .select('*')
             .eq('user_id', userId);
 
+        const subs = subsData as any[];
         if (error || !subs || subs.length === 0) {
             // No subscriptions found for this user, silently ignore
             return;
@@ -75,8 +76,8 @@ export class WebPushService {
                 if (err.statusCode === 404 || err.statusCode === 410) {
                     // Subscription has expired or is no longer valid, delete it
                     this.logger.log(`Subscription expired, deleting endpoint: ${sub.endpoint}`);
-                    await this.supabase.admin
-                        .from('web_push_subscriptions')
+                    await (this.supabase.admin
+                        .from('web_push_subscriptions' as any) as any)
                         .delete()
                         .eq('id', sub.id);
                 } else {
