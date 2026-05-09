@@ -26,12 +26,19 @@ export class NotificationController {
         if (role !== 'admin') {
             throw new ForbiddenException('Only administrators can broadcast notifications.');
         }
+
+        const title = payload.title || '🔔 Kiểm tra hệ thống Web Push';
+        const body = payload.body;
+        const url = payload.url || '/';
+        const targetRole = payload.targetRole || 'all';
+
+        // 1. Tạo thông báo trong CSDL (In-app notification bell) cho TẤT CẢ user phù hợp role
+        await this.notificationService.broadcast(title, body, targetRole, url);
         
+        // 2. Kích hoạt Web Push gửi đến các trình duyệt có đăng ký (Web Push)
         return this.webPushService.broadcastPush({
-            title: payload.title || '🔔 Kiểm tra hệ thống Web Push',
-            body: payload.body || 'Đây là tin nhắn thử nghiệm gửi đến tất cả các thiết bị đã đăng ký!',
-            url: payload.url || '/'
-        }, payload.targetRole || 'all');
+            title, body, url
+        }, targetRole);
     }
 
     @Get()

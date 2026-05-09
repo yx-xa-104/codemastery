@@ -73,4 +73,14 @@ export class NotificationRepository {
         if (error) handleSupabaseError(error);
         return data;
     }
+
+    async createBulk(notifications: any[]) {
+        const { data, error } = await this.supabase.admin
+            .from('notifications')
+            .insert(notifications as any)
+            .select();
+
+        if (error) handleSupabaseError(error);
+        return data;
+    }
 }
