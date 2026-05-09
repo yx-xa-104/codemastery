@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SupabaseService } from '../../infrastructure/database/supabase.service';
 import { NotificationService } from '../notification/application/notification.service';
+import { WebPushService } from '../notification/application/web-push.service';
 
 @Injectable()
 export class DailyReminderService {
@@ -10,6 +11,7 @@ export class DailyReminderService {
     constructor(
         private readonly supabase: SupabaseService,
         private readonly notificationService: NotificationService,
+        private readonly webPushService: WebPushService,
     ) {}
 
     // Chạy vào lúc 12:00 PM mỗi ngày
@@ -48,8 +50,7 @@ export class DailyReminderService {
                 const title = 'Đến giờ học rồi! 🚀';
                 const body = `Chào ${user.full_name || 'bạn'}, hôm nay bạn chưa vào học CodeMastery đấy. Dành ra 15 phút để học bài mới và giữ chuỗi học tập nhé!`;
                 
-                // Lưu notification vào DB với type = 'push_reminder'
-                // Hệ thống Frontend hoặc Websocket Gateway có thể lắng nghe type này để trigger Web Push.
+                // Lưu notification vào DB
                 await this.notificationService.create(
                     user.id,
                     title,
@@ -57,6 +58,14 @@ export class DailyReminderService {
                     'push_reminder',
                     '/learning'
                 );
+
+                // Gửi Native Web Push
+                await this.webPushService.sendPushToUser(user.id, {
+                    title,
+                    body,
+                    url: '/learning'
+                });
+
                 sentCount++;
             }
 

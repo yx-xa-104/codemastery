@@ -1,14 +1,24 @@
-import { Controller, Get, Post, Patch, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, UseGuards, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SupabaseAuthGuard, CurrentUser } from '@common/index';
 import { NotificationService } from '../application/notification.service';
+import { WebPushService } from '../application/web-push.service';
 
 @ApiTags('notifications')
 @ApiBearerAuth()
 @UseGuards(SupabaseAuthGuard)
 @Controller('notifications')
 export class NotificationController {
-    constructor(private notificationService: NotificationService) { }
+    constructor(
+        private notificationService: NotificationService,
+        private webPushService: WebPushService
+    ) { }
+
+    @Post('web-push/subscribe')
+    @ApiOperation({ summary: 'Subscribe to web push notifications' })
+    async subscribeToWebPush(@CurrentUser('id') userId: string, @Body() subscription: any) {
+        return this.webPushService.saveSubscription(userId, subscription);
+    }
 
     @Get()
     @ApiOperation({ summary: 'Get my notifications with unread count' })
